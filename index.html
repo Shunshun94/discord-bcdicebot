@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>discord-bcdicebot</title>
+	<style type="text/css">
+
+		body > * {
+			width: 70%;
+			margin:auto;
+			margin-top:1em;
+		}
+	</style>
+</head>
+<body>
+<h1>discord-bcdicebot</h1>
+<h2>概要</h2>
+<p>Discord で BCDice を使うための bot です。各サーバに対して、ユーザが導入して利用します。</p>
+<p><a href="https://drive.google.com/file/d/0BwmXeRuZhw9oUzBINlJUdEp2eGM/view?usp=sharing">DOWNLOAD</a></p>
+<h2>必要なもの</h2>
+<p>このアプリは Discord のチャットに参加するユーザのうち、1人の環境で動かす必要があります。動かす人にはJava 8 ないしそれ以降の実行環境が求められます</p>
+<p>Java 実行環境 のインストール方法は <a href="https://www.java.com/ja/download/help/download_options.xml">Javaをインストールするには</a> をご覧ください。</p>
+<hr/>
+<p>なお、現時点では簡易起動スクリプトは Windows 向けの物しか用意していません。 start.bat の中身を読み解いていただければ Mac でも Linux でも動作は可能です。</p>
+
+
+<h2>使い方</h2>
+<h3>ダイスボットを登録する</h3>
+<p>Discord に新規の Bot を作成します。サーバ1つにつき代表者1人がいれれば大丈夫です</p>
+<ol>
+	<li><a href="https://discordapp.com/developers/applications/me">開発者ページ</a> にアクセスし、New APP をクリックします</li>
+	<li>最低限 APP NAME と APP ICON を入力し、 Create App をクリックします</li>
+	<li>Create Bot User というボタンをクリックし、このダイスボット用のユーザを作成します</li>
+	<li>Bot の Username の下に "Token:click to reveal" というのがあるのでクリックし、出てくるランダムな文字列をメモします<br/><strong>この文字列は他の人に教えないこと</strong>。</li>
+	<li>画面上部の APP DETAILS のところに書かれた Client ID の数字をメモします</li>
+	<li>次の URL にアクセスします<br/><strong>https://discordapp.com/oauth2/authorize?client_id=<span style="color:green;">[Client Id の数字]</span>&amp;scope=bot&amp;permissions=0</strong></li>
+</ol>
+
+<h3>アプリケーションを起動する</h3>
+<p>Bot を起動し、 Discord 上で BCDice を利用可能にします。サーバ1つにつき代表者1人がアプリを起動すれば大丈夫です</p>
+<ol>
+	<li>start.bat をメモ帳で開きます</li>
+	<li><strong>set DISCORD_BOT_TOKEN=</strong> の末尾に先の 4. でメモした Token を貼り付けます</li>
+	<li><strong>set BCDICE_API_URL=</strong> の末尾に利用する BCDice-API サーバの URL を貼り付けます</li>
+	<li>メモ帳を閉じ、 start.bat をダブルクリックします</li>
+	<li>Discord の参加者一覧に Bot がオンラインの状態で存在すれば成功です</li>
+	<li>終了はキーボードの Ctrl + C を押してください</li>
+</ol>
+
+<h3>コマンドを利用する</h3>
+<p>チャットに bcdice help と打てば使えるコマンドの一覧が出力されます</p>
+<p>まずは利用するダイスボットにダイスボットを切り替えましょう。<br/><code>bcdice set [利用するダイスボットの名前]</code><br/>例えば <code>bcdice set SwordWorld2.0</code></p>
+<p>ダイスボットの切り替えが終わったらダイスを振るコマンドを打ってみましょう。振れます</p>
+
+<h2>連絡先</h2>
+<h3>バグ報告など</h3>
+<p>Twitter アカウントは<a href="https://twitter.com/Shunshun94">@Shunshun94</a>。ないしはリポジトリに issue を追加してください。</p>
+<h3>寄付先</h3>
+<p><a href="http://amzn.asia/8mNqdKy">Amazon のウィッシュリスト</a></p>
+
+<h2>ライセンス</h2>
+
+<h3>使用しているライブラリ</h3>
+<dl>
+	<dt><a href="https://github.com/BtoBastian/Javacord">javacord</a></dt>
+	<dd>Discord との通信で使用。<a href="https://github.com/BtoBastian/Javacord/blob/master/LICENSE">LGPLv3</a> でライセンスされています。</dd>
+	<dt><a href="https://mvnrepository.com/artifact/ch.qos.logback/logback-classic">Logback Classic Module</a></dt>
+	<dd>ロガー。LGPLv2.1 でライセンスされています。</dd>
+	<dt><a href="https://github.com/resteasy/Resteasy">RESTEasy</a></dt>
+	<dd>HTTP クライアント。<a href="https://github.com/resteasy/Resteasy/blob/master/License.html">Aapche 2.0</a> でライセンスされています。</dd>
+</dl>
+
+<h3>利用しているサービス</h3>
+<dl>
+	<dt><a href="https://github.com/torgtaitai/BCDice/">ゲーム設定型ダイスボット「ボーンズ＆カーズ」</a></dt>
+	<dd>どどんとふを初めとする多くのオンセツールで採用されているダイスボット。略称は BCDice。修正BSDライセンスでライセンスされています。</dd>
+	<dt><a href="https://github.com/NKMR6194/bcdice-api">BCDice-API</a></dt>
+	<dd>BCDice に HTTP による API を付与するラッパ。<a href="https://github.com/NKMR6194/bcdice-api/blob/master/LICENSE">MIT ライセンス</a>でライセンスされています。</dd>
+	<dt><a href="https://discordapp.com/">Discord</a></dt>
+	<dd>ボイスチャットアプリ。パソコンからでも携帯からでも利用可能。</dd>
+</dl>
+
+<h3>本アプリのライセンス</h3>
+<p>このアプリ (ソースコードなどを含む) は <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a> でライセンスします。</p>
+
+<h2>Q&amp;A</h2>
+<h3>質問・バグ報告はどこに</h3>
+<p><a href="https://twitter.com/Shunshun94">@Shunshun94</a></p>
+<h3>なんで Java なの。Ruby とか○○とかじゃないの</h3>
+<p>一般ユーザの PC に Ruby や○○の実行環境が導入されているとは思えなかった</p>
+<h3>じゃあ単体実行できるバイナリでいいじゃん</h3>
+<p>Mac ユーザやら Linux ユーザやらごとにバイナリを作るのが面倒だった。 Linux はともかく Mac ユーザはいる気がしたから</p>
+
+<h2>謝辞</h2>
+<p>BCDice を作成・公開してくださった<a href="http://faceless-tools.cocolog-nifty.com/about.html">Faceless</a>さんと、
+Ruby 移植をしてくださった<a href="https://twitter.com/torgtaitai">たいたい竹流</a>さん。
+そもそも、BCDice が無ければこのアプリは着想すらありませんでした。
+BCDice が多機能である点、2017年現在、国内オンラインセッションツールのデファクトスタンダードであるどどんとふが採用しているダイスボットであるため、
+国内におけるダイスボットのデファクトスタンダードとなっていたことが実装の必要を感じたそもそもの理由でした。</p>
+
+<p>BCDice-API を実装・公開してくださった<a href="https://twitter.com/nkmr6194">酒田　シンジ</a>さん。
+BCDice-API が無ければ本アプリの実装は気が遠くなるものだったに違いありません。</p>
+
+<p>発表前の動作確認に付き合ってくださった<a href="https://twitter.com/_casi_note">かし＊</a>さんと<a href="https://twitter.com/Lillin">離凛</a>さん。
+色々な想定漏れについて指摘していただき、公開前にアプリが大幅に改善されました。</p>
+</body>
+</html>
