@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.hiyoko.discord.bot.BCDice.DiceClient.BCDiceClient;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 
@@ -50,7 +51,7 @@ public class BCDiceCLI {
 	 * @return If the command is for roll dice command, true. If not false
 	 */
 	public boolean isRoll(String input) {
-		return ! (input.startsWith("bcdice") || input.startsWith("bcDice") || input.startsWith("BcDice"));
+		return ! (input.toLowerCase().startsWith("bcdice"));
 	}
 	 
 	/**
