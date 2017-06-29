@@ -8,6 +8,13 @@ public class DicerollResult {
 	private final boolean rolled;
 	private final String system;
 	
+	public DicerollResult(String text, String system, boolean secret, boolean rolled) {
+		this.text = text;
+		this.secret = secret;
+		this.rolled = rolled;
+		this.system = system;
+	}
+	
 	public DicerollResult(String json, String usedSystem) {
 		JSONObject result = new JSONObject(json);
 		rolled = result.getBoolean("ok");

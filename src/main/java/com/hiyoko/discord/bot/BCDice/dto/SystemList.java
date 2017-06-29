@@ -8,6 +8,11 @@ import org.json.JSONObject;
 
 public class SystemList {
 	private final List<String> systems;
+	
+	public SystemList(List<String> list) {
+		systems = list;
+	}
+	
 	public SystemList(String json) {
 		JSONObject result = new JSONObject(json);
 		JSONArray systemListJson = result.getJSONArray("systems");

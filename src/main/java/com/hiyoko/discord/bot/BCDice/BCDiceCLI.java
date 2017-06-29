@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
+import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 
@@ -17,20 +19,38 @@ import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
  *
  */
 public class BCDiceCLI {
-	private BCDiceClient client;
+	private DiceClient client;
 	private Map<String, List<String>> savedMessage;
 	
-	private final String HELP = "How to use\n"
+	public static final String HELP = "How to use\n"
 			+ "# Show dice bot list\n> bcdice list\n"
 			+ "# Change dice bot\n> bcdice set SYSTEM_NAME\n"
 			+ "# Show Dice bot help\n> bcdice help SYSTEM_NAME\n"
 			+ "# Show current Status\n> bcdice status";
 	
 	/**
+	 * 
+	 * @param diceClient Dice Client instance
+	 */
+	public BCDiceCLI(DiceClient diceClient) {
+		client = diceClient;
+	}
+	
+	/**
+	 * 
+	 * @param diceClient Dice Client instance
+	 * @param system BCDice game system
+	 */
+	public BCDiceCLI(DiceClient diceClient, String system) {
+		client = diceClient;
+		client.setSystem(system);
+	}
+	
+	/**
 	 * @param url BCDice-API URL.
 	 */
 	public BCDiceCLI(String url) {
-		client = new BCDiceClient(url);
+		client = DiceClientFactory.getDiceClient(url);
 		savedMessage = new HashMap<String, List<String>>();
 	}
 	
@@ -40,7 +60,7 @@ public class BCDiceCLI {
 	 * @param system BCDice game system
 	 */
 	public BCDiceCLI(String url, String system) {
-		client = new BCDiceClient(url);
+		client = DiceClientFactory.getDiceClient(url);
 		client.setSystem(system);
 		savedMessage = new HashMap<String, List<String>>();
 	}
@@ -50,7 +70,7 @@ public class BCDiceCLI {
 	 * @return If the command is for roll dice command, true. If not false
 	 */
 	public boolean isRoll(String input) {
-		return ! (input.startsWith("bcdice") || input.startsWith("bcDice") || input.startsWith("BcDice"));
+		return ! (input.toLowerCase().startsWith("bcdice"));
 	}
 	 
 	/**
@@ -97,7 +117,7 @@ public class BCDiceCLI {
 				client.setSystem(command[2]);
 				return "BCDice system is changed: " + command[2];
 			} else {
-				return "[ERROR] When you want to change dice system�c�c\n"
+				return "[ERROR] When you want to change dice system\n"
 						+ "        bcdice set SYSTEM_NAME\n"
 						+ "Example bcdice set AceKillerGene";
 			}
@@ -125,6 +145,18 @@ public class BCDiceCLI {
 			}
 		}
 		
+		if(command[1].equals("save")) {
+			if(command.length > 2) {
+				StringBuilder str = new StringBuilder();
+				for(int i = 2; i < command.length; i++) {
+					str.append(command[i] + " ");
+				} 
+				return saveMessage(id, str.toString().trim()) + ""; //getMessage(id, new Integer(command[2]));
+			} else {
+				return saveMessage(id, "") + "";
+			}
+		}
+		
 		if(command[1].equals("status")) {
 			try {
 				return client.toString() + "(v." + client.getVersion().getApiVersion() + ")";
@@ -142,7 +174,7 @@ public class BCDiceCLI {
 	 * @param message stacked message
 	 * @return The stacked message index
 	 */
-	public int saveMessage(String id, String message) {
+	private int saveMessage(String id, String message) {
 		List<String> msgList = savedMessage.get(id);
 		if(msgList == null) {
 			msgList = new ArrayList<String>();
@@ -159,7 +191,7 @@ public class BCDiceCLI {
 	 * @return the stacked message
 	 * @throws IOException When failed to get message
 	 */
-	public String getMessage(String id, int index) throws IOException {
+	private String getMessage(String id, int index) throws IOException {
 		try {
 			List<String> list = savedMessage.get(id);
 			return list.get(index - 1);

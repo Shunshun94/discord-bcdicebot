@@ -46,7 +46,7 @@ public class BCDiceBot {
 									message.reply(">" + message.getAuthor().getName() + "\n" + rollResult.toString());
 								}
 								if(rollResult.isSecret()) {
-									int index = bcDice.saveMessage(userId, rollResult.getSystem() + rollResult.getText());
+									int index = Integer.parseInt(bcDice.input("bcdice save " + rollResult.getSystem() + rollResult.getText(), userId));
 									message.getAuthor().sendMessage(rollResult.getSystem() + rollResult.getText());
 									message.getAuthor().sendMessage("To recall this,\nbcdice load " + index);
 								}

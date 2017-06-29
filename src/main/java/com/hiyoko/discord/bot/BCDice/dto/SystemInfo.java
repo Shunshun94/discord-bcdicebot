@@ -12,6 +12,14 @@ public class SystemInfo {
 	private final String gameType;
 	private final List<String> prefixs;
 	private final String info;
+	
+	public SystemInfo(String name, String gameType, List<String> prefixs, String info) {
+		this.name = name;
+		this.gameType = gameType;
+		this.prefixs = prefixs;
+		this.info = info;
+	}
+	
 	public SystemInfo(String json) throws IOException {
 		JSONObject result = new JSONObject(json);
 		if(! result.getBoolean("ok")) {
