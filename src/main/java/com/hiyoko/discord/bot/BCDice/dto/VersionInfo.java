@@ -6,6 +6,11 @@ public class VersionInfo {
 	private final String diceVersion;
 	private final String apiVersion;
 	
+	public VersionInfo(String dice, String api) {
+		diceVersion = dice;
+		apiVersion = api;
+	}
+	
 	public VersionInfo(String json) {
 		JSONObject result = new JSONObject(json);
 		
