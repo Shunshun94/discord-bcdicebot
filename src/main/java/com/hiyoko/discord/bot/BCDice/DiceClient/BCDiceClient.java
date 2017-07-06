@@ -48,7 +48,7 @@ public class BCDiceClient implements DiceClient {
 			}
 			throw new IOException(e.getMessage() + "(" + targetUrl + ")", e);
 		}
-        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+        if (! (response.getStatus() == Response.Status.OK.getStatusCode() || response.getStatus() == 400)) {
         	String msg = "[" + response.getStatus() + "] " + targetUrl;
         	response.close();
         	throw new IOException(msg);

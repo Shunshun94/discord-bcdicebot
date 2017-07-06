@@ -4,7 +4,7 @@
 
 	<groupId>com.hiyoko.discord.bot</groupId>
 	<artifactId>com.hiyoko.discord.bot.BCDice</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 	<packaging>jar</packaging>
 	<repositories>
 		<repository>
