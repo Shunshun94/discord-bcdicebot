@@ -2,6 +2,8 @@ package com.hiyoko.discord.bot.BCDice.DiceClient;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
@@ -9,8 +11,14 @@ import com.hiyoko.discord.bot.BCDice.dto.SystemList;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
 public class DiceClientMock implements DiceClient {
-	private String system = "Hiyoko";
 	private final String[] systemList = {"Hiyoko", "Hitsuji", "Koneko"};
+	private final Map<String, String> system = new HashMap<String, String>();
+	private static final String DEFAULT_CHANNEL = "general";
+
+	public DiceClientMock() {
+		system.put(DEFAULT_CHANNEL, "Hiyoko");
+	}
+	
 	@Override
 	public VersionInfo getVersion() throws IOException {
 		return new VersionInfo("hiyoko", "hitsuji");
@@ -43,22 +51,39 @@ public class DiceClientMock implements DiceClient {
 
 	@Override
 	public DicerollResult rollDice(String command) throws IOException {
-		return rollDice(command, system);
+		return rollDice(command, system.get(DEFAULT_CHANNEL));
 	}
 
 	@Override
 	public String setSystem(String newSystem) {
-		system = newSystem;
-		return system;
+		return setSystem(newSystem, DEFAULT_CHANNEL);
+	}
+
+
+	@Override
+	public String setSystem(String newSystem, String channel) {
+		system.put(channel, newSystem);
+		return system.get(channel);
+	}
+	
+	@Override
+	public String getSystem() {
+		return system.get(DEFAULT_CHANNEL);
 	}
 
 	@Override
-	public String getSystem() {
-		return system;
+	public String getSystem(String channel) {
+		return system.get(channel);
 	}
 	
 	public String toString() {
 		return "[DiceClientMock]";
 	}
+
+	@Override
+	public DicerollResult rollDiceWithChannel(String command, String channel) throws IOException {
+		return rollDice(command, getSystem(channel));
+	}
+
 
 }

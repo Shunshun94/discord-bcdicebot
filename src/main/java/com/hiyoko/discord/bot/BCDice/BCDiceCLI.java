@@ -72,7 +72,16 @@ public class BCDiceCLI {
 	public boolean isRoll(String input) {
 		return ! (input.toLowerCase().startsWith("bcdice"));
 	}
-	 
+	
+	/**
+	 * @param input Dice roll command
+	 * @return result as DicerollResult instance.
+	 * @throws IOException When command failed
+	 */
+	public DicerollResult roll(String input, String channel) throws IOException {
+		return client.rollDice(input, channel);
+	}
+	
 	/**
 	 * @param input Dice roll command
 	 * @return result as DicerollResult instance.
