@@ -120,6 +120,10 @@ public class BCDiceClient implements DiceClient {
 	}
 	
 	public String toString() {
-		return "[BCDiceClient] for " + url + " : " + system;
+		return "[BCDiceClient] for " + url + " : " + system.get(DEFAULT_CHANNEL);
+	}
+
+	public String toString(String channel) {
+		return "[BCDiceClient] for " + url + " : " + getSystem(channel);
 	}
 }

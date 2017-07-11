@@ -79,7 +79,7 @@ public class BCDiceCLI {
 	 * @throws IOException When command failed
 	 */
 	public DicerollResult roll(String input, String channel) throws IOException {
-		return client.rollDice(input, channel);
+		return client.rollDiceWithChannel(input, channel);
 	}
 	
 	/**
@@ -105,6 +105,10 @@ public class BCDiceCLI {
 	 * @return message from this instance
 	 */
 	public String input(String input, String id) {
+		return input(input, id, "general");
+	}
+	
+	public String input(String input, String id, String channel) {
 		String[] command = input.split(" ");
 		if(command.length == 1) {
 			return HELP;
@@ -123,7 +127,7 @@ public class BCDiceCLI {
 		}
 		if(command[1].equals("set")) {
 			if(command.length > 2) {
-				client.setSystem(command[2]);
+				client.setSystem(command[2], channel);
 				return "BCDice system is changed: " + command[2];
 			} else {
 				return "[ERROR] When you want to change dice system\n"
@@ -168,9 +172,9 @@ public class BCDiceCLI {
 		
 		if(command[1].equals("status")) {
 			try {
-				return client.toString() + "(v." + client.getVersion().getApiVersion() + ")";
+				return client.toString(channel) + "(v." + client.getVersion().getApiVersion() + ")";
 			} catch (IOException e) {
-				return client.toString() + "(Couldn't get version)";
+				return client.toString(channel) + "(Couldn't get version)";
 			}
 		}
 		

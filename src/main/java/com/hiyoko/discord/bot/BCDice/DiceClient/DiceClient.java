@@ -83,4 +83,11 @@ public interface DiceClient {
 	 * @return current system name
 	 */
 	public String getSystem(String channel);
+	
+	/**
+	 * 
+	 * @param channel target channel
+	 * @return
+	 */
+	public String toString(String channel);
 }

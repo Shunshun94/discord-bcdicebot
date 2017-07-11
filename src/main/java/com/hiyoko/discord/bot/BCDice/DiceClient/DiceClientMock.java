@@ -73,16 +73,25 @@ public class DiceClientMock implements DiceClient {
 
 	@Override
 	public String getSystem(String channel) {
-		return system.get(channel);
+		String channelSystem = system.get(channel);
+		if(channelSystem != null) {
+			return channelSystem;
+		}
+		return system.get(DEFAULT_CHANNEL);
 	}
 	
 	public String toString() {
-		return "[DiceClientMock]";
+		return "[DiceClientMock] for Mock : " + system.get(DEFAULT_CHANNEL);
 	}
 
 	@Override
 	public DicerollResult rollDiceWithChannel(String command, String channel) throws IOException {
 		return rollDice(command, getSystem(channel));
+	}
+
+	@Override
+	public String toString(String channel) {
+		return "[DiceClientMock] for Mock : " + getSystem(channel);
 	}
 
 
