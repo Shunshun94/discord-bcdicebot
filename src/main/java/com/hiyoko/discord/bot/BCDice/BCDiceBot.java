@@ -21,7 +21,7 @@ public class BCDiceBot {
 	private BCDiceCLI bcDice;
 	
 	/**
-	 * Constrcutor.
+	 * Constructor.
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
 	 */
@@ -39,9 +39,10 @@ public class BCDiceBot {
 						if(userId.equals(api.getYourself().getId())) {
 							return;
 						}
+						String channel = message.getChannelReceiver().getName();
 						if(bcDice.isRoll(message.getContent())) {
 							try {
-								DicerollResult rollResult = bcDice.roll(message.getContent());
+								DicerollResult rollResult = bcDice.roll(message.getContent(), channel);
 								if(rollResult.isRolled()) {
 									message.reply(">" + message.getAuthor().getName() + "\n" + rollResult.toString());
 								}
@@ -54,7 +55,7 @@ public class BCDiceBot {
 								message.reply(">" + message.getAuthor().getName() + "\n[ERROR]" + e.getMessage());
 							}
 						} else {
-							message.reply(bcDice.input(message.getContent(), userId));
+							message.reply(bcDice.input(message.getContent(), userId, channel));
 						}
 					}
 				});
