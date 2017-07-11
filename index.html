@@ -20,6 +20,13 @@
 			border-bottom: 2px solid green;
 			padding-left: 4px;
 		}
+		
+		.comment {
+			margin:auto;
+			width: 60%;
+			background-color: #FFFFF0;
+			border: #FFFFD0 inset 2px;
+		}
 	</style>
 </head>
 <body>
@@ -62,6 +69,11 @@
 	<li>終了はキーボードの Ctrl + C を押してください</li>
 </ol>
 
+<div class="comment">
+<p>BCDice-API サーバとして大ちゃんさんが公開してくださっているものがあります。自分で BCDice-API サーバを構築するのが難しいようであればそこを借りるのも手でしょう。</p>
+<p>詳しい話は <a href="https://www.taruki.com/wp/?p=6507">bcdice-api | 大ちゃんのいろいろ雑記</a> をご確認ください。</p>
+</div>
+
 <h3>コマンドを利用する</h3>
 <p>チャットに bcdice help と打てば使えるコマンドの一覧が出力されます</p>
 <p>まずは利用するダイスボットにダイスボットを切り替えましょう。<br/><code>bcdice set [利用するダイスボットの名前]</code><br/>例えば <code>bcdice set SwordWorld2.0</code></p>
@@ -96,7 +108,7 @@
 </dl>
 
 <h3>本アプリのライセンス</h3>
-<p>このアプリ (ソースコードなどを含む) は <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a> でライセンスします。<br/>ソースコードは<a href="https://github.com/Shunshun94/discord-bcdicebot">https://github.com/Shunshun94/discord-bcdicebot</a>から入手可能です。</p>
+<p>このアプリ (ソースコードなどを含む) は <a href="./LICENSE">GPLv3</a> でライセンスします。<br/>ソースコードは<a href="https://github.com/Shunshun94/discord-bcdicebot">https://github.com/Shunshun94/discord-bcdicebot</a>から入手可能です。</p>
 
 <h2>Q&amp;A</h2>
 <h3>質問・バグ報告はどこに</h3>
@@ -121,6 +133,8 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v1.3(2017/07/13)</dt>
+	<dd>Channel 毎に異なるダイスボットを利用できるように変更。特に設定していない場合は general のものを利用</dd>
 	<dt>v1.2(2017/07/06)</dt>
 	<dd>BCDice-API v0.4.0 に対応。問題の指摘をくださった<a href="https://twitter.com/nkmr6194">酒田　シンジ</a>さん、ありがとうございます！</dd>
 	<dt>v1.1.1(2017/06/30)</dt>

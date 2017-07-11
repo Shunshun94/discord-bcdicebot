@@ -2,6 +2,8 @@ package com.hiyoko.discord.bot.BCDice.DiceClient;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -20,7 +22,8 @@ import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 public class BCDiceClient implements DiceClient {
 	private final String url;
 	private final Client client;
-	private String system = "DiceBot";
+	private final Map<String, String> system;
+	private static final String DEFAULT_CHANNEL = "general";
 
 	/**
 	 * 
@@ -29,6 +32,8 @@ public class BCDiceClient implements DiceClient {
 	public BCDiceClient(String bcDiceUrl) {
 		url = bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/";
 		client = ClientBuilder.newBuilder().build();
+		system = new HashMap<String, String>();
+		system.put(DEFAULT_CHANNEL, "DiceBot");
 	}
 
 	/**
@@ -77,24 +82,48 @@ public class BCDiceClient implements DiceClient {
 		}
 	}
 
+
+	@Override
+	public DicerollResult rollDiceWithChannel(String command, String channel) throws IOException {
+		return rollDice(command, getSystem(channel));
+	}
+	
 	public DicerollResult rollDice(String command, String system) throws IOException {
 		return new DicerollResult(getUrl("v1/diceroll?command=" + URLEncoder.encode(command, "UTF-8") + "&system=" + URLEncoder.encode(system, "UTF-8")));
 	}
 
 	public DicerollResult rollDice(String command) throws IOException {
-		return rollDice(command, system);
+		return rollDice(command, getSystem());
 	}
 
 	public String setSystem(String newSystem) {
-		system = newSystem;
-		return system;
+		return setSystem(newSystem, DEFAULT_CHANNEL);
 	}
 
+	@Override
+	public String setSystem(String newSystem, String channel) {
+		system.put(channel, newSystem);
+		return getSystem(channel);
+	}
+	
 	public String getSystem() {
-		return system;
+		return getSystem(DEFAULT_CHANNEL);
+	}
+
+	@Override
+	public String getSystem(String channel) {
+		String channelSystem = system.get(channel);
+		if(channelSystem != null) {
+			return channelSystem;
+		}
+		return system.get(DEFAULT_CHANNEL);
 	}
 	
 	public String toString() {
-		return "[BCDiceClient] for " + url + " : " + system;
+		return "[BCDiceClient] for " + url + " : " + system.get(DEFAULT_CHANNEL);
+	}
+
+	public String toString(String channel) {
+		return "[BCDiceClient] for " + url + " : " + getSystem(channel);
 	}
 }
