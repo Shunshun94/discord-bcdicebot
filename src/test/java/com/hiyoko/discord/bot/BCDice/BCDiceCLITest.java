@@ -74,4 +74,16 @@ public class BCDiceCLITest extends TestCase {
 	public void testInputStringString() {
 		assertEquals(cli.input("bcdice status"), cli.input("bcdice status", "koneko"));
 	}
+	
+	public void testMultiChannel() {
+		String[] diceBotList = cli.input("bcdice list").split("\n");
+		cli.input("bcdice set " + diceBotList[1]);
+		assertEquals(cli.input("bcdice status", "hiyoko"), cli.input("bcdice status", "hiyoko", "general"));
+		assertEquals(cli.input("bcdice status", "hiyoko"), cli.input("bcdice status", "hiyoko", "ungeneral"));
+		assertTrue(cli.input("bcdice status", "hiyoko", "ungeneral").indexOf(diceBotList[1]) != -1);
+		cli.input("bcdice set " + diceBotList[2], "hiyoko", "ungeneral");
+		assertTrue(cli.input("bcdice status", "hiyoko", "ungeneral").indexOf(diceBotList[2]) != -1);
+		assertTrue(cli.input("bcdice status", "hiyoko", "general").indexOf(diceBotList[1]) != -1);
+		assertTrue(cli.input("bcdice status", "hiyoko").indexOf(diceBotList[1]) != -1);
+	}
 }

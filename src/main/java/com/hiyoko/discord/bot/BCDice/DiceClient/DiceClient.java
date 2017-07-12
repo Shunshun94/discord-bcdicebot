@@ -29,7 +29,16 @@ public interface DiceClient {
 	 * @throws IOException When access is failed
 	 */
 	public SystemInfo getSystemInfo(String gameType) throws IOException;
-	
+
+	/**
+	 * 
+	 * @param command dice command
+	 * @param channel target channel
+	 * @return dice result
+	 * @throws IOException When access is failed
+	 */
+	public DicerollResult rollDiceWithChannel(String command, String channel) throws IOException;
+
 	/**
 	 * 
 	 * @param command dice command
@@ -53,9 +62,32 @@ public interface DiceClient {
 	 * @return new current system.
 	 */
 	public String setSystem(String newSystem);
+	
+	
+	/**
+	 * change current system.
+	 * @param newSystem
+	 * @param channel target channel
+	 * @return new current system.
+	 */
+	public String setSystem(String newSystem, String channel);
+	
 	/**
 	 * 
-	 * @return current system name
+	 * @return current default channel system name
 	 */
 	public String getSystem();
+	
+	/**
+	 * @param channel target channel
+	 * @return current system name
+	 */
+	public String getSystem(String channel);
+	
+	/**
+	 * 
+	 * @param channel target channel
+	 * @return
+	 */
+	public String toString(String channel);
 }
