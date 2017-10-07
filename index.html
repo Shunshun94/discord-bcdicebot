@@ -112,13 +112,16 @@
 
 <h2>Q&amp;A</h2>
 <h3>質問・バグ報告はどこに</h3>
-<p><a href="https://twitter.com/Shunshun94">@Shunshun94</a></p>
+<p><a href="https://twitter.com/Shunshun94">@Shunshun94</a> ないしは <a href="https://github.com/Shunshun94/discord-bcdicebot/issues">github の issues</a> に</p>
+<p>どんな出力が出たのか、出力をコピペして頂けると調査が捗ります。</p>
 <h3>なんで Java なの。Ruby とか○○とかじゃないの</h3>
 <p>一般ユーザの PC に Ruby や○○の実行環境が導入されているとは思えなかった</p>
 <h3>じゃあ単体実行できるバイナリでいいじゃん</h3>
 <p>Mac ユーザやら Linux ユーザやらごとにバイナリを作るのが面倒だった。 Linux はともかく Mac ユーザはいる気がしたから</p>
 
 <h2>謝辞</h2>
+<h3>お世話になった方々</h3>
+
 <p>BCDice を作成・公開してくださった<a href="http://faceless-tools.cocolog-nifty.com/about.html">Faceless</a>さんと、
 Ruby 移植をしてくださった<a href="https://twitter.com/torgtaitai">たいたい竹流</a>さん。
 そもそも、BCDice が無ければこのアプリは着想すらありませんでした。
@@ -131,8 +134,16 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 <p>発表前の動作確認に付き合ってくださった<a href="https://twitter.com/_casi_note">かし＊</a>さんと<a href="https://twitter.com/Lillin">離凛</a>さん。
 色々な想定漏れについて指摘していただき、公開前にアプリが大幅に改善されました。</p>
 
+<h3>関連アプリの紹介</h3>
+<p><a href="https://twitter.com/Nanasu7">Nanasu</a> さんが作ってくださった<a href="https://bitbucket.org/Nanasu/bcdiscord-for-browser">BCDiscord for Browser</a>　のコマンドは本アプリの物を参考にしてくださいました。
+ブラウザのみで動くため、大変に便利です。</p>
+
+
 <h2>更新履歴</h2>
 <dl>
+	<dt>v1.4(2017/10/07)</dt>
+	<dd>利用しているライブラリ起因の問題に対してライブラリをバージョンアップして対応。問題の指摘をくださった<a href="https://github.com/C0ela">シーラ</a> さん、ありがとうございます！</dd>
+	<dd>アプリ終了後に待機するように start.bat を変更。ログの収集が容易になった</dd>
 	<dt>v1.3(2017/07/13)</dt>
 	<dd>Channel 毎に異なるダイスボットを利用できるように変更。特に設定していない場合は general のものを利用</dd>
 	<dt>v1.2(2017/07/06)</dt>
