@@ -88,6 +88,7 @@ public class BCDiceClient implements DiceClient {
 	}
 	
 	public DicerollResult rollDice(String command, String system) throws IOException {
+		command = command.replaceAll("[\\s　]", "");
 		return new DicerollResult(getUrl("v1/diceroll?command=" + URLEncoder.encode(command, "UTF-8") + "&system=" + URLEncoder.encode(system, "UTF-8")));
 	}
 
