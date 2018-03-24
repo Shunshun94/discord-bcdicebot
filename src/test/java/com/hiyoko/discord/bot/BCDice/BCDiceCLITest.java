@@ -86,4 +86,12 @@ public class BCDiceCLITest extends TestCase {
 		assertTrue(cli.input("bcdice status", "hiyoko", "general").indexOf(diceBotList[1]) != -1);
 		assertTrue(cli.input("bcdice status", "hiyoko").indexOf(diceBotList[1]) != -1);
 	}
+
+	public void testNormalizeCommand() throws IOException {
+		// From https://github.com/Shunshun94/discord-bcdicebot/pull/10#issuecomment-374023404
+		assertEquals(cli.roll("1d100 < = 50").getText(), "1d100<=50");
+		assertEquals(cli.roll("1d100 < = 50 聞き耳").getText(), "1d100<=50 聞き耳");
+		assertEquals(cli.roll("2d6+3 2 度目の攻撃！").getText(), "2d6+3 2 度目の攻撃！");
+		assertEquals(cli.roll("2d6 + 3 2 度目の攻撃！").getText(), "2d6+3 2 度目の攻撃！");
+	}
 }
