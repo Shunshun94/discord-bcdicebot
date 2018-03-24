@@ -21,7 +21,8 @@ import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 public class BCDiceCLI {
 	private DiceClient client;
 	private Map<String, List<String>> savedMessage;
-	
+	private static final String[] replaceTargets = {"<", ">", "=", "+", "-", "*", "/"};
+
 	public static final String HELP = "How to use\n"
 			+ "# Show dice bot list\n> bcdice list\n"
 			+ "# Change dice bot\n> bcdice set SYSTEM_NAME\n"
@@ -79,7 +80,7 @@ public class BCDiceCLI {
 	 * @throws IOException When command failed
 	 */
 	public DicerollResult roll(String input, String channel) throws IOException {
-		return client.rollDiceWithChannel(input, channel);
+		return client.rollDiceWithChannel(normalizeDiceCommand(input), channel);
 	}
 	
 	/**
@@ -88,7 +89,7 @@ public class BCDiceCLI {
 	 * @throws IOException When command failed
 	 */
 	public DicerollResult roll(String input) throws IOException {
-		return client.rollDice(input);
+		return client.rollDice(normalizeDiceCommand(input));
 	}
 	
 	/**
@@ -196,7 +197,7 @@ public class BCDiceCLI {
 		msgList.add(message);
 		return msgList.size();
 	}
-	
+
 	/**
 	 * 
 	 * @param id user unique id
@@ -212,7 +213,20 @@ public class BCDiceCLI {
 			throw new IOException(e.getMessage(), e);
 		}
 	}
-	
+
+	/**
+	 * Normalizer for the commands.
+	 * See also https://github.com/Shunshun94/discord-bcdicebot/pull/10
+	 * @param command raw command
+	 * @return Normalized command.
+	 */
+	private String normalizeDiceCommand(String command) {
+		for(String target: replaceTargets) {
+			command = command.replaceAll("[\\s　]*[" + target + "]+[\\s　]*", target);
+		}
+		return command;
+	}
+
 	public static void main(String[] args) {
 
 	}
