@@ -19,6 +19,7 @@ public class BCDiceCLITest extends TestCase {
 		assertFalse(cli.isRoll("bcdice hiyoko"));
 		assertFalse(cli.isRoll("BCDice hiyoko"));
 		assertFalse(cli.isRoll("BCDice"));
+		assertTrue(cli.isRoll("bcdiceだよ"));
 		assertTrue(cli.isRoll("2d6"));
 		assertTrue(cli.isRoll("koneko"));
 	}
@@ -41,6 +42,7 @@ public class BCDiceCLITest extends TestCase {
 		String[] diceBotList = cli.input("bcdice list").split("\n");
 		assertTrue(cli.input("bcdice help nonsense").indexOf("is not found") > -1);
 		assertTrue(cli.input("bcdice help " + diceBotList[1]).indexOf("is not found") == -1);
+		assertTrue(cli.input("bcdice help " + diceBotList[1] + "\ndayodayo").indexOf("is not found") == -1);
 	}
 	
 	public void testInputStringSet() {
@@ -48,6 +50,7 @@ public class BCDiceCLITest extends TestCase {
 		assertTrue(cli.input("bcdice set").indexOf("ERROR") > -1);
 		assertTrue(cli.input("bcdice set " + diceBotList[1]).indexOf("ERROR") == -1);
 		assertTrue(cli.input("bcdice set " + diceBotList[1] + " nonsense").indexOf("ERROR") == -1);
+		assertTrue(cli.input("bcdice set " + diceBotList[1] + "\nhiyohiyo").indexOf("ERROR") == -1);
 	}
 
 	public void testInputStringStack() {

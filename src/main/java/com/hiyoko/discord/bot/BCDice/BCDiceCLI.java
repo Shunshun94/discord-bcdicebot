@@ -10,6 +10,7 @@ import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
+import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
 /**
  * Client for BCDice.
@@ -79,7 +80,7 @@ public class BCDiceCLI {
 	 * @return If the command is for roll dice command, true. If not false
 	 */
 	public boolean isRoll(String input) {
-		return ! (input.toLowerCase().startsWith("bcdice"));
+		return ! (input.toLowerCase().startsWith("bcdice ") || input.toLowerCase().equals("bcdice"));
 	}
 	
 	/**
@@ -117,7 +118,8 @@ public class BCDiceCLI {
 		return input(input, id, "general");
 	}
 	
-	public String input(String input, String id, String channel) {
+	public String input(String tmpInput, String id, String channel) {
+		String input = tmpInput.split("\n")[0];
 		String[] command = input.split(" ");
 		if(command.length == 1) {
 			return HELP;
@@ -173,7 +175,7 @@ public class BCDiceCLI {
 				for(int i = 2; i < command.length; i++) {
 					str.append(command[i] + " ");
 				} 
-				return saveMessage(id, str.toString().trim()) + ""; //getMessage(id, new Integer(command[2]));
+				return saveMessage(id, tmpInput.replaceAll("bcdice save ", "").trim()) + "";
 			} else {
 				return saveMessage(id, "") + "";
 			}
@@ -181,7 +183,8 @@ public class BCDiceCLI {
 		
 		if(command[1].equals("status")) {
 			try {
-				return client.toString(channel) + "(v." + client.getVersion().getApiVersion() + ")";
+				VersionInfo vi = client.getVersion();
+				return client.toString(channel) + "(API v." + vi.getApiVersion() + " / BCDice v." + vi.getDiceVersion() + ")";
 			} catch (IOException e) {
 				return client.toString(channel) + "(Couldn't get version)";
 			}
