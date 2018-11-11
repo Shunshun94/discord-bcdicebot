@@ -22,6 +22,7 @@ public class BCDiceClient implements DiceClient {
 	private final String url;
 	private final Client client;
 	private final Map<String, String> system;
+	private final boolean errorSensitive;
 	private static final String DEFAULT_CHANNEL = "general";
 
 	/**
@@ -33,6 +34,15 @@ public class BCDiceClient implements DiceClient {
 		client = ClientBuilder.newBuilder().build();
 		system = new HashMap<String, String>();
 		system.put(DEFAULT_CHANNEL, "DiceBot");
+		errorSensitive = true;
+	}
+	
+	public BCDiceClient(String bcDiceUrl, boolean es) {
+		url = bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/";
+		client = ClientBuilder.newBuilder().build();
+		system = new HashMap<String, String>();
+		system.put(DEFAULT_CHANNEL, "DiceBot");
+		errorSensitive = es;
 	}
 
 	/**
@@ -52,10 +62,15 @@ public class BCDiceClient implements DiceClient {
 			}
 			throw new IOException(e.getMessage() + "(" + targetUrl + ")", e);
 		}
+		
         if (! (response.getStatus() == Response.Status.OK.getStatusCode() || response.getStatus() == 400)) {
-        	String msg = "[" + response.getStatus() + "] " + targetUrl;
         	response.close();
-        	throw new IOException(msg);
+        	if(errorSensitive) {
+            	String msg = "[" + response.getStatus() + "] " + targetUrl;
+            	throw new IOException(msg);
+        	} else {
+        		return "{\"ok\":false,\"reason\":\"error handling dummy data\"}";
+        	}
         }
         String result = response.readEntity(String.class);
         response.close();
@@ -88,7 +103,7 @@ public class BCDiceClient implements DiceClient {
 	}
 	
 	public DicerollResult rollDice(String command, String system) throws IOException {
-		return new DicerollResult(getUrl("v1/diceroll?command=" + URLEncoder.encode(command, "UTF-8") + "&system=" + URLEncoder.encode(system, "UTF-8")));
+		return new DicerollResult(getUrl("v1/diceroll?command=" + URLEncoder.encode(command, "UTF-8").replaceAll("%2520", "%20") + "&system=" + URLEncoder.encode(system, "UTF-8").replaceAll("%2520", "%20")));
 	}
 
 	public DicerollResult rollDice(String command) throws IOException {
