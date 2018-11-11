@@ -22,6 +22,7 @@ public class BCDiceClient implements DiceClient {
 	private final String url;
 	private final Client client;
 	private final Map<String, String> system;
+	private final boolean errorSensitive;
 	private static final String DEFAULT_CHANNEL = "general";
 
 	/**
@@ -33,6 +34,15 @@ public class BCDiceClient implements DiceClient {
 		client = ClientBuilder.newBuilder().build();
 		system = new HashMap<String, String>();
 		system.put(DEFAULT_CHANNEL, "DiceBot");
+		errorSensitive = true;
+	}
+	
+	public BCDiceClient(String bcDiceUrl, boolean es) {
+		url = bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/";
+		client = ClientBuilder.newBuilder().build();
+		system = new HashMap<String, String>();
+		system.put(DEFAULT_CHANNEL, "DiceBot");
+		errorSensitive = es;
 	}
 
 	/**
@@ -44,6 +54,7 @@ public class BCDiceClient implements DiceClient {
 	private String getUrl(String path) throws IOException {
 		Response response = null;
 		String targetUrl = url + path;
+
 		try {
 			response = client.target(targetUrl).request().get();
 		} catch(Exception e) {
@@ -52,10 +63,15 @@ public class BCDiceClient implements DiceClient {
 			}
 			throw new IOException(e.getMessage() + "(" + targetUrl + ")", e);
 		}
+		
         if (! (response.getStatus() == Response.Status.OK.getStatusCode() || response.getStatus() == 400)) {
-        	String msg = "[" + response.getStatus() + "] " + targetUrl;
         	response.close();
-        	throw new IOException(msg);
+        	if(errorSensitive) {
+            	String msg = "[" + response.getStatus() + "] " + targetUrl;
+            	throw new IOException(msg);
+        	} else {
+        		return "{\"ok\":false,\"reason\":\"error handling dummy data\"}";
+        	}
         }
         String result = response.readEntity(String.class);
         response.close();

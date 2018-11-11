@@ -26,8 +26,18 @@ public class BCDiceBot {
 	 * @param bcDiceUrl BCDice-API URL
 	 */
 	public BCDiceBot(String token, String bcDiceUrl) {
+		new BCDiceBot(token, bcDiceUrl, true);
+	}
+	
+	/**
+	 * 
+	 * @param token Discord bot token
+	 * @param bcDiceUrl BCDice-API URL
+	 * @param errorSensitive
+	 */
+	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive) {
 		api = Javacord.getApi(token, true);
-		bcDice = new BCDiceCLI(bcDiceUrl);
+		bcDice = new BCDiceCLI(bcDiceUrl, errorSensitive);
 		
 		api.connect(new FutureCallback<DiscordAPI>() {
 			@Override
@@ -82,8 +92,10 @@ public class BCDiceBot {
 			System.out.println("2つコマンドライン引数が必要です");
 			System.out.println("  1. Discord の bot token");
 			System.out.println("  2. BCDice-api の URL");
-		} else {
+		} else if(args.length == 2) {
 			new BCDiceBot(args[0], args[1]);
+		} else {
+			new BCDiceBot(args[0], args[1], false);
 		}
 	}
 }

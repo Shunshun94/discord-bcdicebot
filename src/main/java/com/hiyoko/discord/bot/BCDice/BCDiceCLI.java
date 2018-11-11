@@ -56,6 +56,14 @@ public class BCDiceCLI {
 	}
 	
 	/**
+	 * @param url BCDice-API URL.
+	 */
+	public BCDiceCLI(String url, boolean errorSenstive) {
+		client = DiceClientFactory.getDiceClient(url, errorSenstive);
+		savedMessage = new HashMap<String, List<String>>();
+	}
+	
+	/**
 	 * 
 	 * @param url BCDice-API URL.
 	 * @param system BCDice game system
