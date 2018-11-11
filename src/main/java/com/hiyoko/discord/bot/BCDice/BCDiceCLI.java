@@ -175,7 +175,7 @@ public class BCDiceCLI {
 				for(int i = 2; i < command.length; i++) {
 					str.append(command[i] + " ");
 				} 
-				return saveMessage(id, tmpInput.replaceAll("bcdice save ", "").trim()) + "";
+				return saveMessage(id, tmpInput.replaceFirst("bcdice save ", "").trim()) + "";
 			} else {
 				return saveMessage(id, "") + "";
 			}
@@ -232,10 +232,7 @@ public class BCDiceCLI {
 	 * @return Normalized command.
 	 */
 	private String normalizeDiceCommand(String command) {
-		for(String target: replaceTargets) {
-			command = command.replaceAll("[\\s　]*[" + target + "]+[\\s　]*", target);
-		}
-		return command;
+		return command.replaceAll(" ", "%20");
 	}
 
 	public static void main(String[] args) {
