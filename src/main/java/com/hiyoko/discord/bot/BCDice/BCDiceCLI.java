@@ -232,7 +232,10 @@ public class BCDiceCLI {
 	 * @return Normalized command.
 	 */
 	private String normalizeDiceCommand(String command) {
-		return command.replaceAll(" ", "%20");
+		for(String target: replaceTargets) {
+			command = command.replaceAll("[\\s　]*[" + target + "]+[\\s　]*", target);
+		}
+		return command;
 	}
 
 	public static void main(String[] args) {

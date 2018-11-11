@@ -95,7 +95,7 @@ public class BCDiceBot {
 		} else if(args.length == 2) {
 			new BCDiceBot(args[0], args[1]);
 		} else {
-			new BCDiceBot(args[0], args[1], false);
+			new BCDiceBot(args[0], args[1], args[2].equals("0"));
 		}
 	}
 }

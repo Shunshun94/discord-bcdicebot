@@ -92,10 +92,9 @@ public class BCDiceCLITest extends TestCase {
 
 	public void testNormalizeCommand() throws IOException {
 		// From https://github.com/Shunshun94/discord-bcdicebot/pull/10#issuecomment-374023404
-		assertEquals(cli.roll("1d100 < = 50").getText(), "1d100%20<%20=%2050");
-		assertEquals(cli.roll("1d100 < = 50 聞き耳").getText(), "1d100%20<%20=%2050%20聞き耳");
-		assertEquals(cli.roll("2d6+3 2 度目の攻撃！").getText(), "2d6+3%202%20度目の攻撃！");
-		assertEquals(cli.roll("2d6 + 3 2 度目の攻撃！").getText(), "2d6%20+%203%202%20度目の攻撃！");
-		assertEquals(cli.roll("3JD4+ おりゃー").getText(), "3JD4+%20おりゃー");
+		assertEquals(cli.roll("1d100 < = 50").getText(), "1d100<=50");
+		assertEquals(cli.roll("1d100 < = 50 聞き耳").getText(), "1d100<=50 聞き耳");
+		assertEquals(cli.roll("2d6+3 2 度目の攻撃！").getText(), "2d6+3 2 度目の攻撃！");
+		assertEquals(cli.roll("2d6 + 3 2 度目の攻撃！").getText(), "2d6+3 2 度目の攻撃！");
 	}
 }
