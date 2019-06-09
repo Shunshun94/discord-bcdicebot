@@ -65,7 +65,9 @@ public class BCDiceBot {
 								message.reply(">" + message.getAuthor().getName() + "\n[ERROR]" + e.getMessage());
 							}
 						} else {
-							message.reply(bcDice.input(message.getContent(), userId, channel));
+							bcDice.inputs(message.getContent(), userId, channel).forEach(msg->{
+								message.reply(msg);
+							});
 						}
 					}
 				});

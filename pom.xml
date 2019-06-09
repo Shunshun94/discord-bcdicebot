@@ -4,7 +4,7 @@
 
 	<groupId>com.hiyoko.discord.bot</groupId>
 	<artifactId>com.hiyoko.discord.bot.BCDice</artifactId>
-	<version>1.6</version>
+	<version>1.7</version>
 	<packaging>jar</packaging>
 	<repositories>
 		<repository>
@@ -77,6 +77,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.6</version>
 				<configuration>
 					<finalName>discord-bcdicebot</finalName>
 					<descriptorRefs>
