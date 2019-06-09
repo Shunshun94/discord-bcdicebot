@@ -117,7 +117,13 @@ public class BCDiceCLI {
 	public String input(String input, String id) {
 		return input(input, id, "general");
 	}
-	
+	/**
+	 * 
+	 * @param tmpInput (not dice roll)
+	 * @param id unique user id
+	 * @param channel action target channel
+	 * @return message from this instance
+	 */
 	public String input(String tmpInput, String id, String channel) {
 		String input = tmpInput.split("\n")[0];
 		String[] command = input.split(" ");
@@ -191,6 +197,105 @@ public class BCDiceCLI {
 		}
 		
 		return HELP;
+	}
+	
+	/**
+	 * 
+	 * @param tmpInput (not dice roll)
+	 * @param id unique user id
+	 * @param channel action target channel
+	 * @return message from this instance
+	 */
+	public List<String> inputs(String tmpInput, String id, String channel) {
+		List<String> resultList = new ArrayList<String>();
+		
+		String input = tmpInput.split("\n")[0];
+		String[] command = input.split(" ");
+		if(command.length == 1) {
+			resultList.add(HELP);
+			return resultList;
+		}
+		if(command[1].equals("help")) {
+			if(command.length > 2) {
+				try {
+					SystemInfo info = client.getSystemInfo(command[2]);
+					resultList.add("[" + command[2] + "]\n" + info.getInfo());
+					return resultList;
+				} catch (IOException e) {
+					resultList.add("[" + command[2] + "]\n" + e.getMessage());
+					return resultList;
+				}
+			}
+		}
+		if(command[1].equals("set")) {
+			if(command.length > 2) {
+				client.setSystem(command[2], channel);
+				resultList.add("BCDice system is changed: " + command[2]);
+				return resultList;
+			} else {
+				resultList.add("[ERROR] When you want to change dice system\n"
+								+ "        bcdice set SYSTEM_NAME\n"
+								+ "Example bcdice set AceKillerGene");
+				return resultList;
+			}
+			
+		}
+		if(command[1].equals("list")) {
+			StringBuilder sb = new StringBuilder("[DiceBot List]");
+			try {
+				client.getSystems().getSystemList().forEach(dice->{
+					sb.append("\n" + dice);
+					if(sb.length() > 1000) {
+						resultList.add(sb.toString());
+						sb.delete(0, sb.length());
+					}
+				});
+				resultList.add(sb.toString());
+				return resultList;
+			} catch (IOException e) {
+				resultList.add(e.getMessage());
+				return resultList;
+			}
+		}
+
+		if(command[1].equals("load")) {
+			if(command.length == 3) {
+				try {
+					resultList.add(getMessage(id, new Integer(command[2])));
+					return resultList;
+				} catch(Exception e) {
+					resultList.add("Not found (index = " + command[2] + ")");
+					return resultList;
+				}
+			}
+		}
+		
+		if(command[1].equals("save")) {
+			if(command.length > 2) {
+				StringBuilder str = new StringBuilder();
+				for(int i = 2; i < command.length; i++) {
+					str.append(command[i] + " ");
+				}
+				resultList.add(saveMessage(id, tmpInput.replaceFirst("bcdice save ", "").trim()) + "");
+				return resultList;
+			} else {
+				resultList.add(saveMessage(id, "") + "");
+				return resultList;
+			}
+		}
+		
+		if(command[1].equals("status")) {
+			try {
+				VersionInfo vi = client.getVersion();
+				resultList.add(client.toString(channel) + "(API v." + vi.getApiVersion() + " / BCDice v." + vi.getDiceVersion() + ")");
+				return resultList;
+			} catch (IOException e) {
+				resultList.add(client.toString(channel) + "(Couldn't get version)");
+				return resultList;
+			}
+		}
+		resultList.add(HELP);
+		return resultList;
 	}
 	
 	/**
