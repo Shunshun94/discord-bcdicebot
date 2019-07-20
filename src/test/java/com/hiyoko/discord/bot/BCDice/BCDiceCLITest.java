@@ -92,6 +92,9 @@ public class BCDiceCLITest extends TestCase {
 
 	public void testNormalizeCommand() throws IOException {
 		// From https://github.com/Shunshun94/discord-bcdicebot/pull/10#issuecomment-374023404
-		assertEquals(cli.roll("2d6 <= 8 / ああああaaa[~'() !]").getText(), "2d6%20<%3D%208%20%2F%20ああああaaa%5B~%27%28%29%20%20%21%5D");
+		String acctualText = cli.roll("2d6 <= 8 / ああああaaa[~'()&?!]").getText();
+		String expectedText = "2d6%20%3C%3D%208%20%2F%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82aaa%5B~%27%28%29%26%3F%21%5D";
+		System.out.println(acctualText);
+		assertEquals(expectedText, acctualText);
 	}
 }
