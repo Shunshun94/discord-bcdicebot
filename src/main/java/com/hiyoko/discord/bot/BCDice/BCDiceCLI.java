@@ -26,11 +26,11 @@ public class BCDiceCLI {
 	private Map<String, List<String>> savedMessage;
 	private static final String[] REMOVE_WHITESPACE_TARGETS = {"<", ">", "="};
 
-	public static final String HELP = "How to use\n"
-			+ "# Show dice bot list\n> bcdice list\n"
-			+ "# Change dice bot\n> bcdice set SYSTEM_NAME\n"
-			+ "# Show Dice bot help\n> bcdice help SYSTEM_NAME\n"
-			+ "# Show current Status\n> bcdice status";
+	public static final String HELP = "使い方\n"
+			+ "# ダイスボット一覧を確認する\n> bcdice list\n"
+			+ "# ダイスボットのシステムを変更する\n> bcdice set システム名\n"
+			+ "# ダイスボットのシステムのヘルプを表示する\n> bcdice help SYSTEM_NAME\n"
+			+ "# 本ボットの現在の設定を確認する\n> bcdice status";
 	
 	/**
 	 * 
@@ -147,11 +147,11 @@ public class BCDiceCLI {
 		if(command[1].equals("set")) {
 			if(command.length > 2) {
 				client.setSystem(command[2], channel);
-				return "BCDice system is changed: " + command[2];
+				return "システムを " + command[2] + "に変更します";
 			} else {
-				return "[ERROR] When you want to change dice system\n"
-						+ "        bcdice set SYSTEM_NAME\n"
-						+ "Example bcdice set AceKillerGene";
+				return "[ERROR] ダイスボットのシステムを変更するには次のコマンドを打つ必要があります\n"
+						+ "   bcdice set SYSTEM_NAME\n"
+						+ "例 bcdice set AceKillerGene";
 			}
 			
 		}
@@ -194,7 +194,7 @@ public class BCDiceCLI {
 				VersionInfo vi = client.getVersion();
 				return client.toString(channel) + "(API v." + vi.getApiVersion() + " / BCDice v." + vi.getDiceVersion() + ")";
 			} catch (IOException e) {
-				return client.toString(channel) + "(Couldn't get version)";
+				return client.toString(channel) + "(バージョンの取得に失敗しました)";
 			}
 		}
 		
@@ -235,9 +235,10 @@ public class BCDiceCLI {
 				resultList.add("BCDice system is changed: " + command[2]);
 				return resultList;
 			} else {
-				resultList.add("[ERROR] When you want to change dice system\n"
-								+ "        bcdice set SYSTEM_NAME\n"
-								+ "Example bcdice set AceKillerGene");
+				resultList.add(
+						"[ERROR] ダイスボットのシステムを変更するには次のコマンドを打つ必要があります\n"
+						+ "　 bcdice set SYSTEM_NAME\n"
+						+ "例 bcdice set AceKillerGene");
 				return resultList;
 			}
 			
@@ -292,7 +293,7 @@ public class BCDiceCLI {
 				resultList.add(client.toString(channel) + "(API v." + vi.getApiVersion() + " / BCDice v." + vi.getDiceVersion() + ")");
 				return resultList;
 			} catch (IOException e) {
-				resultList.add(client.toString(channel) + "(Couldn't get version)");
+				resultList.add(client.toString(channel) + "(バージョン情報の取得に失敗しました)");
 				return resultList;
 			}
 		}

@@ -38,10 +38,10 @@ public class BCDiceBot {
 	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive) {
 		api = Javacord.getApi(token, true);
 		bcDice = new BCDiceCLI(bcDiceUrl, errorSensitive);
-		
 		api.connect(new FutureCallback<DiscordAPI>() {
 			@Override
 			public void onSuccess(DiscordAPI api) {
+				api.setGame("bcdice help とチャットに打ち込むとコマンドのヘルプを確認できます");
 				api.registerListener(new MessageCreateListener() { 
 					@Override
 					public void onMessageCreate(DiscordAPI api, Message message) {
@@ -87,14 +87,16 @@ public class BCDiceBot {
 	public static void main(String[] args) {
 		if( args.length < 2 || args[0].equals("help") ||
 			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
-			System.out.println("Discord-BCDicebot Version 1.6");
+			System.out.println("Discord-BCDicebot Version 1.8");
 			System.out.println("This application requires two params");
 			System.out.println("  1. Discord Bot Token");
 			System.out.println("  2. BCDice-api server URL");
+			System.out.println("  3. (Optional) Error Handling Flag, When BCDice-API returns Error, If an error message should be sent, it's 0. If not, it's 1.");
 			System.out.println("------------------------------------");
 			System.out.println("2つコマンドライン引数が必要です");
 			System.out.println("  1. Discord の bot token");
 			System.out.println("  2. BCDice-api の URL");
+			System.out.println("  3. (必要ならば) エラーハンドルフラグ。BCDice-API でエラー発生時にエラーメッセージを出力するなら0 しないなら1");
 		} else if(args.length == 2) {
 			new BCDiceBot(args[0], args[1]);
 		} else {
