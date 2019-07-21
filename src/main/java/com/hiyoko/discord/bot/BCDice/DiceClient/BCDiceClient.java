@@ -103,7 +103,8 @@ public class BCDiceClient implements DiceClient {
 	}
 	
 	public DicerollResult rollDice(String command, String system) throws IOException {
-		return new DicerollResult(getUrl("v1/diceroll?command=" + URLEncoder.encode(command, "UTF-8").replaceAll("%2520", "%20") + "&system=" + URLEncoder.encode(system, "UTF-8").replaceAll("%2520", "%20")));
+		System.out.println("v1/diceroll?command=" + command + "&system=" + URLEncoder.encode(system, "UTF-8").replaceAll("%2520", "%20"));
+		return new DicerollResult(getUrl("v1/diceroll?command=" + command + "&system=" + URLEncoder.encode(system, "UTF-8").replaceAll("%2520", "%20")));
 	}
 
 	public DicerollResult rollDice(String command) throws IOException {

@@ -92,9 +92,12 @@ public class BCDiceCLITest extends TestCase {
 
 	public void testNormalizeCommand() throws IOException {
 		// From https://github.com/Shunshun94/discord-bcdicebot/pull/10#issuecomment-374023404
-		assertEquals(cli.roll("1d100 < = 50").getText(), "1d100<=50");
-		assertEquals(cli.roll("1d100 < = 50 聞き耳").getText(), "1d100<=50 聞き耳");
-		assertEquals(cli.roll("2d6+3 2 度目の攻撃！").getText(), "2d6+3 2 度目の攻撃！");
-		assertEquals(cli.roll("2d6 + 3 2 度目の攻撃！").getText(), "2d6+3 2 度目の攻撃！");
+		String acctualText = cli.roll("2d6 <= 8 / ああああaaa[~'()&?!]").getText();
+		String expectedText = "2d6%3C%3D8%20%2F%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82aaa%5B~%27%28%29%26%3F%21%5D";
+		System.out.println(acctualText);
+		assertEquals(expectedText, acctualText);
+		assertEquals("1d10%3C5", cli.roll("1d10 < 5").getText());
+		assertEquals("1d10%3E5", cli.roll("1d10 > 5").getText());
+		assertEquals("aa%20a%3Cbb%20b%3Dc%20cc%3Edd%20d%3C%3D%3E%3D%3D%3C%3D%3Edd%20d", cli.roll("aa a < bb b = c cc > dd d <= >=  =< => dd d").getText());
 	}
 }

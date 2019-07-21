@@ -1,6 +1,8 @@
 package com.hiyoko.discord.bot.BCDice;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +24,7 @@ import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 public class BCDiceCLI {
 	private DiceClient client;
 	private Map<String, List<String>> savedMessage;
-	private static final String[] replaceTargets = {"<", ">", "=", "+", "-", "*", "/"};
+	private static final String[] REMOVE_WHITESPACE_TARGETS = {"<", ">", "="};
 
 	public static final String HELP = "How to use\n"
 			+ "# Show dice bot list\n> bcdice list\n"
@@ -335,12 +337,22 @@ public class BCDiceCLI {
 	 * See also https://github.com/Shunshun94/discord-bcdicebot/pull/10
 	 * @param command raw command
 	 * @return Normalized command.
+	 * @throws IOException 
 	 */
-	private String normalizeDiceCommand(String command) {
-		for(String target: replaceTargets) {
-			command = command.replaceAll("[\\s　]*[" + target + "]+[\\s　]*", target);
+	private String normalizeDiceCommand(String rawCommand) throws IOException {
+		String command = rawCommand;
+		try {
+			for(String replaceTarget: REMOVE_WHITESPACE_TARGETS) {
+				command = command.replaceAll("[\\s　]*[" + replaceTarget + "]+[\\s　]*", replaceTarget);
+				System.out.println("encode [" + command);
+			}
+			command = URLEncoder.encode(command.replaceAll(" ", "%20"), "UTF-8");
+			command = command.replaceAll("%2520", "%20").replaceAll("%7E", "~");
+			return command;
+		} catch (UnsupportedEncodingException e) {
+			throw new IOException("Failed to encode [" + rawCommand + "]", e);
 		}
-		return command;
+		
 	}
 
 	public static void main(String[] args) {
