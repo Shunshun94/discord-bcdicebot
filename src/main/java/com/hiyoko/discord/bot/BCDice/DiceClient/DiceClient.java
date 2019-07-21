@@ -1,6 +1,7 @@
 package com.hiyoko.discord.bot.BCDice.DiceClient;
 
 import java.io.IOException;
+import java.util.Map;
 
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
@@ -15,6 +16,8 @@ public interface DiceClient {
 	 */
 	public VersionInfo getVersion() throws IOException;
 	
+	public void setDiceServer(String url);
+
 	/**
 	 * 
 	 * @return The dice systems list
@@ -83,7 +86,13 @@ public interface DiceClient {
 	 * @return current system name
 	 */
 	public String getSystem(String channel);
-	
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Map<String, String> getRoomsSystem();
+
 	/**
 	 * 
 	 * @param channel target channel

@@ -1,5 +1,6 @@
 package com.hiyoko.discord.bot.BCDice;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -24,6 +25,7 @@ import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 public class BCDiceCLI {
 	private DiceClient client;
 	private Map<String, List<String>> savedMessage;
+	private String password;
 	private static final String[] REMOVE_WHITESPACE_TARGETS = {"<", ">", "="};
 
 	public static final String HELP = "使い方\n"
@@ -31,13 +33,18 @@ public class BCDiceCLI {
 			+ "# ダイスボットのシステムを変更する\n> bcdice set システム名\n"
 			+ "# ダイスボットのシステムのヘルプを表示する\n> bcdice help SYSTEM_NAME\n"
 			+ "# 本ボットの現在の設定を確認する\n> bcdice status";
-	
+	public static final String HELP_ADMIN = "使い方\n"
+			+ "# admin のヘルプを表示する\n> bcdice admin help\n"
+			+ "# BCDice-API サーバを変更する\n> bcdice admin PASSWORD setServer URL"
+			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export";
 	/**
 	 * 
 	 * @param diceClient Dice Client instance
 	 */
 	public BCDiceCLI(DiceClient diceClient) {
 		client = diceClient;
+		password = RandomStringUtils.randomAscii(16);
+		System.out.println("Admin Password: " + password);
 	}
 	
 	/**
@@ -48,6 +55,8 @@ public class BCDiceCLI {
 	public BCDiceCLI(DiceClient diceClient, String system) {
 		client = diceClient;
 		client.setSystem(system);
+		password = RandomStringUtils.randomAlphanumeric(16);
+		System.out.println("Admin Password: " + password);
 	}
 	
 	/**
@@ -56,6 +65,8 @@ public class BCDiceCLI {
 	public BCDiceCLI(String url) {
 		client = DiceClientFactory.getDiceClient(url);
 		savedMessage = new HashMap<String, List<String>>();
+		password = RandomStringUtils.randomAlphanumeric(16);
+		System.out.println("Admin Password: " + password);
 	}
 	
 	/**
@@ -64,6 +75,8 @@ public class BCDiceCLI {
 	public BCDiceCLI(String url, boolean errorSenstive) {
 		client = DiceClientFactory.getDiceClient(url, errorSenstive);
 		savedMessage = new HashMap<String, List<String>>();
+		password = RandomStringUtils.randomAlphanumeric(16);
+		System.out.println("Admin Password: " + password);
 	}
 	
 	/**
@@ -75,6 +88,8 @@ public class BCDiceCLI {
 		client = DiceClientFactory.getDiceClient(url);
 		client.setSystem(system);
 		savedMessage = new HashMap<String, List<String>>();
+		password = RandomStringUtils.randomAlphanumeric(16);
+		System.out.println("Admin Password: " + password);
 	}
 	
 	/**
@@ -241,7 +256,6 @@ public class BCDiceCLI {
 						+ "例 bcdice set AceKillerGene");
 				return resultList;
 			}
-			
 		}
 		if(command[1].equals("list")) {
 			StringBuilder sb = new StringBuilder("[DiceBot List]");
@@ -272,7 +286,7 @@ public class BCDiceCLI {
 				}
 			}
 		}
-		
+
 		if(command[1].equals("save")) {
 			if(command.length > 2) {
 				StringBuilder str = new StringBuilder();
@@ -286,7 +300,7 @@ public class BCDiceCLI {
 				return resultList;
 			}
 		}
-		
+
 		if(command[1].equals("status")) {
 			try {
 				VersionInfo vi = client.getVersion();
@@ -297,10 +311,64 @@ public class BCDiceCLI {
 				return resultList;
 			}
 		}
+		if(command[1].equals("admin")) {
+			if( command.length < 4 ) {
+				resultList.add(HELP_ADMIN);
+				return resultList;
+			} else {
+				return adminCommand(command);
+			}
+		}
 		resultList.add(HELP);
 		return resultList;
 	}
-	
+
+	private List<String> adminCommand(String[] command) {
+		List<String> resultList = new ArrayList<String>();
+		if(command[2].equals("help")) {
+			resultList.add(HELP_ADMIN);
+			return resultList;
+		}
+		if(! command[2].equals(password)) {
+			resultList.add("パスワードが違います");
+			return resultList;
+		}
+		if(command[3].equals("setServer")) {
+			if(command.length < 5) {
+				resultList.add("URL が足りません");
+				resultList.add(HELP_ADMIN);
+				return resultList;
+			} else {
+				client.setDiceServer(command[4]);
+				resultList.add("ダイスサーバを再設定しました");
+				try {
+					VersionInfo vi = client.getVersion();
+					resultList.add(client.toString() + "(API v." + vi.getApiVersion() + " / BCDice v." + vi.getDiceVersion() + ")");
+				} catch(IOException e) {
+					resultList.add(client.toString() + "(ダイスサーバの情報の取得に失敗しました)");
+				}
+				return resultList;
+			}
+		}
+		if(command[3].equals("export")) {
+			Map<String, String> roomList = client.getRoomsSystem();
+			StringBuilder sb = new StringBuilder("Room-System List\n");
+			roomList.forEach((room, system)->{
+				System.out.println(room + ":" + system);
+				sb.append(room + ":" + system + "\n");
+				if(sb.length() > 1000) {
+					resultList.add(sb.toString());
+					sb.delete(0, sb.length());
+				}
+			});
+			resultList.add(sb.toString());
+			return resultList;
+		}
+
+		resultList.add(HELP_ADMIN);
+		return resultList;
+	}
+
 	/**
 	 * Stacking secret dice result
 	 * @param id user unique id
@@ -345,7 +413,6 @@ public class BCDiceCLI {
 		try {
 			for(String replaceTarget: REMOVE_WHITESPACE_TARGETS) {
 				command = command.replaceAll("[\\s　]*[" + replaceTarget + "]+[\\s　]*", replaceTarget);
-				System.out.println("encode [" + command);
 			}
 			command = URLEncoder.encode(command.replaceAll(" ", "%20"), "UTF-8");
 			command = command.replaceAll("%2520", "%20").replaceAll("%7E", "~");
@@ -353,7 +420,6 @@ public class BCDiceCLI {
 		} catch (UnsupportedEncodingException e) {
 			throw new IOException("Failed to encode [" + rawCommand + "]", e);
 		}
-		
 	}
 
 	public static void main(String[] args) {

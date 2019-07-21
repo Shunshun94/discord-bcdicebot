@@ -19,7 +19,7 @@ import java.util.Map;
  *
  */
 public class BCDiceClient implements DiceClient {
-	private final String url;
+	private String url;
 	private final Client client;
 	private final Map<String, String> system;
 	private final boolean errorSensitive;
@@ -140,5 +140,15 @@ public class BCDiceClient implements DiceClient {
 
 	public String toString(String channel) {
 		return "[BCDiceClient] for " + url + " : " + getSystem(channel);
+	}
+
+	@Override
+	public void setDiceServer(String bcDiceUrl) {
+		url = bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/";
+	}
+
+	@Override
+	public Map<String, String> getRoomsSystem() {
+		return system;
 	}
 }

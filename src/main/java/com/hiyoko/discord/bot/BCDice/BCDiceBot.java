@@ -49,7 +49,7 @@ public class BCDiceBot {
 						if(userId.equals(api.getYourself().getId())) {
 							return;
 						}
-						String channel = message.getChannelReceiver().getName();
+						String channel = message.getChannelReceiver().getId();
 						if(bcDice.isRoll(message.getContent())) {
 							try {
 								DicerollResult rollResult = bcDice.roll(message.getContent(), channel);
