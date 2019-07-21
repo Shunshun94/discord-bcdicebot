@@ -24,6 +24,7 @@ import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 public class BCDiceCLI {
 	private DiceClient client;
 	private Map<String, List<String>> savedMessage;
+	private static final String[] REMOVE_WHITESPACE_TARGETS = {"<", ">", "="};
 
 	public static final String HELP = "How to use\n"
 			+ "# Show dice bot list\n> bcdice list\n"
@@ -339,9 +340,13 @@ public class BCDiceCLI {
 	 * @throws IOException 
 	 */
 	private String normalizeDiceCommand(String rawCommand) throws IOException {
-		String command;
+		String command = rawCommand;
 		try {
-			command = URLEncoder.encode(rawCommand.replaceAll(" ", "%20"), "UTF-8");
+			for(String replaceTarget: REMOVE_WHITESPACE_TARGETS) {
+				command = command.replaceAll("[\\s　]*[" + replaceTarget + "]+[\\s　]*", replaceTarget);
+				System.out.println("encode [" + command);
+			}
+			command = URLEncoder.encode(command.replaceAll(" ", "%20"), "UTF-8");
 			command = command.replaceAll("%2520", "%20").replaceAll("%7E", "~");
 			return command;
 		} catch (UnsupportedEncodingException e) {
