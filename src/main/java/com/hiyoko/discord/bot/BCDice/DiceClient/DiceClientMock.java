@@ -94,5 +94,15 @@ public class DiceClientMock implements DiceClient {
 		return "[DiceClientMock] for Mock : " + getSystem(channel);
 	}
 
+	@Override
+	public void setDiceServer(String url) {
+		//
+	}
+
+	@Override
+	public Map<String, String> getRoomsSystem() {
+		return system;
+	}
+
 
 }

@@ -19,7 +19,7 @@ import java.util.Map;
  *
  */
 public class BCDiceClient implements DiceClient {
-	private final String url;
+	private String url;
 	private final Client client;
 	private final Map<String, String> system;
 	private final boolean errorSensitive;
@@ -103,7 +103,7 @@ public class BCDiceClient implements DiceClient {
 	}
 	
 	public DicerollResult rollDice(String command, String system) throws IOException {
-		return new DicerollResult(getUrl("v1/diceroll?command=" + URLEncoder.encode(command, "UTF-8").replaceAll("%2520", "%20") + "&system=" + URLEncoder.encode(system, "UTF-8").replaceAll("%2520", "%20")));
+		return new DicerollResult(getUrl("v1/diceroll?command=" + command + "&system=" + URLEncoder.encode(system, "UTF-8").replaceAll("%2520", "%20")));
 	}
 
 	public DicerollResult rollDice(String command) throws IOException {
@@ -139,5 +139,15 @@ public class BCDiceClient implements DiceClient {
 
 	public String toString(String channel) {
 		return "[BCDiceClient] for " + url + " : " + getSystem(channel);
+	}
+
+	@Override
+	public void setDiceServer(String bcDiceUrl) {
+		url = bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/";
+	}
+
+	@Override
+	public Map<String, String> getRoomsSystem() {
+		return system;
 	}
 }
