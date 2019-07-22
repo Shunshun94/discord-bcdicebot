@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
@@ -27,15 +30,17 @@ public class BCDiceCLI {
 	private Map<String, List<String>> savedMessage;
 	private String password;
 	private static final String[] REMOVE_WHITESPACE_TARGETS = {"<", ">", "="};
+	private static final Pattern GAMESYSTEM_ROOM_PAIR_REGEXP = Pattern.compile("^(\\d*):(.*)");
 
 	public static final String HELP = "使い方\n"
 			+ "# ダイスボット一覧を確認する\n> bcdice list\n"
 			+ "# ダイスボットのシステムを変更する\n> bcdice set システム名\n"
 			+ "# ダイスボットのシステムのヘルプを表示する\n> bcdice help SYSTEM_NAME\n"
-			+ "# 本ボットの現在の設定を確認する\n> bcdice status";
+			+ "# 本ボットの現在の設定を確認する\n> bcdice status\n"
+			+ "# 管理用コマンド\n> bcdice admin PASSWORD COMMAND";
 	public static final String HELP_ADMIN = "使い方\n"
 			+ "# admin のヘルプを表示する\n> bcdice admin help\n"
-			+ "# BCDice-API サーバを変更する\n> bcdice admin PASSWORD setServer URL"
+			+ "# BCDice-API サーバを変更する\n> bcdice admin PASSWORD setServer URL\n"
 			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export";
 	/**
 	 * 
@@ -316,14 +321,14 @@ public class BCDiceCLI {
 				resultList.add(HELP_ADMIN);
 				return resultList;
 			} else {
-				return adminCommand(command);
+				return adminCommand(command, tmpInput);
 			}
 		}
 		resultList.add(HELP);
 		return resultList;
 	}
 
-	private List<String> adminCommand(String[] command) {
+	private List<String> adminCommand(String[] command, String tmpInput) {
 		List<String> resultList = new ArrayList<String>();
 		if(command[2].equals("help")) {
 			resultList.add(HELP_ADMIN);
@@ -364,7 +369,18 @@ public class BCDiceCLI {
 			resultList.add(sb.toString());
 			return resultList;
 		}
-
+		if(command[3].equals("import")) {
+			String[] originalLines = tmpInput.split("\n");
+			String[] diceBotRoomList = Arrays.copyOfRange(originalLines, 1, originalLines.length);
+			for(String line: diceBotRoomList) {
+				Matcher matchResult = GAMESYSTEM_ROOM_PAIR_REGEXP.matcher(line);
+				if(matchResult.find()) {
+					client.setSystem(matchResult.group(2), matchResult.group(1));
+					resultList.add("Room" + matchResult.group(1) + " -> " + matchResult.group(2));
+				}
+			}
+			return resultList;
+		}
 		resultList.add(HELP_ADMIN);
 		return resultList;
 	}

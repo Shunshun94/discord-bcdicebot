@@ -101,8 +101,7 @@ public class DiceClientMock implements DiceClient {
 
 	@Override
 	public Map<String, String> getRoomsSystem() {
-		// TODO Auto-generated method stub
-		return null;
+		return system;
 	}
 
 
