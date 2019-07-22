@@ -360,7 +360,6 @@ public class BCDiceCLI {
 			StringBuilder sb = new StringBuilder("Room-System List\n");
 			roomList.forEach((room, system)->{
 				System.out.println(room + ":" + system);
-				sb.append(room + ":" + system + "\n");
 				if(sb.length() > 1000) {
 					resultList.add(sb.toString());
 					sb.delete(0, sb.length());
