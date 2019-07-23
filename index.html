@@ -94,7 +94,7 @@
 551310555730673666:DoubleCross
 541477835299356673:Cthulhu
 </pre>
-<p>複数の部屋に対してダイスボットを設定する場合は以下のようにします。<br/>アプリを再起動した際は全部屋のダイスボット設定がリセットされますので、import と組み合わせると原状復帰が容易です</p><pre>bcdice admin [パスワード] export
+<p>複数の部屋に対してダイスボットを設定する場合は以下のようにします。<br/>アプリを再起動した際は全部屋のダイスボット設定がリセットされますので、import と組み合わせると原状復帰が容易です</p><pre>bcdice admin [パスワード] import
 331084010098917376:SwordWorld2.0
 551310555730673666:DoubleCross
 541477835299356673:Cthulhu</pre>
@@ -139,7 +139,7 @@
 <h3>じゃあ単体実行できるバイナリでいいじゃん</h3>
 <p>Mac ユーザやら Linux ユーザやらごとにバイナリを作るのが面倒だった。 Linux はともかく Mac ユーザはいる気がしたから</p>
 <h3>ダイスを振るコマンド以外を入力すると <strong>[ERROR][500] ～</strong> って出る。設定は合っているはずなのに</h3>
-<p>start.bat の <strong>IGNORE_ERROR=0</strong> 0　を 1 と書き入れてみてください。治るかもしれません</p>
+<p>start.bat の <strong>IGNORE_ERROR=0</strong> の 0　を 1 と書き入れてみてください。治るかもしれません</p>
 <h3>管理用のパスワードはどこ？</h3>
 <p>起動直後に <code>Admin Password: SGO7C0XYtBJouE75</code> みたいな文字列がでます。この英数字ランダム16桁の文字列がパスワードです。起動するたびに変わるので注意してください</p>
 
@@ -148,7 +148,7 @@
 
 <p>BCDice を作成・公開してくださった<a href="http://faceless-tools.cocolog-nifty.com/about.html">Faceless</a>さんと、
 Ruby 移植をしてくださった<a href="https://twitter.com/torgtaitai">たいたい竹流</a>さん。
-さらにメンテを引き継いでくださっている<a href="https://twitter.com/ysakasin">酒田　シンジ</a>
+さらにメンテを引き継いでくださっている<a href="https://twitter.com/ysakasin">酒田　シンジ</a>さん。
 そもそも、BCDice が無ければこのアプリは着想すらありませんでした。
 BCDice が多機能である点、2017年現在、国内オンラインセッションツールのデファクトスタンダードであるどどんとふが採用しているダイスボットであるため、
 国内におけるダイスボットのデファクトスタンダードが BCDice となっていたことが実装の必要を感じたそもそもの理由でした。</p>
@@ -166,6 +166,8 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v1.8.1(2019/07/24)</dt>
+	<dd>本ドキュメントの軽微な修正を実施。</dd>
 	<dt>v1.8(2019/07/23)</dt>
 	<dd>ダイスコマンドに関するバグを修正 (<a href="https://github.com/Shunshun94/discord-bcdicebot/issues/13">詳細</a>)。</dd>
 	<dd>管理用コマンドとして BCDice-API の接続先を変更する機能を追加</dd>
