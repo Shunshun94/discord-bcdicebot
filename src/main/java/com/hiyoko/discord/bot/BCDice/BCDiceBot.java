@@ -41,10 +41,10 @@ public class BCDiceBot {
 		api.connect(new FutureCallback<DiscordAPI>() {
 			@Override
 			public void onSuccess(DiscordAPI api) {
-				api.setGame("bcdice help とチャットに打ち込むとコマンドのヘルプを確認できます");
 				api.registerListener(new MessageCreateListener() { 
 					@Override
 					public void onMessageCreate(DiscordAPI api, Message message) {
+						api.setGame("bcdice help とチャットに打ち込むとコマンドのヘルプを確認できます");
 						String userId = message.getAuthor().getId();
 						if(userId.equals(api.getYourself().getId())) {
 							return;
@@ -53,6 +53,9 @@ public class BCDiceBot {
 						if(bcDice.isRoll(message.getContent())) {
 							try {
 								DicerollResult rollResult = bcDice.roll(message.getContent(), channel);
+								if(rollResult.isError()) {
+									throw new IOException(rollResult.getText());
+								}
 								if(rollResult.isRolled()) {
 									message.reply(">" + message.getAuthor().getName() + "\n" + rollResult.toString());
 								}
