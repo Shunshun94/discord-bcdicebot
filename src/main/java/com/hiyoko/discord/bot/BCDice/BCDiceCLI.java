@@ -41,7 +41,8 @@ public class BCDiceCLI {
 	public static final String HELP_ADMIN = "使い方\n"
 			+ "# admin のヘルプを表示する\n> bcdice admin help\n"
 			+ "# BCDice-API サーバを変更する\n> bcdice admin PASSWORD setServer URL\n"
-			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export";
+			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export\n"
+			+ "# 部屋設定をインポートする\n> bcdice admin PASSWORD import";
 	/**
 	 * 
 	 * @param diceClient Dice Client instance
