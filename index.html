@@ -48,9 +48,17 @@
 <h3>BCDice-API サーバ</h3>
 <p><a href="https://github.com/NKMR6194/bcdice-api">BCDice-API</a> が動作しているサーバを用意してください。ローカルでも構いませんし、貸してくれる人から借りてもかまいません。</p>
 
-<h3>(推奨) Windows</h3>
-<p>現時点では簡易起動スクリプト (後述の start.bat) は Windows 向けの物しか用意していません。 start.bat の中身を読み解いていただければ Mac でも Linux でも動作は可能です。</p>
-
+<div class="comment">
+<p>BCDice-API サーバを自分で構築するのは一定の専門知識が必要です。
+独自のダイスボットを追加するのでなければ以下のような公開サーバを利用する方が良いでしょう。
+各公開サーバには利用ルールがあるため、利用前に事前にご確認ください。</p>
+<ul>
+	<li>どどんとふ公式鯖: https://dodontof.onlinesession.app/bcdice-api/ (<a href="https://www.taruki.com/wp/?page_id=6202">どどんとふ公式鯖について</a>)</li>
+	<li>ぽっち鯖: https://bcdice.aimsot.net/ (<a href="https://aimsot.net/tool-info/ft/">注意事項・特徴</a>)</li>
+	<li>コノス: https://bcdice-api.conos.jp (<a href="https://conos.jp/online-session-tools/online-session-tools-notice/">ご利用の注意事項</a>)</li>
+</ul>
+<p>また、中級者向けに Heroku を用いての自分用 BCDice-API サーバの設置手順も共有されています。<br/><a href="https://github.com/ysakasin/bcdice-api/blob/master/docs/heroku.md">https://github.com/ysakasin/bcdice-api/blob/master/docs/heroku.md</a></p>
+</div>
 
 <h2>使い方</h2>
 <h3>ダイスボットを登録する</h3>
@@ -67,23 +75,22 @@
 <h3>アプリケーションを起動する</h3>
 <p>Bot を起動し、 Discord 上で BCDice を利用可能にします。サーバ1つにつき代表者1人がアプリを起動すれば大丈夫です</p>
 <ol>
-	<li>start.bat をメモ帳で開きます</li>
-	<li><strong>set DISCORD_BOT_TOKEN=</strong> の末尾に先の 4. でメモした Token を貼り付けます</li>
-	<li><strong>set BCDICE_API_URL=</strong> の末尾に利用する BCDice-API サーバの URL を貼り付けます</li>
-	<li>メモ帳を閉じ、 start.bat をダブルクリックします</li>
-	<li>Discord の参加者一覧に Bot がオンラインの状態で存在すれば成功です</li>
+	<li>Windows を使っている方は start.bat をメモ帳で開きます (ほとんどの方はこちら！)。<br/>Linux/macOS を使っている方は start.sh を適当なテキストエディタで開きます</li>
+	<li><strong>DISCORD_BOT_TOKEN=</strong> の末尾に先の 4. でメモした Token を貼り付けます</li>
+	<li><strong>BCDICE_API_URL=</strong> の末尾に利用する BCDice-API サーバの URL を貼り付けます</li>
+	<li>Windows を使っている方は メモ帳を閉じ、 start.bat をダブルクリックします<br/>Linux/macOS を使っている方は編集を保存・完了し start.sh を実行します</li>
+	<li>Bot が起動します。Discord の参加者一覧に Bot がオンラインの状態で存在すれば成功です</li>
 	<li>終了はキーボードの Ctrl + C を押してください</li>
 </ol>
 
-<div class="comment">
-<p>BCDice-API サーバとして大ちゃんさんが公開してくださっているものがあります。自分で BCDice-API サーバを構築するのが難しいようであればそこを借りるのも手でしょう。</p>
-<p>詳しい話は <a href="https://www.taruki.com/wp/?p=6507">bcdice-api | 大ちゃんのいろいろ雑記</a> をご確認ください。</p>
-</div>
+<h3>利用する</h3>
 
-<h3>コマンドを利用する</h3>
-<p>チャットに <code>bcdice help</code> と打てば使えるコマンドの一覧が出力されます</p>
-<p>まずは利用するダイスボットにダイスボットを切り替えましょう。<br/><code>bcdice set [利用するダイスボットの名前]</code><br/>例えば <code>bcdice set SwordWorld2.0</code></p>
-<p>ダイスボットの切り替えが終わったらダイスを振るコマンドを打ってみましょう。振れます</p>
+<p>チャットにただただ <code>2d6</code> 等と打ち込めばダイスが振られます。</p>
+<p>各システム向けの機能を使いたい場合、ダイスボットを切り替えましょう。<br/><code>bcdice set [利用するダイスボットの名前]</code> とチャット上で発言してください。<br/>例えば <code>bcdice set SwordWorld2.0</code> 等です。</p>
+<p>どんなダイスボットが利用できるのかは <code>bcdice list</code> と発言すれば確認できます。</p>
+<p>各ダイスボットでどんな機能が利用できるのかを確認する際は <code>bcdice help [ダイスボットの名前]</code> と発言すれば表示できます。<br/>例えば <code>bcdice help SwordWorld2.0</code> 等です。</p>
+
+<p>チャットに <code>bcdice help</code> と打てば何ができるのかが一覧されるので困ったときは実行してみてください。</p>
 
 <h3>管理コマンドを使う</h3>
 <p>チャットに <code>bcdice admin [パスワード] help</code> と打てば管理者として利用できるコマンドの一覧が出力されます</p>
@@ -155,7 +162,7 @@ Ruby 移植をしてくださった<a href="https://twitter.com/torgtaitai">た�
 BCDice が多機能である点、2017年現在、国内オンラインセッションツールのデファクトスタンダードであるどどんとふが採用しているダイスボットであるため、
 国内におけるダイスボットのデファクトスタンダードが BCDice となっていたことが実装の必要を感じたそもそもの理由でした。</p>
 
-<p>BCDice-API を実装・公開してくださった<a href="https://twitter.com/nkmr6194">酒田　シンジ</a>さん。
+<p>BCDice-API を実装・公開してくださった<a href="https://twitter.com/ysakasin">酒田　シンジ</a>さん。
 BCDice-API が無ければ本アプリの実装は気が遠くなるものだったに違いありません。</p>
 
 <p>発表前の動作確認に付き合ってくださった<a href="https://twitter.com/_casi_note">かし＊</a>さんと<a href="https://twitter.com/Lillin">離凛</a>さん。
@@ -168,6 +175,8 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v1.10</dt>
+	<dd>Linux/macOS 環境向けの起動スクリプトを追加。スクリプトを共有くださった<a href="https://twitter.com/ochaochaocha3">おちゃさん</a>、ありがとうございます！</dd>
 	<dt>v1.9</dt>
 	<dd>ダイスボットのスペルが間違えている時に警告が出ない問題を解消</dd>
 	<dt>v1.8.1(2019/07/24)</dt>
@@ -185,12 +194,12 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 	<dt>v1.5(2018/03/24)</dt>
 	<dd>ダイスコマンドに関するバグを修正 (<a href="https://github.com/Shunshun94/discord-bcdicebot/pull/10">詳細</a>)。問題の指摘と修正手法の共有をしてくださった<a href="https://github.com/c-ardinal">cardinal</a> さん、ありがとうございます！</dd>
 	<dt>v1.4(2017/10/07)</dt>
-	<dd>利用しているライブラリ起因の問題に対してライブラリをバージョンアップして対応。問題の指摘をくださった<a href="https://github.com/C0ela">シーラ</a> さん、ありがとうございます！</dd>
+	<dd>利用しているライブラリ起因の問題に対してライブラリをバージョンアップして対応。問題の指摘をくださった<a href="https://github.com/C0ela">シーラさん</a>、ありがとうございます！</dd>
 	<dd>アプリ終了後に待機するように start.bat を変更。ログの収集が容易になった</dd>
 	<dt>v1.3(2017/07/13)</dt>
 	<dd>Channel 毎に異なるダイスボットを利用できるように変更。特に設定していない場合は general のものを利用</dd>
 	<dt>v1.2(2017/07/06)</dt>
-	<dd>BCDice-API v0.4.0 に対応。問題の指摘をくださった<a href="https://twitter.com/nkmr6194">酒田　シンジ</a>さん、ありがとうございます！</dd>
+	<dd>BCDice-API v0.4.0 に対応。問題の指摘をくださった<a href="https://twitter.com/ysakasin">酒田　シンジさん</a>、ありがとうございます！</dd>
 	<dt>v1.1.1(2017/06/30)</dt>
 	<dd>本ドキュメントの権利的な問題に対応</dd>
 	<dt>v1.1(2017/06/30)</dt>
