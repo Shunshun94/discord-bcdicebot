@@ -101,9 +101,9 @@ public class BCDiceBot {
 			System.out.println("  2. BCDice-api の URL");
 			System.out.println("  3. (必要ならば) エラーハンドルフラグ。BCDice-API でエラー発生時にエラーメッセージを出力するなら0 しないなら1");
 		} else if(args.length == 2) {
-			new BCDiceBot(args[0], args[1]);
+			new BCDiceBot(args[0].trim(), args[1].trim());
 		} else {
-			new BCDiceBot(args[0], args[1], args[2].equals("0"));
+			new BCDiceBot(args[0].trim(), args[1].trim(), args[2].trim().equals("0"));
 		}
 	}
 }
