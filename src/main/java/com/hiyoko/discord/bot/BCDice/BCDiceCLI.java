@@ -43,13 +43,26 @@ public class BCDiceCLI {
 			+ "# BCDice-API サーバを変更する\n> bcdice admin PASSWORD setServer URL\n"
 			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export\n"
 			+ "# 部屋設定をインポートする\n> bcdice admin PASSWORD import";
+
+	private String getPassword() {
+		String env = System.getenv("BCDICE_PASSWORD");
+		if(env == null) {
+			String password = RandomStringUtils.randomAscii(16); 
+			System.out.println("Admin Password: " + password);
+			return password;
+		} else {
+			System.out.println("Admin Password is written in environment variable BCDICE_PASSWORD");
+			return env;
+		}
+	}
+
 	/**
 	 * 
 	 * @param diceClient Dice Client instance
 	 */
 	public BCDiceCLI(DiceClient diceClient) {
 		client = diceClient;
-		password = RandomStringUtils.randomAscii(16);
+		password = getPassword();
 		System.out.println("Admin Password: " + password);
 	}
 	
@@ -61,8 +74,7 @@ public class BCDiceCLI {
 	public BCDiceCLI(DiceClient diceClient, String system) {
 		client = diceClient;
 		client.setSystem(system);
-		password = RandomStringUtils.randomAlphanumeric(16);
-		System.out.println("Admin Password: " + password);
+		password = getPassword();
 	}
 	
 	/**
@@ -71,8 +83,7 @@ public class BCDiceCLI {
 	public BCDiceCLI(String url) {
 		client = DiceClientFactory.getDiceClient(url);
 		savedMessage = new HashMap<String, List<String>>();
-		password = RandomStringUtils.randomAlphanumeric(16);
-		System.out.println("Admin Password: " + password);
+		password = getPassword();
 	}
 	
 	/**
@@ -81,8 +92,7 @@ public class BCDiceCLI {
 	public BCDiceCLI(String url, boolean errorSenstive) {
 		client = DiceClientFactory.getDiceClient(url, errorSenstive);
 		savedMessage = new HashMap<String, List<String>>();
-		password = RandomStringUtils.randomAlphanumeric(16);
-		System.out.println("Admin Password: " + password);
+		password = getPassword();
 	}
 	
 	/**
