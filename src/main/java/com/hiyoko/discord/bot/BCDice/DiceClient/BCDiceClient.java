@@ -7,6 +7,8 @@ import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -45,13 +47,7 @@ public class BCDiceClient implements DiceClient {
 		errorSensitive = es;
 	}
 
-	/**
-	 * 
-	 * @param path the path to the called API command
-	 * @return the API called result as String
-	 * @throws IOException When access is failed
-	 */
-	private String getUrl(String path) throws IOException {
+	private String getUrl(String path, int rtl) throws IOException {
 		Response response = null;
 		String targetUrl = url + path;
 		try {
@@ -60,7 +56,17 @@ public class BCDiceClient implements DiceClient {
 			if(response != null) {
 				response.close();
 			}
-			throw new IOException(e.getMessage() + "(" + targetUrl + ")", e);
+			if( rtl == 0 ) {
+				throw new IOException(e.getMessage() + "(" + targetUrl + ")", e);
+			} else {
+				System.err.println(String.format("Failed to request to %s, %s, app will try %s", targetUrl, e.getMessage(), rtl));
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+					throw new IOException("Waiting in retry is interrupted", e);
+				}
+				return getUrl(path, rtl - 1);
+			}
 		}
 		
         if (! (response.getStatus() == Response.Status.OK.getStatusCode() || response.getStatus() == 400)) {
@@ -75,6 +81,16 @@ public class BCDiceClient implements DiceClient {
         String result = response.readEntity(String.class);
         response.close();
         return result;
+	}
+
+	/**
+	 * 
+	 * @param path the path to the called API command
+	 * @return the API called result as String
+	 * @throws IOException When access is failed
+	 */
+	private String getUrl(String path) throws IOException {
+		return getUrl(path, 5);
 	}
 
 	public VersionInfo getVersion() throws IOException {
