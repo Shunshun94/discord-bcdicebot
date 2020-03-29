@@ -104,8 +104,7 @@ public class BCDiceCLI {
 		client = DiceClientFactory.getDiceClient(url);
 		client.setSystem(system);
 		savedMessage = new HashMap<String, List<String>>();
-		password = RandomStringUtils.randomAlphanumeric(16);
-		System.out.println("Admin Password: " + password);
+		password = getPassword();
 	}
 	
 	/**
