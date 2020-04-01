@@ -1,6 +1,7 @@
 package com.hiyoko.discord.bot.BCDice.dto;
 
-import org.json.JSONObject;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
 
 public class DicerollResult {
 	private final String text;
@@ -20,18 +21,18 @@ public class DicerollResult {
 	}
 	
 	public DicerollResult(String json, String usedSystem) {
-		JSONObject result = new JSONObject(json);
-		this.rolled = result.getBoolean("ok");
+		JsonObject result = Json.parse(json).asObject();
+		this.rolled = result.getBoolean("ok", false);
 		if(rolled) {
 			this.system = usedSystem;
-			this.text = result.getString("result");
-			this.secret = result.getBoolean("secret");
+			this.text = result.getString("result", "[ERROR] コマンドが成功しているにも関わらずメッセージが取得できませんでした");
+			this.secret = result.getBoolean("secret", false);
 			this.isError = false;
 		} else {
 			this.system = "";
 			this.secret = false;
 
-			String text = result.getString("reason");
+			String text = result.getString("reason", "");
 			if(text.equals(UNSUPPORTED_DICEBOT)) {
 				this.isError = true;
 				this.text = String.format("対応していないシステム ( `%s` ) を使っているようです。スペルが間違っている、または未対応のシステムかもしれません。対応しているシステムを `bcdice set システム名` で設定してください。ダイスボットの一覧を参照するには `bcdice list` をご利用ください", usedSystem) ;
@@ -43,18 +44,18 @@ public class DicerollResult {
 	}
 	
 	public DicerollResult(String json) {
-		JSONObject result = new JSONObject(json);
-		rolled = result.getBoolean("ok");
+		JsonObject result = Json.parse(json).asObject();
+		rolled = result.getBoolean("ok", false);
 		if(rolled) {
 			system = "DiceBot";
-			text = result.getString("result");
-			secret = result.getBoolean("secret");
+			text = result.getString("result", "[ERROR] コマンドが成功しているにも関わらずメッセージが取得できませんでした");
+			secret = result.getBoolean("secret", false);
 			this.isError = false;
 		} else {
 			system = "";
 			secret = false;
 
-			String text = result.getString("reason");
+			String text = result.getString("reason", "");
 			if(text.equals(UNSUPPORTED_DICEBOT)) {
 				this.isError = true;
 				this.text = "対応していないシステムを使っているようです。スペルが間違っている、または未対応のシステムかもしれません。対応しているシステムを `bcdice set システム名` で設定してください。ダイスボットの一覧を参照するには `bcdice list` をご利用ください";

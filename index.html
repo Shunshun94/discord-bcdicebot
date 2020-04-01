@@ -78,6 +78,9 @@
 	<li>Windows を使っている方は start.bat をメモ帳で開きます (ほとんどの方はこちら！)。<br/>Linux/macOS を使っている方は start.sh を適当なテキストエディタで開きます</li>
 	<li><strong>DISCORD_BOT_TOKEN=</strong> の末尾に先の 4. でメモした Token を貼り付けます</li>
 	<li><strong>BCDICE_API_URL=</strong> の末尾に利用する BCDice-API サーバの URL を貼り付けます</li>
+	<li>(推奨) 管理用パスワードを決め、<strong>PleaseChangeMeIfYouUseThis</strong>を決めた管理用パスワードに書き換えます</li>
+	<li>(推奨) start.bat を編集している場合は <strong>REM set BCDICE_PASSWORD=PleaseChangeMeIfYouUseThis</strong>の "REM" を削除します<br/>
+start.sh を編集している場合は <strong># BCDICE_PASSWORD=PleaseChangeMeIfYouUseThis</strong>の "#" を削除します</li>
 	<li>Windows を使っている方は メモ帳を閉じ、 start.bat をダブルクリックします<br/>Linux/macOS を使っている方は編集を保存・完了し start.sh を実行します</li>
 	<li>Bot が起動します。Discord の参加者一覧に Bot がオンラインの状態で存在すれば成功です</li>
 	<li>終了はキーボードの Ctrl + C を押してください</li>
@@ -124,6 +127,8 @@
 	<dd>HTTP クライアント。<a href="https://github.com/resteasy/Resteasy/blob/master/License.html">Aapche 2.0</a> でライセンスされています。</dd>
 	<dt><a href="http://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a></dt>
 	<dd>java.lang の拡張。<a href="https://github.com/resteasy/Resteasy/blob/master/License.html">Aapche 2.0</a> でライセンスされています。</dd>
+	<dt><a href="https://github.com/ralfstx/minimal-json">minimal-json</a></dt>
+	<dd>json を扱うためのシンプルなライブラリ。<a href="https://github.com/ralfstx/minimal-json/blob/master/LICENSE">MIT ライセンス</a>でライセンスされています。</dd>
 </dl>
 
 <h3>利用しているサービス</h3>
@@ -175,6 +180,9 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v1.11</dt>
+	<dd>たまに BCDice-API へのリクエストが上手くいかない問題に対して対処しました</dd>
+	<dd>パスワードを指定する機能を追加しました</dd>
 	<dt>v1.10</dt>
 	<dd>Linux/macOS 環境向けの起動スクリプトを追加。スクリプトを共有くださった<a href="https://twitter.com/ochaochaocha3">おちゃさん</a>、ありがとうございます！</dd>
 	<dt>v1.9</dt>
