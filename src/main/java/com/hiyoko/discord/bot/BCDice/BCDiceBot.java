@@ -43,7 +43,9 @@ public class BCDiceBot {
 				String name = user.getName();
 				String userId = user.getIdAsString();
 				String message = event.getMessage().getContent();
-				logger.debug(String.format("%s: %s", userId, message));
+				logger.debug(String.format("%s posts: https://discordapp.com/channels/%s/%s/%s",
+						userId,
+						event.getServer().get().getIdAsString(), channel, event.getMessage().getIdAsString()));
 				api.updateActivity("bcdice help とチャットに打ち込むとコマンドのヘルプを確認できます");
 				if( myId.equals(userId) ) { return; }
 				if(! bcDice.isRoll( message )) {
