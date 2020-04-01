@@ -93,21 +93,21 @@ public class BCDiceBot {
 	 */
 	public static void main(String[] args) {
 		if( args.length < 2 || args[0].equals("help") ||
-				args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
-				System.out.println("Discord-BCDicebot Version 1.11");
-				System.out.println("This application requires two params");
-				System.out.println("  1. Discord Bot Token");
-				System.out.println("  2. BCDice-api server URL");
-				System.out.println("  3. (Optional) Error Handling Flag, When BCDice-API returns Error, If an error message should be sent, it's 0. If not, it's 1.");
-				System.out.println("------------------------------------");
-				System.out.println("2つコマンドライン引数が必要です");
-				System.out.println("  1. Discord の bot token");
-				System.out.println("  2. BCDice-api の URL");
-				System.out.println("  3. (必要ならば) エラーハンドルフラグ。BCDice-API でエラー発生時にエラーメッセージを出力するなら0 しないなら1");
-			} else if(args.length == 2) {
-				new BCDiceBot(args[0].trim(), args[1].trim());
-			} else {
-				new BCDiceBot(args[0].trim(), args[1].trim(), args[2].trim().equals("0"));
-			}	}
-
+			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
+			System.out.println("Discord-BCDicebot Version 1.11");
+			System.out.println("This application requires two params");
+			System.out.println("  1. Discord Bot Token");
+			System.out.println("  2. BCDice-api server URL");
+			System.out.println("  3. (Optional) Error Handling Flag, When BCDice-API returns Error, If an error message should be sent, it's 0. If not, it's 1.");
+			System.out.println("------------------------------------");
+			System.out.println("2つコマンドライン引数が必要です");
+			System.out.println("  1. Discord の bot token");
+			System.out.println("  2. BCDice-api の URL");
+			System.out.println("  3. (必要ならば) エラーハンドルフラグ。BCDice-API でエラー発生時にエラーメッセージを出力するなら0 しないなら1");
+		} else if(args.length == 2) {
+			new BCDiceBot(args[0].trim(), args[1].trim());
+		} else {
+			new BCDiceBot(args[0].trim(), args[1].trim(), args[2].trim().equals("0"));
+		}
+	}
 }
