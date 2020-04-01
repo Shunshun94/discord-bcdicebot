@@ -22,7 +22,7 @@
 		</repository>
 	</repositories>
 	<name>com.hiyoko.discord.bot.BCDice</name>
-	<url>http://maven.apache.org</url>
+	<url>https://github.com/Shunshun94/discord-bcdicebot</url>
 	<profiles>
 		<profile>
 			<activation>
