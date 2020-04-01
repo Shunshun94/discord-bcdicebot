@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 public class SystemInfo {
 	private final String name;
@@ -21,19 +23,19 @@ public class SystemInfo {
 	}
 	
 	public SystemInfo(String json) throws IOException {
-		JSONObject result = new JSONObject(json);
-		if(! result.getBoolean("ok")) {
+		JsonObject result = Json.parse(json).asObject();
+		if(! result.getBoolean("ok", false)) {
 			throw new IOException("System not found");
 		}
-		JSONObject body = result.getJSONObject("systeminfo");
-		name = body.getString("name");
-		gameType = body.getString("gameType");
-		info = body.getString("info");
-		
-		JSONArray JSONprefixs = body.getJSONArray("prefixs");
+		JsonObject body = result.get("systeminfo").asObject();
+		name = body.getString("name", "");
+		gameType = body.getString("gameType", "");
+		info = body.getString("info", "");
+
+		JsonArray rawPrefixs = body.get("prefixs").asArray();
 		List<String> tmpPrefixs = new ArrayList<String>();
-		for(int i = 0; i < JSONprefixs.length(); i++) {
-			tmpPrefixs.add(JSONprefixs.getString(i));
+		for (JsonValue prefix : rawPrefixs) {
+			tmpPrefixs.add(prefix.asString());
 		}
 		prefixs = tmpPrefixs;
 	}

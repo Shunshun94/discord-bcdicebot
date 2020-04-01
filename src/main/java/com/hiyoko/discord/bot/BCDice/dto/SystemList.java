@@ -3,8 +3,10 @@ package com.hiyoko.discord.bot.BCDice.dto;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 public class SystemList {
 	private final List<String> systems;
@@ -14,15 +16,12 @@ public class SystemList {
 	}
 	
 	public SystemList(String json) {
-		JSONObject result = new JSONObject(json);
-		JSONArray systemListJson = result.getJSONArray("systems");
+		JsonObject result = Json.parse(json).asObject();
+		JsonArray systemListJson = result.get("systems").asArray();
 		
 		List<String> list = new ArrayList<String>();
-		
-		
-		int length = systemListJson.length();
-		for(int i = 0; i < length; i++) {
-			list.add(systemListJson.getString(i));
+		for(JsonValue system : systemListJson) {
+			list.add(system.asString());
 		}
 		systems = list;
 	}
