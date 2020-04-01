@@ -1,6 +1,7 @@
 package com.hiyoko.discord.bot.BCDice.dto;
 
-import org.json.JSONObject;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
 
 public class VersionInfo {
 	private final String diceVersion;
@@ -12,10 +13,10 @@ public class VersionInfo {
 	}
 	
 	public VersionInfo(String json) {
-		JSONObject result = new JSONObject(json);
+		JsonObject result = Json.parse(json).asObject();
 		
-		diceVersion = result.getString("bcdice");
-		apiVersion = result.getString("api");
+		diceVersion = result.getString("bcdice", "取得に失敗しました");
+		apiVersion = result.getString("api", "取得に失敗しました");
 	}
 	
 	public String getDiceVersion() {
