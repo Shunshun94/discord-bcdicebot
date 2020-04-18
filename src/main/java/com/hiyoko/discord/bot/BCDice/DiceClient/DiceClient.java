@@ -95,6 +95,13 @@ public interface DiceClient {
 
 	/**
 	 * 
+	 * @param command
+	 * @return
+	 */
+	public boolean isDiceCommand(String command);
+
+	/**
+	 * 
 	 * @param channel target channel
 	 * @return
 	 */

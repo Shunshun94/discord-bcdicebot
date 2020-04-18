@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
@@ -14,6 +15,7 @@ public class DiceClientMock implements DiceClient {
 	private final String[] systemList = {"Hiyoko", "Hitsuji", "Koneko"};
 	private final Map<String, String> system = new HashMap<String, String>();
 	private static final String DEFAULT_CHANNEL = "general";
+	private static final Pattern DICE_COMMAND_PATTERN = Pattern.compile("^S?\\d+d\\d+"); 
 
 	public DiceClientMock() {
 		system.put(DEFAULT_CHANNEL, "Hiyoko");
@@ -104,5 +106,8 @@ public class DiceClientMock implements DiceClient {
 		return system;
 	}
 
-
+	@Override
+	public boolean isDiceCommand(String command) {
+		return DICE_COMMAND_PATTERN.matcher(command).find();
+	}
 }
