@@ -1,6 +1,8 @@
 package com.hiyoko.discord.bot.BCDice;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -18,6 +20,8 @@ import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
+import org.slf4j.Logger;
+
 /**
  * Client for BCDice.
  * The isntance gets the command as String.
@@ -29,7 +33,10 @@ public class BCDiceCLI {
 	private DiceClient client;
 	private Map<String, List<String>> savedMessage;
 	private String password;
+	private String rollCommand = "";
+	private boolean isSuppressed = true;
 	private static final String[] REMOVE_WHITESPACE_TARGETS = {"<", ">", "="};
+	private final Logger logger = LoggerFactory.getLogger(BCDiceCLI.class);
 	private static final Pattern GAMESYSTEM_ROOM_PAIR_REGEXP = Pattern.compile("^(\\d*):(.*)");
 
 	public static final String HELP = "使い方\n"
@@ -42,7 +49,15 @@ public class BCDiceCLI {
 			+ "# admin のヘルプを表示する\n> bcdice admin help\n"
 			+ "# BCDice-API サーバを変更する\n> bcdice admin PASSWORD setServer URL\n"
 			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export\n"
-			+ "# 部屋設定をインポートする\n> bcdice admin PASSWORD import";
+			+ "# 部屋設定をインポートする\n> bcdice admin PASSWORD import\n"
+			+ "# BCDice API サーバへの問い合わせを無制限にする（～バージョン 1.11 と同じ挙動）\n"
+			+ "> bcdice admin PASSWORD suppressroll\n"
+			+ "> bcdice admin PASSWORD suppressroll on # どちらでも可能\n"
+			+ "# BCDice API サーバへの問い合わせの制限を外す （～バージョン 1.11 と同じ挙動）\n"
+			+ "> bcdice admin PASSWORD suppressroll disable\n"
+			+ "# コマンドの戦闘に何らかのコマンドがある場合のみBCDice API サーバへ問い合わせる\n"
+			+ "> bcdice admin PASSWORD suppressroll /diceroll # /diceroll 2d6 等としないとダイスを振れない\n"
+			+ "> bcdice admin PASSWORD suppressroll /r # /r 2d6 等としないとダイスを振れない";
 
 	private String getPassword() {
 		String env = System.getenv("BCDICE_PASSWORD");
@@ -114,26 +129,49 @@ public class BCDiceCLI {
 	public boolean isRoll(String input) {
 		return ! (input.toLowerCase().startsWith("bcdice ") || input.toLowerCase().equals("bcdice"));
 	}
-	
+
+	private boolean isShouldRoll(String input) {
+		if(! isSuppressed) { return true; }
+		if( rollCommand.isEmpty() ) {
+			return client.isDiceCommand(input);
+		} else {
+			return input.startsWith(rollCommand);
+		}
+	}
+
 	/**
-	 * @param input Dice roll command
+	 * @param rawInput Dice roll command
+	 * @param channel
 	 * @return result as DicerollResult instance.
 	 * @throws IOException When command failed
 	 */
-	public DicerollResult roll(String input, String channel) throws IOException {
-		return client.rollDiceWithChannel(normalizeDiceCommand(input), channel);
+	public DicerollResult roll(String rawInput, String channel) throws IOException {
+		if(isShouldRoll(rawInput)) {
+			String input = rawInput.replaceFirst(rollCommand, "").trim();
+			logger.debug(String.format("bot send command to server: %s", input));
+			return client.rollDiceWithChannel(normalizeDiceCommand(input), channel);
+		} else {
+			return new DicerollResult("", "", false, false);
+		}
 	}
-	
+
 	/**
-	 * @param input Dice roll command
+	 * @param rawInput Dice roll command
 	 * @return result as DicerollResult instance.
 	 * @throws IOException When command failed
 	 */
-	public DicerollResult roll(String input) throws IOException {
-		return client.rollDice(normalizeDiceCommand(input));
+	public DicerollResult roll(String rawInput) throws IOException {
+		if(isShouldRoll(rawInput)) {
+			String input = rawInput.replaceFirst(rollCommand, "").trim();
+			logger.debug(String.format("bot send command to server: %s", input));
+			return client.rollDice(normalizeDiceCommand(input));
+		} else {
+			return new DicerollResult("", "", false, false);
+		}
 	}
 	
 	/**
+	 * @deprecated
 	 * @param input command (not dice roll)
 	 * @return message from this instance
 	 */
@@ -150,7 +188,7 @@ public class BCDiceCLI {
 		return input(input, id, "general");
 	}
 	/**
-	 * 
+	 * @deprecated
 	 * @param tmpInput (not dice roll)
 	 * @param id unique user id
 	 * @param channel action target channel
@@ -206,7 +244,7 @@ public class BCDiceCLI {
 				}
 			}
 		}
-		
+
 		if(command[1].equals("save")) {
 			if(command.length > 2) {
 				StringBuilder str = new StringBuilder();
@@ -218,7 +256,7 @@ public class BCDiceCLI {
 				return saveMessage(id, "") + "";
 			}
 		}
-		
+
 		if(command[1].equals("status")) {
 			try {
 				VersionInfo vi = client.getVersion();
@@ -227,12 +265,11 @@ public class BCDiceCLI {
 				return client.toString(channel) + "(バージョンの取得に失敗しました)";
 			}
 		}
-		
+
 		return HELP;
 	}
 	
 	/**
-	 * 
 	 * @param tmpInput (not dice roll)
 	 * @param id unique user id
 	 * @param channel action target channel
@@ -390,6 +427,36 @@ public class BCDiceCLI {
 			}
 			return resultList;
 		}
+
+		if(command[3].equals("suppressroll")) {
+			/*
+			 * 	private String rollCommand;
+			 *	private boolean isSuppressed;
+			 */
+			if(command.length > 4) {
+				if(command[4].equals("disable")) {
+					isSuppressed = false;
+					rollCommand = "";
+					resultList.add("BCDice API サーバに送信するコマンドの制限を解除しました。すべてのコマンドがサーバに送信されます");
+				} else {
+					isSuppressed = true;
+					if(command[4].startsWith("/")) {
+						rollCommand = command[4];
+						resultList.add(String.format("BCDice API サーバに送信するコマンドを制限しました。 \"%s\" で始まるコマンドのみサーバに送信します ", command[4]));
+					} else {
+						rollCommand = "";
+						resultList.add("BCDice API サーバに送信するコマンドを制限しました。まずコマンドじゃないだろう、という内容はサーバに送信しません。");
+					}
+				}
+			} else {
+				// suppress roll を有効にする
+				isSuppressed = true;
+				rollCommand = "";
+				resultList.add("BCDice API サーバに送信するコマンドを制限しました。まずコマンドじゃないだろう、という内容はサーバに送信しません。");
+			}
+			return resultList;
+		}
+
 		resultList.add(HELP_ADMIN);
 		return resultList;
 	}
