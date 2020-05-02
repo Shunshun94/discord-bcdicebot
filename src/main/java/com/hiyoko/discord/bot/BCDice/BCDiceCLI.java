@@ -50,7 +50,7 @@ public class BCDiceCLI {
 			+ "# BCDice-API サーバを変更する\n> bcdice admin PASSWORD setServer URL\n"
 			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export\n"
 			+ "# 部屋設定をインポートする\n> bcdice admin PASSWORD import\n"
-			+ "# BCDice API サーバへの問い合わせを無制限にする（～バージョン 1.11 と同じ挙動）\n"
+			+ "# BCDice API サーバへの問い合わせを無制限にする\n"
 			+ "> bcdice admin PASSWORD suppressroll\n"
 			+ "> bcdice admin PASSWORD suppressroll on # どちらでも可能\n"
 			+ "# BCDice API サーバへの問い合わせの制限を外す （～バージョン 1.11 と同じ挙動）\n"
