@@ -48,6 +48,9 @@ public class DiceClientMock implements DiceClient {
 		if(command.equals("S2d6")) {
 			return new DicerollResult("(2D6) ＞ 6[4,2] ＞ 6", system, true, true);
 		}
+		if(command.equals("1d12")) {
+			return new DicerollResult("(1d12) ＞ 12[12] ＞ 12", system, true, true);
+		}
 		return new DicerollResult(command, system, true, true);
 	}
 

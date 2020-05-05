@@ -177,4 +177,8 @@ public class BCDiceCLITest extends TestCase {
 		assertTrue(cli.roll("あああああ", "channel").isRolled());
 		assertTrue(cli.roll("あああああ").isRolled());
 	}
+
+	public void testOriginalDiceBot() throws IOException {
+		assertEquals(cli.roll("サンプルダイスボット-夜食表", "no_channel").getText() , ": (1d12[12]） → \n何も食べない");
+	}
 }
