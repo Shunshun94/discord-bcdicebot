@@ -50,13 +50,8 @@
 
 <div class="comment">
 <p>BCDice-API サーバを自分で構築するのは一定の専門知識が必要です。
-独自のダイスボットを追加するのでなければ以下のような公開サーバを利用する方が良いでしょう。
+独自のダイスボットを追加するのでなければ、<a href="https://github.com/bcdice/bcdice-api-servers/blob/master/servers.yaml" target="_blank">bcdice/bcdice-api-servers</a> に記載されている公開サーバを利用する方が良いでしょう。
 各公開サーバには利用ルールがあるため、利用前に事前にご確認ください。</p>
-<ul>
-	<li>どどんとふ公式鯖: https://dodontof.onlinesession.app/bcdice-api/ (<a href="https://www.taruki.com/wp/?page_id=6202">どどんとふ公式鯖について</a>)</li>
-	<li>ぽっち鯖: https://bcdice.aimsot.net/ (<a href="https://aimsot.net/tool-info/ft/">注意事項・特徴</a>)</li>
-	<li>コノス: https://bcdice-api.conos.jp (<a href="https://conos.jp/online-session-tools/online-session-tools-notice/">ご利用の注意事項</a>)</li>
-</ul>
 <p>また、中級者向けに Heroku を用いての自分用 BCDice-API サーバの設置手順も共有されています。<br/><a href="https://github.com/ysakasin/bcdice-api/blob/master/docs/heroku.md">https://github.com/ysakasin/bcdice-api/blob/master/docs/heroku.md</a></p>
 </div>
 
@@ -114,7 +109,10 @@ BCDice-API サーバに送る必要のありそうな発言だけを送信する
 また、先頭に <code>/r</code> 等が無いと BCDice-API サーバにコマンドを送信しないようにすることもできます。<br/><code>bcdice admin [パスワード] suppressroll /r</code><br/>
 このコマンドワードは <code>/</code> で始まる物であれば任意のものを設定できます。<br/><code>bcdice admin [パスワード] suppressroll /diceroll</code><br/>
 とすれば発言の戦闘に <code>/diceroll</code> があるものだけを BCDice-API サーバに送信します。</p>
-
+<p>独自のダイスボットを追加する場合は Discord にダイスボットの情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/><code>bcdice admin [パスワード] addDiceBot [ダイスボット名]</code><br/>
+追加した後ダイスボット名がチャット上で発言されるとダイスボットが振られます。この際にアップロードするダイスボットのサンプルは <code>originalDiceBots</code> ディレクトリ内のファイルを参照してください。<br/>
+ダイスボットを削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [ダイスボット名]</code><br/>
+ダイスボットの一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code></p>
 
 <h2>連絡先</h2>
 <h3>バグ報告など</h3>

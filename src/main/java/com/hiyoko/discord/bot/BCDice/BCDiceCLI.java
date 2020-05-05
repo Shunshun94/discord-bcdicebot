@@ -64,7 +64,16 @@ public class BCDiceCLI {
 			+ "> bcdice admin PASSWORD suppressroll disable\n"
 			+ "# コマンドの戦闘に何らかのコマンドがある場合のみBCDice API サーバへ問い合わせる\n"
 			+ "> bcdice admin PASSWORD suppressroll /diceroll # /diceroll 2d6 等としないとダイスを振れない\n"
-			+ "> bcdice admin PASSWORD suppressroll /r # /r 2d6 等としないとダイスを振れない";
+			+ "> bcdice admin PASSWORD suppressroll /r # /r 2d6 等としないとダイスを振れない\n"
+			+ "# ダイスボット表を追加する\n"
+			+ "# ダイスボットのファイルを Disord にアップロードし、アップロードする際のコメントを以下のようにする\n"
+			+ "# ダイスボット名をチャットに書き込むと誰でもダイスボット表を振れる\n"
+			+ "> bcdice admin PASSWORD addDiceBot ダイスボット名\n"
+			+ "> bcdice admin PASSWORD addDiceBot # アップロードしたダイスボットのファイル名がコマンドになる\n"
+			+ "# ダイスボット表を削除する\n"
+			+ "> bcdice admin PASSWORD removeDiceBot ダイスボット名\n"
+			+ "# ダイスボット表の一覧を表示する\n"
+			+ "> bcdice admin PASSWORD listDiceBot";
 
 	private String getPassword() {
 		String env = System.getenv("BCDICE_PASSWORD");
