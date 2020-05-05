@@ -9,9 +9,11 @@ copy start.sh discord-bcdicebot
 copy index.html discord-bcdicebot
 
 cd discord-bcdicebot
+mkdir originalDiceBots
 
 rename discord-bcdicebot-jar-with-dependencies.jar discord-bcdicebot.jar
 rename index.html README.html
+copy ..\originalDiceBots originalDiceBots
 
 cd ../
 pause
