@@ -1,10 +1,12 @@
 package com.hiyoko.discord.bot.BCDice;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.javacord.api.entity.message.MessageAttachment;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +18,9 @@ import java.util.regex.Pattern;
 
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
+import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
+import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBot;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
@@ -31,13 +35,16 @@ import org.slf4j.Logger;
  */
 public class BCDiceCLI {
 	private DiceClient client;
+	
 	private Map<String, List<String>> savedMessage;
 	private String password;
 	private String rollCommand = "";
 	private boolean isSuppressed = true;
+	private final OriginalDiceBotClient originalDiceBotClient;
 	private static final String[] REMOVE_WHITESPACE_TARGETS = {"<", ">", "="};
 	private final Logger logger = LoggerFactory.getLogger(BCDiceCLI.class);
 	private static final Pattern GAMESYSTEM_ROOM_PAIR_REGEXP = Pattern.compile("^(\\d*):(.*)");
+	private static final Pattern RESULT_VALUE_REGEXP = Pattern.compile("(\\d+)$");
 
 	public static final String HELP = "使い方\n"
 			+ "# ダイスボット一覧を確認する\n> bcdice list\n"
@@ -77,6 +84,7 @@ public class BCDiceCLI {
 	 */
 	public BCDiceCLI(DiceClient diceClient) {
 		client = diceClient;
+		originalDiceBotClient = new OriginalDiceBotClient();
 		password = getPassword();
 		System.out.println("Admin Password: " + password);
 	}
@@ -89,6 +97,7 @@ public class BCDiceCLI {
 	public BCDiceCLI(DiceClient diceClient, String system) {
 		client = diceClient;
 		client.setSystem(system);
+		originalDiceBotClient = new OriginalDiceBotClient();
 		password = getPassword();
 	}
 	
@@ -97,6 +106,7 @@ public class BCDiceCLI {
 	 */
 	public BCDiceCLI(String url) {
 		client = DiceClientFactory.getDiceClient(url);
+		originalDiceBotClient = new OriginalDiceBotClient();
 		savedMessage = new HashMap<String, List<String>>();
 		password = getPassword();
 	}
@@ -106,6 +116,7 @@ public class BCDiceCLI {
 	 */
 	public BCDiceCLI(String url, boolean errorSenstive) {
 		client = DiceClientFactory.getDiceClient(url, errorSenstive);
+		originalDiceBotClient = new OriginalDiceBotClient();
 		savedMessage = new HashMap<String, List<String>>();
 		password = getPassword();
 	}
@@ -118,6 +129,7 @@ public class BCDiceCLI {
 	public BCDiceCLI(String url, String system) {
 		client = DiceClientFactory.getDiceClient(url);
 		client.setSystem(system);
+		originalDiceBotClient = new OriginalDiceBotClient();
 		savedMessage = new HashMap<String, List<String>>();
 		password = getPassword();
 	}
@@ -139,6 +151,37 @@ public class BCDiceCLI {
 		}
 	}
 
+	private String isOriginalDicebot(String rawInput) {
+		List<String> list = originalDiceBotClient.getDiceBotList();
+		for(String name : list) {
+			if(rawInput.startsWith(name)) {return name;}
+		}
+		return "";
+	}
+
+	private DicerollResult rollOriginalDiceBot(String name) throws IOException {
+		OriginalDiceBot diceBot;
+		DicerollResult rawRollResult;
+		logger.debug(String.format("ダイスボット [%s] を実行します", name));
+		try {
+			diceBot = originalDiceBotClient.getDiceBot(name);
+		} catch (IOException e) {
+			throw new IOException(String.format("ダイスボット [%s] が取得できませんでした", name), e);
+		}
+		try {
+			rawRollResult = client.rollDice(normalizeDiceCommand(diceBot.getCommand()));
+			Matcher matchResult = RESULT_VALUE_REGEXP.matcher(rawRollResult.getText());
+			if(matchResult.find()) {
+				String rollResult = diceBot.getResultAsShow(matchResult.group(1));
+				return new DicerollResult(rollResult, name, false, true);
+			} else {
+				return new DicerollResult("", "", false, false);
+			}
+		} catch (IOException e) {
+			throw new IOException("ダイスを振るのに失敗しました", e);
+		}
+	}
+
 	/**
 	 * @param rawInput Dice roll command
 	 * @param channel
@@ -146,6 +189,10 @@ public class BCDiceCLI {
 	 * @throws IOException When command failed
 	 */
 	public DicerollResult roll(String rawInput, String channel) throws IOException {
+		String originalDiceBot = isOriginalDicebot(rawInput);
+		if(! originalDiceBot.isEmpty()) {
+			return rollOriginalDiceBot(originalDiceBot);
+		}
 		if(isShouldRoll(rawInput)) {
 			String input = rawInput.replaceFirst(rollCommand, "").trim();
 			logger.debug(String.format("bot send command to server: %s", input));
@@ -156,18 +203,13 @@ public class BCDiceCLI {
 	}
 
 	/**
+	 * @deprecated
 	 * @param rawInput Dice roll command
 	 * @return result as DicerollResult instance.
 	 * @throws IOException When command failed
 	 */
 	public DicerollResult roll(String rawInput) throws IOException {
-		if(isShouldRoll(rawInput)) {
-			String input = rawInput.replaceFirst(rollCommand, "").trim();
-			logger.debug(String.format("bot send command to server: %s", input));
-			return client.rollDice(normalizeDiceCommand(input));
-		} else {
-			return new DicerollResult("", "", false, false);
-		}
+		return roll(rawInput, "no_channel_id");
 	}
 	
 	/**
@@ -180,6 +222,7 @@ public class BCDiceCLI {
 	}
 
 	/**
+	 * @deprecated
 	 * @param input command (not dice roll)
 	 * @param id unique user id
 	 * @return message from this instance
@@ -268,7 +311,7 @@ public class BCDiceCLI {
 
 		return HELP;
 	}
-	
+
 	/**
 	 * @param tmpInput (not dice roll)
 	 * @param id unique user id
@@ -276,6 +319,18 @@ public class BCDiceCLI {
 	 * @return message from this instance
 	 */
 	public List<String> inputs(String tmpInput, String id, String channel) {
+		return inputs(tmpInput, id, channel, new ArrayList<MessageAttachment>());
+	}
+
+	/**
+	 * 
+	 * @param tmpInput (not dice roll)
+	 * @param id unique user id
+	 * @param channel action target channel
+	 * @param attachements
+	 * @return message from this instance
+	 */
+	public List<String> inputs(String tmpInput, String id, String channel, List<MessageAttachment> attachements) {
 		List<String> resultList = new ArrayList<String>();
 		
 		String input = tmpInput.split("\n")[0];
@@ -368,14 +423,14 @@ public class BCDiceCLI {
 				resultList.add(HELP_ADMIN);
 				return resultList;
 			} else {
-				return adminCommand(command, tmpInput);
+				return adminCommand(command, tmpInput, attachements);
 			}
 		}
 		resultList.add(HELP);
 		return resultList;
 	}
 
-	private List<String> adminCommand(String[] command, String tmpInput) {
+	private List<String> adminCommand(String[] command, String tmpInput, List<MessageAttachment> attachements) {
 		List<String> resultList = new ArrayList<String>();
 		if(command[2].equals("help")) {
 			resultList.add(HELP_ADMIN);
@@ -429,10 +484,6 @@ public class BCDiceCLI {
 		}
 
 		if(command[3].equals("suppressroll")) {
-			/*
-			 * 	private String rollCommand;
-			 *	private boolean isSuppressed;
-			 */
 			if(command.length > 4) {
 				if(command[4].equals("disable")) {
 					isSuppressed = false;
@@ -454,6 +505,56 @@ public class BCDiceCLI {
 				rollCommand = "";
 				resultList.add("BCDice API サーバに送信するコマンドを制限しました。まずコマンドじゃないだろう、という内容はサーバに送信しません。");
 			}
+			return resultList;
+		}
+
+		if(command[3].equals("addDiceBot")) {
+			if(attachements.isEmpty()) {
+				resultList.add("ダイスボットを登録する際はダイスボットのファイルをアップロードする必要があります");
+				return resultList;
+			}
+
+			try {
+				String botName = (command.length > 4) ? command[4] : attachements.get(0).getFileName().split("\\.")[0];
+				URL url = attachements.get(0).getUrl();
+				logger.info(String.format("%s - %s", botName, url.toString()));
+				originalDiceBotClient.registerDiceBot(url, botName);
+				String logMessage = String.format("ダイスボット [%s] を登録しました", botName);
+				logger.info(logMessage);
+				resultList.add(logMessage);
+				return resultList;
+			} catch(Exception e) {
+				logger.warn("ダイスボットの登録に失敗しました", e);
+				resultList.add(e.getMessage());
+				return resultList;
+			}
+		}
+		if(command[3].equals("removeDiceBot")) {
+			if(command.length < 5) {
+				resultList.add("ダイスボットの名前を指定してください");
+				return resultList;
+			}
+			try {
+				originalDiceBotClient.unregisterDiceBot(command[4]);
+				resultList.add(String.format("ダイスボット [%s] を削除しました", command[4]));
+				return resultList;
+			} catch(IOException e) {
+				logger.warn("ダイスボットの削除に失敗しました", e);
+				resultList.add(e.getMessage());
+				return resultList;
+			}
+		}
+		if(command[3].equals("listDiceBot")) {
+			List<String> dicebotList = originalDiceBotClient.getDiceBotList();
+			StringBuilder sb = new StringBuilder();
+			dicebotList.forEach((name)->{
+				sb.append(name + "\n");
+				if(sb.length() > 1000) {
+					resultList.add(sb.toString());
+					sb.delete(0, sb.length());
+				}
+			});
+			resultList.add(sb.toString());
 			return resultList;
 		}
 

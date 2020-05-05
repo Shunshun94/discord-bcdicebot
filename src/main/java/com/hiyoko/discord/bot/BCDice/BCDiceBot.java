@@ -1,9 +1,11 @@
 package com.hiyoko.discord.bot.BCDice;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.entity.message.MessageAttachment;
 import org.javacord.api.entity.message.MessageAuthor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +45,8 @@ public class BCDiceBot {
 				String name = user.getName();
 				String userId = user.getIdAsString();
 				String message = event.getMessage().getContent();
+				List<MessageAttachment> attachements = event.getMessage().getAttachments();
+
 				logger.debug(String.format("%s posts: https://discordapp.com/channels/%s/%s/%s",
 						userId,
 						event.getServer().get().getIdAsString(), channel, event.getMessage().getIdAsString()));
@@ -50,7 +54,7 @@ public class BCDiceBot {
 				if( myId.equals(userId) ) { return; }
 				if(! bcDice.isRoll( message )) {
 					logger.debug("bcdice command");
-					bcDice.inputs(message, userId, channel).forEach(msg->{
+					bcDice.inputs(message, userId, channel, attachements).forEach(msg->{
 						event.getChannel().sendMessage(msg);
 					});
 					return;
@@ -66,7 +70,7 @@ public class BCDiceBot {
 						event.getChannel().sendMessage(String.format("＞%s\n%s", name, rollResult.toString()));
 					}
 					if( rollResult.isSecret() ) {
-						int index = Integer.parseInt(bcDice.input("bcdice save " + rollResult.getSystem() + rollResult.getText(), userId));
+						int index = Integer.parseInt(bcDice.inputs("bcdice save " + rollResult.getSystem() + rollResult.getText(), userId, "dummy").get(0));
 						try {
 							api.getUserById(userId).get().sendMessage(rollResult.getSystem() + rollResult.getText());
 							api.getUserById(userId).get().sendMessage("To recall this,\nbcdice load " + index);
