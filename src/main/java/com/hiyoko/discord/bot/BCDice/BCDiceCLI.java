@@ -526,7 +526,6 @@ public class BCDiceCLI {
 			try {
 				String botName = (command.length > 4) ? command[4] : attachements.get(0).getFileName().split("\\.")[0];
 				URL url = attachements.get(0).getUrl();
-				logger.info(String.format("%s - %s", botName, url.toString()));
 				originalDiceBotClient.registerDiceBot(url, botName);
 				String logMessage = String.format("ダイスボット [%s] を登録しました", botName);
 				logger.info(logMessage);
