@@ -50,13 +50,8 @@
 
 <div class="comment">
 <p>BCDice-API サーバを自分で構築するのは一定の専門知識が必要です。
-独自のダイスボットを追加するのでなければ以下のような公開サーバを利用する方が良いでしょう。
+独自のダイスボットを追加するのでなければ、<a href="https://github.com/bcdice/bcdice-api-servers/blob/master/servers.yaml" target="_blank">bcdice/bcdice-api-servers</a> に記載されている公開サーバを利用する方が良いでしょう。
 各公開サーバには利用ルールがあるため、利用前に事前にご確認ください。</p>
-<ul>
-	<li>どどんとふ公式鯖: https://dodontof.onlinesession.app/bcdice-api/ (<a href="https://www.taruki.com/wp/?page_id=6202">どどんとふ公式鯖について</a>)</li>
-	<li>ぽっち鯖: https://bcdice.aimsot.net/ (<a href="https://aimsot.net/tool-info/ft/">注意事項・特徴</a>)</li>
-	<li>コノス: https://bcdice-api.conos.jp (<a href="https://conos.jp/online-session-tools/online-session-tools-notice/">ご利用の注意事項</a>)</li>
-</ul>
 <p>また、中級者向けに Heroku を用いての自分用 BCDice-API サーバの設置手順も共有されています。<br/><a href="https://github.com/ysakasin/bcdice-api/blob/master/docs/heroku.md">https://github.com/ysakasin/bcdice-api/blob/master/docs/heroku.md</a></p>
 </div>
 
@@ -67,7 +62,8 @@
 	<li><a href="https://discordapp.com/developers/applications/me">開発者ページ</a> にアクセスし、New APP をクリックします</li>
 	<li>最低限 APP NAME と APP ICON を入力し、 Create App をクリックします</li>
 	<li>Create Bot User というボタンをクリックし、このダイスボット用のユーザを作成します</li>
-	<li>Bot の Username の下に "Token:click to reveal" というのがあるのでクリックし、出てくるランダムな文字列をメモします<br/><strong>この文字列は他の人に教えないこと</strong>。</li>
+	<li>Bot の Username の下に "Token:click to reveal" というのがあるのでクリックし、出てくるランダムな文字列をメモします<br/><strong>この文字列は他の人に教えないこと</strong>。
+	<br/>この文字列は <code>NDA0MgAIC0QK18lU0dxMt99F.HuWAIt.Nh9OTLbjxdMp3pcmw3Lsqd4aQlb</code> のような形式の値となります（この値はダミーです）。</li>
 	<li>画面上部の APP DETAILS のところに書かれた Client ID の数字をメモします</li>
 	<li>次の URL にアクセスします<br/><strong>https://discordapp.com/oauth2/authorize?client_id=<span style="color:green;">[Client Id の数字]</span>&amp;scope=bot&amp;permissions=0</strong></li>
 </ol>
@@ -108,6 +104,15 @@ start.sh を編集している場合は <strong># BCDICE_PASSWORD=PleaseChangeMe
 331084010098917376:SwordWorld2.0
 551310555730673666:DoubleCross
 541477835299356673:Cthulhu</pre>
+<p>チャットに送信されたメッセージを全て BCDice-API サーバに送信したい場合は次のようにします。<br/><code>bcdice admin [パスワード] suppressroll disable</code><br/>
+BCDice-API サーバに送る必要のありそうな発言だけを送信するようにする場合は次のようにします。こちらがデフォルト設定です。<br/><code>bcdice admin [パスワード] suppressroll on</code><br/>
+また、先頭に <code>/r</code> 等が無いと BCDice-API サーバにコマンドを送信しないようにすることもできます。<br/><code>bcdice admin [パスワード] suppressroll /r</code><br/>
+このコマンドワードは <code>/</code> で始まる物であれば任意のものを設定できます。<br/><code>bcdice admin [パスワード] suppressroll /diceroll</code><br/>
+とすれば発言の戦闘に <code>/diceroll</code> があるものだけを BCDice-API サーバに送信します。</p>
+<p>独自のダイスボットを追加する場合は Discord にダイスボットの情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/><code>bcdice admin [パスワード] addDiceBot [ダイスボット名]</code><br/>
+追加した後ダイスボット名がチャット上で発言されるとダイスボットが振られます。この際にアップロードするダイスボットのサンプルは <code>originalDiceBots</code> ディレクトリ内のファイルないしは<a target="_blank" href="https://github.com/Shunshun94/discord-bcdicebot/blob/master/originalDiceBots/%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E3%83%80%E3%82%A4%E3%82%B9%E3%83%9C%E3%83%83%E3%83%88-%E5%A4%9C%E9%A3%9F%E8%A1%A8">discord-bcdicebot/originalDiceBots/サンプルダイスボット-夜食表</a>を参照してください。<br/>
+ダイスボットを削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [ダイスボット名]</code><br/>
+ダイスボットの一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code></p>
 
 <h2>連絡先</h2>
 <h3>バグ報告など</h3>
@@ -155,7 +160,7 @@ start.sh を編集している場合は <strong># BCDICE_PASSWORD=PleaseChangeMe
 <h3>ダイスを振るコマンド以外を入力すると <strong>[ERROR][500] ～</strong> って出る。設定は合っているはずなのに</h3>
 <p>start.bat の <strong>IGNORE_ERROR=0</strong> の 0　を 1 と書き入れてみてください。治るかもしれません</p>
 <h3>管理用のパスワードはどこ？</h3>
-<p>起動直後に <code>Admin Password: SGO7C0XYtBJouE75</code> みたいな文字列がでます。この英数字ランダム16桁の文字列がパスワードです。起動するたびに変わるので注意してください</p>
+<p>環境変数<code>BCDICE_PASSWORD</code>の値が使われます。<br/>環境変数を指定していない場合は起動直後に <code>Admin Password: SGO7C0XYtBJouE75</code> みたいな文字列がでます。この英数字ランダム16桁の文字列がパスワードです。起動するたびに変わるので注意してください</p>
 
 <h2>謝辞</h2>
 <h3>お世話になった方々</h3>
@@ -180,6 +185,9 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v1.12</dt>
+	<dd>BCDice-API へのリクエスト送信頻度を下げる機能を追加しました</dd>
+	<dd>管理者がオリジナルのダイスボット表を追加できる機能を追加しました</dd>
 	<dt>v1.11</dt>
 	<dd>たまに BCDice-API へのリクエストが上手くいかない問題に対して対処しました</dd>
 	<dd>パスワードを指定する機能を追加しました</dd>

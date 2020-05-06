@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * BCDice-API Client
@@ -24,6 +25,7 @@ public class BCDiceClient implements DiceClient {
 	private final Map<String, String> system;
 	private final boolean errorSensitive;
 	private static final String DEFAULT_CHANNEL = "general";
+	private static final Pattern DICE_COMMAND_PATTERN = Pattern.compile("^[\\w\\+\\-#\\$@<>=\\.\\[\\]\\(\\)]+"); 
 
 	/**
 	 * 
@@ -163,5 +165,12 @@ public class BCDiceClient implements DiceClient {
 	@Override
 	public Map<String, String> getRoomsSystem() {
 		return system;
+	}
+
+	@Override
+	public boolean isDiceCommand(String command) {
+		if(command.startsWith("choice[")) {return true;}
+		if(command.startsWith("http")) {return false;}
+		return DICE_COMMAND_PATTERN.matcher(command).find();
 	}
 }

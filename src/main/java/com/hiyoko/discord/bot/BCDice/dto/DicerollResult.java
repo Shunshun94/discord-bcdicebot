@@ -11,7 +11,7 @@ public class DicerollResult {
 	private final String system;
 
 	private final String UNSUPPORTED_DICEBOT = "unsupported dicebot";
-	
+
 	public DicerollResult(String text, String system, boolean secret, boolean rolled) {
 		this.text = text;
 		this.secret = secret;
@@ -19,7 +19,7 @@ public class DicerollResult {
 		this.system = system;
 		this.isError = false;
 	}
-	
+
 	public DicerollResult(String json, String usedSystem) {
 		JsonObject result = Json.parse(json).asObject();
 		this.rolled = result.getBoolean("ok", false);
@@ -42,7 +42,7 @@ public class DicerollResult {
 			}
 		}
 	}
-	
+
 	public DicerollResult(String json) {
 		JsonObject result = Json.parse(json).asObject();
 		rolled = result.getBoolean("ok", false);
@@ -69,15 +69,15 @@ public class DicerollResult {
 	public String getText() {
 		return text;
 	}
-	
+
 	public String getSystem() {
 		return system;
 	}
-	
+
 	public boolean isSecret() {
 		return secret;
 	}
-	
+
 	public boolean isRolled() {
 		return rolled;
 	}
@@ -85,7 +85,7 @@ public class DicerollResult {
 	public boolean isError() {
 		return isError;
 	}
-	
+
 	public String toString() {
 		if(secret) {
 			return system + ": [Secret Dice]";

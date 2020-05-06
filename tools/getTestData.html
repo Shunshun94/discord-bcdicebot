@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>testDataGenerator</title>
+</head>
+<body>
+<div id="base" style="width:400px;height:400px;background-color:skyblue;">ここにドロップ</div>
+<textarea id="result" style="width:400px;height:400px;"></textarea>
+
+<script src="http://shunshun94.web.fc2.com/lib/encoding.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+const INPUT = 'input:';
+const OUTPUT = 'output:';
+
+const fileReader = new FileReader();
+fileReader.onload = (e) => {
+	// http://polygonplanet.github.io/encoding.js/tests/detect-file-encoding.html
+	const codes = new Uint8Array(fileReader.result);
+	const rawString = Encoding.convert(codes, {
+		to: 'unicode',
+		from: Encoding.detect(codes),
+		type: 'string'
+	});
+	try {
+		const tests = [];
+		const lines = rawString.split('\n');
+		let flag = false;
+		for(var i = 0; i < lines.length; i++) {
+			const line = lines[i];
+			if(line.startsWith(INPUT)) {
+				flag = true;
+			} else if (flag) {
+				tests.push(line);
+				flag = false;
+			}
+		}
+		$('#result').val(`${$('#result').val()}${tests.join('\n')}`);
+	} catch(err) {
+		console.error(err);
+	}
+};
+
+$('#base').on('drop', function(e) {
+	$('#base').css('background-color', 'skyblue');
+	e.preventDefault();
+	const files = e.originalEvent.dataTransfer.files;
+	const recursiveRead = (array, cursor) => {
+		console.log(cursor)
+		if(array.length > cursor) {
+			fileReader.readAsArrayBuffer(array[cursor]);
+			setTimeout(()=>{recursiveRead(array, cursor + 1);}, 500);
+		} else {
+			alert('finished');
+		}
+	};
+	recursiveRead(files, 0);
+});
+$('#base').on('dragleave', function(e) {
+	$('#base').css('background-color', 'skyblue');
+});
+$('#base').on('dragover', function(e) {
+	$('#base').css('background-color', 'lightyellow');
+	e.preventDefault();
+});
+
+
+
+
+</script>
+
+
+
+</body>
+</html>
