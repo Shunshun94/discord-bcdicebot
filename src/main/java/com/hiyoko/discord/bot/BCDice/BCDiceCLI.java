@@ -161,6 +161,9 @@ public class BCDiceCLI {
 	}
 
 	private String isOriginalDicebot(String rawInput) {
+		if(! (rollCommand.isEmpty() || rawInput.startsWith(rollCommand))) {
+			return "";
+		}
 		List<String> list = originalDiceBotClient.getDiceBotList();
 		for(String name : list) {
 			if(rawInput.startsWith(name)) {return name;}

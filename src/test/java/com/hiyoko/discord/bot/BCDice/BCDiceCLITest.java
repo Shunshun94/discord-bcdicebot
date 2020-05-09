@@ -118,64 +118,52 @@ public class BCDiceCLITest extends TestCase {
 	public void testSupressionMode() throws IOException {
 		String PREFIX = "/hiyoko";
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll", "", "channel").get(0).contains("まずコマンドじゃないだろう"));
+		assertTrue(cli.roll("サンプルダイスボット-夜食表", "no_channel").isRolled());
+		assertFalse(cli.roll(PREFIX + " サンプルダイスボット-夜食表", "no_channel").isRolled());
 		assertTrue(cli.roll("2d6", "channel").isRolled());
-		assertTrue(cli.roll("2d6").isRolled());
 		assertFalse(cli.roll(PREFIX + " 2d6", "channel").isRolled());
-		assertFalse(cli.roll(PREFIX + " 2d6").isRolled());
 		assertFalse(cli.roll("あああああ", "channel").isRolled());
-		assertFalse(cli.roll("あああああ").isRolled());
-		assertFalse(cli.roll("あああああ", "channel").isRolled());
-		assertFalse(cli.roll("あああああ").isRolled());
+		assertFalse(cli.roll(PREFIX + " あああああ", "channel").isRolled());
 
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll disable", "", "channel").get(0).contains("すべてのコマンドがサーバに送信されます"));
+		assertTrue(cli.roll("サンプルダイスボット-夜食表", "no_channel").isRolled());
+		assertTrue(cli.roll(PREFIX + " サンプルダイスボット-夜食表", "no_channel").isRolled());
 		assertTrue(cli.roll("2d6", "channel").isRolled());
-		assertTrue(cli.roll("2d6").isRolled());
 		assertTrue(cli.roll(PREFIX + " 2d6", "channel").isRolled());
-		assertTrue(cli.roll(PREFIX + " 2d6").isRolled());
 		assertTrue(cli.roll("あああああ", "channel").isRolled());
-		assertTrue(cli.roll("あああああ").isRolled());
-		assertTrue(cli.roll("あああああ", "channel").isRolled());
-		assertTrue(cli.roll("あああああ").isRolled());
+		assertTrue(cli.roll(PREFIX + " あああああ", "channel").isRolled());
 
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll /hiyoko", "", "channel").get(0).contains("で始まるコマンドのみサーバに送信します "));
+		assertFalse(cli.roll("サンプルダイスボット-夜食表", "no_channel").isRolled());
+		assertTrue(cli.roll(PREFIX + "サンプルダイスボット-夜食表", "no_channel").isRolled());
 		assertFalse(cli.roll("2d6", "channel").isRolled());
-		assertFalse(cli.roll("2d6").isRolled());
 		assertTrue(cli.roll(PREFIX + " 2d6", "channel").isRolled());
-		assertTrue(cli.roll(PREFIX + " 2d6").isRolled());
 		assertFalse(cli.roll("あああああ", "channel").isRolled());
-		assertFalse(cli.roll("あああああ").isRolled());
-		assertFalse(cli.roll("あああああ", "channel").isRolled());
-		assertFalse(cli.roll("あああああ").isRolled());
+		assertTrue(cli.roll(PREFIX + " あああああ", "channel").isRolled());
 
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll", "", "channel").get(0).contains("まずコマンドじゃないだろう"));
+		assertTrue(cli.roll("サンプルダイスボット-夜食表", "no_channel").isRolled());
+		assertFalse(cli.roll(PREFIX + " サンプルダイスボット-夜食表", "no_channel").isRolled());
 		assertTrue(cli.roll("2d6", "channel").isRolled());
-		assertTrue(cli.roll("2d6").isRolled());
 		assertFalse(cli.roll(PREFIX + " 2d6", "channel").isRolled());
-		assertFalse(cli.roll(PREFIX + " 2d6").isRolled());
 		assertFalse(cli.roll("あああああ", "channel").isRolled());
-		assertFalse(cli.roll("あああああ").isRolled());
-		assertFalse(cli.roll("あああああ", "channel").isRolled());
-		assertFalse(cli.roll("あああああ").isRolled());
-
+		assertFalse(cli.roll(PREFIX + " あああああ", "channel").isRolled());
+		
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll " + PREFIX, "", "channel").get(0).contains("で始まるコマンドのみサーバに送信します "));
+		assertFalse(cli.roll("サンプルダイスボット-夜食表", "no_channel").isRolled());
+		assertTrue(cli.roll(PREFIX + " サンプルダイスボット-夜食表", "no_channel").isRolled());
 		assertFalse(cli.roll("2d6", "channel").isRolled());
-		assertFalse(cli.roll("2d6").isRolled());
 		assertTrue(cli.roll(PREFIX + " 2d6", "channel").isRolled());
-		assertTrue(cli.roll(PREFIX + " 2d6").isRolled());
 		assertFalse(cli.roll("あああああ", "channel").isRolled());
-		assertFalse(cli.roll("あああああ").isRolled());
-		assertFalse(cli.roll("あああああ", "channel").isRolled());
-		assertFalse(cli.roll("あああああ").isRolled());		
-
+		assertTrue(cli.roll(PREFIX + " あああああ", "channel").isRolled());
+		
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll disable", "", "channel").get(0).contains("すべてのコマンドがサーバに送信されます"));
+		assertTrue(cli.roll("サンプルダイスボット-夜食表", "no_channel").isRolled());
+		assertTrue(cli.roll(PREFIX + " サンプルダイスボット-夜食表", "no_channel").isRolled());
 		assertTrue(cli.roll("2d6", "channel").isRolled());
-		assertTrue(cli.roll("2d6").isRolled());
 		assertTrue(cli.roll(PREFIX + " 2d6", "channel").isRolled());
-		assertTrue(cli.roll(PREFIX + " 2d6").isRolled());
 		assertTrue(cli.roll("あああああ", "channel").isRolled());
-		assertTrue(cli.roll("あああああ").isRolled());
-		assertTrue(cli.roll("あああああ", "channel").isRolled());
-		assertTrue(cli.roll("あああああ").isRolled());
+		assertTrue(cli.roll(PREFIX + " あああああ", "channel").isRolled());
 	}
 
 	public void testOriginalDiceBot() throws IOException {
