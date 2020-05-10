@@ -165,8 +165,9 @@ public class BCDiceCLI {
 			return "";
 		}
 		List<String> list = originalDiceBotClient.getDiceBotList();
+		String input = rawInput.replaceFirst(rollCommand, "").trim();
 		for(String name : list) {
-			if(rawInput.startsWith(name)) {return name;}
+			if(input.startsWith(name)) {return name;}
 		}
 		return "";
 	}
