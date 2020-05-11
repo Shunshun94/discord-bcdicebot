@@ -61,6 +61,8 @@ public class BCDiceCLITest extends TestCase {
 		assertTrue(cli.inputs("bcdice set " + diceBotList[1], "", "channel").get(0).indexOf("ERROR") == -1);
 		assertTrue(cli.inputs("bcdice set " + diceBotList[1] + " nonsense", "", "channel").get(0).indexOf("ERROR") == -1);
 		assertTrue(cli.inputs("bcdice set " + diceBotList[1] + "\nhiyohiyo", "", "channel").get(0).indexOf("ERROR") == -1);
+		assertTrue(cli.inputs("bcdice set Hiyoko", "", "hiyohitsu").get(0).contains("Hiyoko"));
+		assertTrue(cli.inputs("bcdice set hitsuji & hiyoko", "", "hiyohitsu").get(0).contains("hitsuji & hiyoko"));
 	}
 
 	public void testInputStringStack() {
