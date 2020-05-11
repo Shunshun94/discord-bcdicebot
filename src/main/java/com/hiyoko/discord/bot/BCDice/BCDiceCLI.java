@@ -66,7 +66,7 @@ public class BCDiceCLI {
 			+ "> bcdice admin PASSWORD suppressroll /diceroll # /diceroll 2d6 等としないとダイスを振れない\n"
 			+ "> bcdice admin PASSWORD suppressroll /r # /r 2d6 等としないとダイスを振れない\n"
 			+ "# ダイスボット表を追加する\n"
-			+ "# ダイスボットのファイルを Disord にアップロードし、アップロードする際のコメントを以下のようにする\n"
+			+ "# ダイスボットのファイルを Discord にアップロードし、アップロードする際のコメントを以下のようにする\n"
 			+ "# ダイスボット名をチャットに書き込むと誰でもダイスボット表を振れる\n"
 			+ "> bcdice admin PASSWORD addDiceBot ダイスボット名\n"
 			+ "> bcdice admin PASSWORD addDiceBot # アップロードしたダイスボットのファイル名がコマンドになる\n"
