@@ -354,20 +354,22 @@ public class BCDiceCLI {
 		}
 		if(command[1].equals("help")) {
 			if(command.length > 2) {
+				String systemName = String.join(" ", Arrays.copyOfRange(command, 2, command.length));
 				try {
-					SystemInfo info = client.getSystemInfo(command[2]);
-					resultList.add("[" + command[2] + "]\n" + info.getInfo());
+					SystemInfo info = client.getSystemInfo(systemName);
+					resultList.add("[" + systemName + "]\n" + info.getInfo());
 					return resultList;
 				} catch (IOException e) {
-					resultList.add("[" + command[2] + "]\n" + e.getMessage());
+					resultList.add("[" + systemName + "]\n" + e.getMessage());
 					return resultList;
 				}
 			}
 		}
 		if(command[1].equals("set")) {
 			if(command.length > 2) {
-				client.setSystem(command[2], channel);
-				resultList.add("BCDice system is changed: " + command[2]);
+				String systemName = String.join(" ", Arrays.copyOfRange(command, 2, command.length));
+				client.setSystem(systemName, channel);
+				resultList.add("BCDice system is changed: " + systemName);
 				return resultList;
 			} else {
 				resultList.add(

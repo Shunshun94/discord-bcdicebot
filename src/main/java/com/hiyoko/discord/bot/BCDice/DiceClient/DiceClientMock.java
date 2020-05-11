@@ -12,7 +12,7 @@ import com.hiyoko.discord.bot.BCDice.dto.SystemList;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
 public class DiceClientMock implements DiceClient {
-	private final String[] systemList = {"Hiyoko", "Hitsuji", "Koneko"};
+	private final String[] systemList = {"Hiyoko", "Hitsuji", "Koneko", "hitsuji & hiyoko"};
 	private final Map<String, String> system = new HashMap<String, String>();
 	private static final String DEFAULT_CHANNEL = "general";
 	private static final Pattern DICE_COMMAND_PATTERN = Pattern.compile("^S?\\d+d\\d+"); 
