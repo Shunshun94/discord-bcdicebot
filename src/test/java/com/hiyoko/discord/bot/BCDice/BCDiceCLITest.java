@@ -173,9 +173,17 @@ public class BCDiceCLITest extends TestCase {
 		assertTrue(cli.roll(PREFIX + " 2d6", "channel").isRolled());
 		assertTrue(cli.roll("あああああ", "channel").isRolled());
 		assertTrue(cli.roll(PREFIX + " あああああ", "channel").isRolled());
+
+		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll", "", "channel").get(0).contains("まずコマンドじゃないだろう"));
 	}
 
 	public void testOriginalDiceBot() throws IOException {
 		assertTrue(cli.roll("サンプルダイスボット-夜食表", "no_channel").isRolled());
+	}
+
+	public void testMultiroll() throws IOException {
+		assertEquals(cli.rolls("2d6", "no_channel").size(), 1);
+		assertEquals(cli.rolls("3 2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls("[パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
 	}
 }
