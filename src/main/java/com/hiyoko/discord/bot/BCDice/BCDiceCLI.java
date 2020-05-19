@@ -46,7 +46,7 @@ public class BCDiceCLI {
 	private static final Pattern GAMESYSTEM_ROOM_PAIR_REGEXP = Pattern.compile("^(\\d*):(.*)");
 	private static final Pattern RESULT_VALUE_REGEXP = Pattern.compile("(\\d+)$");
 	private static final Pattern MULTIROLL_NUM_PREFIX = Pattern.compile("^(\\d+) ");
-	private static final Pattern MULTIROLL_TEXT_PREFIX = Pattern.compile("^\\\\[([^]]+)\\\\] ");
+	private static final Pattern MULTIROLL_TEXT_PREFIX = Pattern.compile("^\\[(.+)\\] ");
 
 	public static final String HELP = "使い方\n"
 			+ "# ダイスボット一覧を確認する\n> bcdice list\n"
@@ -200,14 +200,12 @@ public class BCDiceCLI {
 	public List<DicerollResult> rolls(String rawInput, String channel) throws IOException {
 		List<DicerollResult> result = new ArrayList<DicerollResult>();
 		if(! (rollCommand.isEmpty() || rawInput.trim().startsWith(rollCommand))) {
-			logger.debug(String.format("無効なダイスコマンド [%s]", rawInput));
 			return result;
 		}
 		String input = rawInput.replaceFirst(rollCommand, "").trim();
 		Matcher isNumMatcher = MULTIROLL_NUM_PREFIX.matcher(input);
 		if(isNumMatcher.find()) {
 			String rawCount = isNumMatcher.group(1);
-			logger.debug(String.format("数字指定の複数回ダイスコマンド [%s] TARGET[%s]", rawInput, rawCount));
 			int times = Integer.parseInt(rawCount);
 			String requiredCommand = input.replace(rawCount, "").trim();
 			for(int i = 0; i < times; i++) {
@@ -227,11 +225,10 @@ public class BCDiceCLI {
 		Matcher isTextMatcher = MULTIROLL_TEXT_PREFIX.matcher(input);
 		if(isTextMatcher.find()) {
 			String rawTargetList = isTextMatcher.group(1);
-			logger.debug(String.format("文字列指定の複数回ダイスコマンド [%s] TARGET:[%s]", rawInput, rawTargetList));
 			String[] targetList = rawTargetList.split(",");
 			String requiredCommand = input.replace(isTextMatcher.group(), "").trim();
 			for(String target: targetList) {
-				DicerollResult tmpResult = roll(String.format("%s %s" , rollCommand, requiredCommand), channel);
+				DicerollResult tmpResult = roll(String.format("%s%s" , rollCommand, requiredCommand), channel);
 				if(! tmpResult.isRolled()) {return result;}
 				result.add( new DicerollResult(
 								String.format("%s: %s", target, tmpResult.getText()),
@@ -242,7 +239,7 @@ public class BCDiceCLI {
 			}
 			return result;
 		}
-		DicerollResult tmpResult = roll(input, channel);
+		DicerollResult tmpResult = roll(rawInput, channel);
 		if(tmpResult.isRolled()) {
 			result.add(tmpResult);
 		} 
@@ -256,7 +253,6 @@ public class BCDiceCLI {
 	 * @throws IOException When command failed
 	 */
 	public DicerollResult roll(String rawInput, String channel) throws IOException {
-		logger.debug(String.format("ダイスコマンド [%s] を受け取った", rawInput));
 		String originalDiceBot = isOriginalDicebot(rawInput);
 		if(! originalDiceBot.isEmpty()) {
 			return rollOriginalDiceBot(originalDiceBot);

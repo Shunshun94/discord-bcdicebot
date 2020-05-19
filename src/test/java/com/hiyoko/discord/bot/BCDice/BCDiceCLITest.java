@@ -185,5 +185,19 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(cli.rolls("2d6", "no_channel").size(), 1);
 		assertEquals(cli.rolls("3 2d6", "no_channel").size(), 3);
 		assertEquals(cli.rolls("[パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls("3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
+
+		String PREFIX = "/hiyoko";
+		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll " + PREFIX, "", "channel").get(0).contains("で始まるコマンドのみサーバに送信します "));
+		assertEquals(cli.rolls(PREFIX + " 2d6", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + " 3 2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + " [パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + " 3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		// 間にスペースなし
+		assertEquals(cli.rolls(PREFIX + "2d6", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + "3 2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "[パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
+
 	}
 }
