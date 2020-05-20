@@ -81,7 +81,8 @@ public class BCDiceBot {
 								throw new IOException(e.getMessage(), e);
 							}
 						}
-					}				} catch (IOException e) {
+					}
+				} catch (IOException e) {
 					event.getChannel().sendMessage(String.format("＞%s\n[ERROR]%s", name, e.getMessage()));
 					logger.warn(String.format("USERID: %s MESSAGE: %s", userId, message));
 					logger.warn("Failed to reply to user request", e);
