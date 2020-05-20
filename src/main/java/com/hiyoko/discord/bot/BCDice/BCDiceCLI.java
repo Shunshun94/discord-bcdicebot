@@ -213,8 +213,8 @@ public class BCDiceCLI {
 				logger.debug(tmpResult.toString());
 				if(! tmpResult.isRolled()) {return result;}
 				result.add( new DicerollResult(
-								String.format("%s: %s", i, tmpResult.getText()),
-								tmpResult.getSystem(),
+								tmpResult.getText(),
+								String.format("%s: %s", i + 1, tmpResult.getSystem()),
 								tmpResult.isSecret(),
 								tmpResult.isRolled()
 						));
@@ -231,8 +231,8 @@ public class BCDiceCLI {
 				DicerollResult tmpResult = roll(String.format("%s%s" , rollCommand, requiredCommand), channel);
 				if(! tmpResult.isRolled()) {return result;}
 				result.add( new DicerollResult(
-								String.format("%s: %s", target, tmpResult.getText()),
-								tmpResult.getSystem(),
+								tmpResult.getText(),
+								String.format("%s: %s", target, tmpResult.getSystem()),
 								tmpResult.isSecret(),
 								tmpResult.isRolled()
 						));
