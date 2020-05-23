@@ -61,23 +61,25 @@ public class BCDiceBot {
 				}
 
 				try {
-					DicerollResult rollResult = bcDice.roll(message, channel);
+					List<DicerollResult> rollResults = bcDice.rolls(message, channel);
 					logger.debug("Dice command request for dice server is done");
-					if(rollResult.isError()) {
-						throw new IOException(rollResult.getText());
-					}
-					if( rollResult.isRolled() ) {
-						event.getChannel().sendMessage(String.format("＞%s\n%s", name, rollResult.toString()));
-					}
-					if( rollResult.isSecret() ) {
-						int index = Integer.parseInt(bcDice.inputs("bcdice save " + rollResult.getSystem() + rollResult.getText(), userId, "dummy").get(0));
-						try {
-							api.getUserById(userId).get().sendMessage(rollResult.getSystem() + rollResult.getText());
-							api.getUserById(userId).get().sendMessage("To recall this,\nbcdice load " + index);
-						} catch (InterruptedException e) {
-							throw new IOException(e.getMessage(), e);
-						} catch (ExecutionException e) {
-							throw new IOException(e.getMessage(), e);
+					for(DicerollResult rollResult : rollResults) {
+						if(rollResult.isError()) {
+							throw new IOException(rollResult.getText());
+						}
+						if( rollResult.isRolled() ) {
+							event.getChannel().sendMessage(String.format("＞%s\n%s", name, rollResult.toString()));
+						}
+						if( rollResult.isSecret() ) {
+							int index = Integer.parseInt(bcDice.inputs("bcdice save " + rollResult.getSystem() + rollResult.getText(), userId, "dummy").get(0));
+							try {
+								api.getUserById(userId).get().sendMessage(rollResult.getSystem() + rollResult.getText());
+								api.getUserById(userId).get().sendMessage("To recall this,\nbcdice load " + index);
+							} catch (InterruptedException e) {
+								throw new IOException(e.getMessage(), e);
+							} catch (ExecutionException e) {
+								throw new IOException(e.getMessage(), e);
+							}
 						}
 					}
 				} catch (IOException e) {

@@ -45,6 +45,8 @@ public class BCDiceCLI {
 	private final Logger logger = LoggerFactory.getLogger(BCDiceCLI.class);
 	private static final Pattern GAMESYSTEM_ROOM_PAIR_REGEXP = Pattern.compile("^(\\d*):(.*)");
 	private static final Pattern RESULT_VALUE_REGEXP = Pattern.compile("(\\d+)$");
+	private static final Pattern MULTIROLL_NUM_PREFIX = Pattern.compile("^(\\d+) ");
+	private static final Pattern MULTIROLL_TEXT_PREFIX = Pattern.compile("^\\[(.+)\\] ");
 
 	public static final String HELP = "使い方\n"
 			+ "# ダイスボット一覧を確認する\n> bcdice list\n"
@@ -66,7 +68,7 @@ public class BCDiceCLI {
 			+ "> bcdice admin PASSWORD suppressroll /diceroll # /diceroll 2d6 等としないとダイスを振れない\n"
 			+ "> bcdice admin PASSWORD suppressroll /r # /r 2d6 等としないとダイスを振れない\n"
 			+ "# ダイスボット表を追加する\n"
-			+ "# ダイスボットのファイルを Disord にアップロードし、アップロードする際のコメントを以下のようにする\n"
+			+ "# ダイスボットのファイルを Discord にアップロードし、アップロードする際のコメントを以下のようにする\n"
 			+ "# ダイスボット名をチャットに書き込むと誰でもダイスボット表を振れる\n"
 			+ "> bcdice admin PASSWORD addDiceBot ダイスボット名\n"
 			+ "> bcdice admin PASSWORD addDiceBot # アップロードしたダイスボットのファイル名がコマンドになる\n"
@@ -193,6 +195,55 @@ public class BCDiceCLI {
 		} catch (IOException e) {
 			throw new IOException("ダイスを振るのに失敗しました", e);
 		}
+	}
+
+	public List<DicerollResult> rolls(String rawInput, String channel) throws IOException {
+		List<DicerollResult> result = new ArrayList<DicerollResult>();
+		if(! (rollCommand.isEmpty() || rawInput.trim().startsWith(rollCommand))) {
+			return result;
+		}
+		String input = rawInput.replaceFirst(rollCommand, "").trim();
+		Matcher isNumMatcher = MULTIROLL_NUM_PREFIX.matcher(input);
+		if(isNumMatcher.find()) {
+			String rawCount = isNumMatcher.group(1);
+			int times = Integer.parseInt(rawCount);
+			String requiredCommand = input.replace(rawCount, "").trim();
+			for(int i = 0; i < times; i++) {
+				DicerollResult tmpResult = roll(String.format("%s%s" , rollCommand, requiredCommand), channel);
+				logger.debug(tmpResult.toString());
+				if(! tmpResult.isRolled()) {return result;}
+				result.add( new DicerollResult(
+								tmpResult.getText(),
+								String.format("%s: %s", i + 1, tmpResult.getSystem()),
+								tmpResult.isSecret(),
+								tmpResult.isRolled()
+						));
+			}
+			return result;
+		}
+
+		Matcher isTextMatcher = MULTIROLL_TEXT_PREFIX.matcher(input);
+		if(isTextMatcher.find()) {
+			String rawTargetList = isTextMatcher.group(1);
+			String[] targetList = rawTargetList.split(",");
+			String requiredCommand = input.replace(isTextMatcher.group(), "").trim();
+			for(String target: targetList) {
+				DicerollResult tmpResult = roll(String.format("%s%s" , rollCommand, requiredCommand), channel);
+				if(! tmpResult.isRolled()) {return result;}
+				result.add( new DicerollResult(
+								tmpResult.getText(),
+								String.format("%s: %s", target, tmpResult.getSystem()),
+								tmpResult.isSecret(),
+								tmpResult.isRolled()
+						));
+			}
+			return result;
+		}
+		DicerollResult tmpResult = roll(rawInput, channel);
+		if(tmpResult.isRolled()) {
+			result.add(tmpResult);
+		} 
+		return result;
 	}
 
 	/**
