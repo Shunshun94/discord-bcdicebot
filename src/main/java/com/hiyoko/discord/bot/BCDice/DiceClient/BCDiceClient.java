@@ -10,7 +10,9 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -20,7 +22,8 @@ import java.util.regex.Pattern;
  *
  */
 public class BCDiceClient implements DiceClient {
-	private String url;
+	private int urlCursor = 0;
+	private List<String> urls = new ArrayList<String>();
 	private final Client client;
 	private final Map<String, String> system;
 	private final boolean errorSensitive;
@@ -28,19 +31,29 @@ public class BCDiceClient implements DiceClient {
 	private static final Pattern DICE_COMMAND_PATTERN = Pattern.compile("^[\\w\\+\\-#\\$@<>=\\.\\[\\]\\(\\)]+"); 
 
 	/**
-	 * 
 	 * @param bcDiceUrl BCDice-API server URL
 	 */
 	public BCDiceClient(String bcDiceUrl) {
-		url = bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/";
+		urls.add(bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/");
 		client = ClientBuilder.newBuilder().build();
 		system = new HashMap<String, String>();
 		system.put(DEFAULT_CHANNEL, "DiceBot");
 		errorSensitive = true;
 	}
-	
+
 	public BCDiceClient(String bcDiceUrl, boolean es) {
-		url = bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/";
+		urls.add(bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/");
+		client = ClientBuilder.newBuilder().build();
+		system = new HashMap<String, String>();
+		system.put(DEFAULT_CHANNEL, "DiceBot");
+		errorSensitive = es;
+	}
+
+	public BCDiceClient(List<String> bcDiceUrls, boolean es) {
+		for(String bcDiceUrl : bcDiceUrls) {
+			// stream と collect だとあとから追加ができなくなるのでこれで追加
+			urls.add(bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/");
+		}
 		client = ClientBuilder.newBuilder().build();
 		system = new HashMap<String, String>();
 		system.put(DEFAULT_CHANNEL, "DiceBot");
@@ -49,7 +62,7 @@ public class BCDiceClient implements DiceClient {
 
 	private String getUrl(String path, int rtl) throws IOException {
 		Response response = null;
-		String targetUrl = url + path;
+		String targetUrl = urls.get(urlCursor) + path;
 		try {
 			response = client.target(targetUrl).request().get();
 		} catch(Exception e) {
@@ -72,7 +85,19 @@ public class BCDiceClient implements DiceClient {
         if (! (response.getStatus() == Response.Status.OK.getStatusCode() || response.getStatus() == 400)) {
         	response.close();
         	if(errorSensitive) {
-            	String msg = "[" + response.getStatus() + "] " + targetUrl;
+            	String msg = String.format("[%s] %s", response.getStatus(), targetUrl);
+            	if(msg.startsWith("[5") && (urls.size() != 1) && (rtl > 0)) { // 5XX Error であれば かつ 予備 URL があれば
+            		urlCursor++;
+            		if(urls.size() <= urlCursor) {
+            			urlCursor = 0;
+            		}
+            		System.err.println(String.format("Failed to request to %s, %s, app will try %s with dice server %s",
+            				targetUrl,
+            				response.getStatus(),
+            				rtl,
+            				urls.get(urlCursor)));
+            		return getUrl(path, rtl - 1);
+            	}
             	throw new IOException(msg);
         	} else {
         		return "{\"ok\":false,\"reason\":\"error handling dummy data\"}";
@@ -150,16 +175,24 @@ public class BCDiceClient implements DiceClient {
 	}
 	
 	public String toString() {
-		return "[BCDiceClient] for " + url + " : " + system.get(DEFAULT_CHANNEL);
+		return "[BCDiceClient] for " + urls.get(urlCursor) + " : " + system.get(DEFAULT_CHANNEL);
 	}
 
 	public String toString(String channel) {
-		return "[BCDiceClient] for " + url + " : " + getSystem(channel);
+		return "[BCDiceClient] for " + urls.get(urlCursor) + " : " + getSystem(channel);
 	}
 
 	@Override
 	public void setDiceServer(String bcDiceUrl) {
-		url = bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/";
+		String tmp = bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/";
+		for(int i = 0; i < urls.size(); i++) {
+			if(urls.get(i).equals(tmp) ) {
+				urlCursor = i;
+				return;
+			}
+		}
+		urls.add(tmp);
+		urlCursor = urls.size() - 1;
 	}
 
 	@Override
@@ -172,5 +205,13 @@ public class BCDiceClient implements DiceClient {
 		if(command.startsWith("choice[")) {return true;}
 		if(command.startsWith("http")) {return false;}
 		return DICE_COMMAND_PATTERN.matcher(command).find();
+	}
+
+	public int getUrlCursor() {
+		return urlCursor;
+	}
+
+	public List<String> getDiceUrlList() {
+		return urls;
 	}
 }
