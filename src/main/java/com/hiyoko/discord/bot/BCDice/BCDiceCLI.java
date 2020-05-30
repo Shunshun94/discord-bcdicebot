@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 
 /**
  * Client for BCDice.
- * The isntance gets the command as String.
+ * The instance gets the command as String.
  * If it's required, dispatch the command to BCDice.
  * @author @Shunshun94
  *
@@ -124,6 +124,7 @@ public class BCDiceCLI {
 	
 	/**
 	 * @param url BCDice-API URL.
+	 * @param errorSensitive all errors throws Exception or not. If version is older, this should be false
 	 */
 	public BCDiceCLI(String url, boolean errorSenstive) {
 		client = DiceClientFactory.getDiceClient(url, errorSenstive);
@@ -131,9 +132,27 @@ public class BCDiceCLI {
 		savedMessage = new HashMap<String, List<String>>();
 		password = getPassword();
 	}
-	
+
 	/**
 	 * 
+	 * @param urls
+	 * @param errorSenstive
+	 */
+	public BCDiceCLI(List<String> urls, boolean errorSenstive) {
+		client = DiceClientFactory.getDiceClient(urls, errorSenstive);
+		originalDiceBotClient = new OriginalDiceBotClient();
+		savedMessage = new HashMap<String, List<String>>();
+		password = getPassword();
+	}
+
+	public BCDiceCLI(String url, String subUrl, boolean errorSenstive) {
+		client = DiceClientFactory.getDiceClient(url, errorSenstive);
+		originalDiceBotClient = new OriginalDiceBotClient();
+		savedMessage = new HashMap<String, List<String>>();
+		password = getPassword();
+	}
+	
+	/**
 	 * @param url BCDice-API URL.
 	 * @param system BCDice game system
 	 */
@@ -513,10 +532,15 @@ public class BCDiceCLI {
 				return resultList;
 			} else {
 				client.setDiceServer(command[4]);
-				resultList.add("ダイスサーバを再設定しました");
 				try {
 					VersionInfo vi = client.getVersion();
-					resultList.add(client.toString() + "(API v." + vi.getApiVersion() + " / BCDice v." + vi.getDiceVersion() + ")");
+					String msg = client.toString() + "(API v." + vi.getApiVersion() + " / BCDice v." + vi.getDiceVersion() + ")";
+					if(msg.contains(command[4])) {
+						resultList.add("ダイスサーバを再設定しました");
+					} else {
+						resultList.add("ダイスサーバの設定に失敗しました。以下のサーバを利用します");
+					}
+					resultList.add(msg);
 				} catch(IOException e) {
 					resultList.add(client.toString() + "(ダイスサーバの情報の取得に失敗しました)");
 				}
