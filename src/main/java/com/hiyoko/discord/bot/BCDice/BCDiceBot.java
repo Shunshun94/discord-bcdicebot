@@ -35,12 +35,16 @@ public class BCDiceBot {
 	 * @param errorSensitive
 	 */
 	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive) {
+		final Logger logger = LoggerFactory.getLogger(BCDiceBot.class);
 		List<String> urlList = new ArrayList<String>();
 		urlList.add(bcDiceUrl);
 		String secondaryUrl = System.getenv("BCDICE_API_SECONDARY");
-		if(secondaryUrl != null) {urlList.add(secondaryUrl);}
-		BCDiceCLI bcDice = new BCDiceCLI(bcDiceUrl, errorSensitive);
-		final Logger logger = LoggerFactory.getLogger(BCDiceBot.class);
+		if(secondaryUrl != null) {
+			urlList.add(secondaryUrl);
+			logger.info(String.format("  Primary URL: %s", bcDiceUrl));
+			logger.info(String.format("Secondary URL: %s", secondaryUrl));
+		}
+		BCDiceCLI bcDice = new BCDiceCLI(urlList, errorSensitive);
 		new DiscordApiBuilder().setToken(token).login().thenAccept(api -> {
 			
 			String myId = api.getYourself().getIdAsString();
