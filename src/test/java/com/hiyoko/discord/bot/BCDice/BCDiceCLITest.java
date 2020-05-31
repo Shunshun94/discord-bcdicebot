@@ -186,6 +186,13 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(cli.rolls("3 2d6", "no_channel").size(), 3);
 		assertEquals(cli.rolls("[パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
 		assertEquals(cli.rolls("3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls("20 サンプルダイスボット-夜食表", "no_channel").size(), 20);
+		try {
+			assertEquals(cli.rolls("21 サンプルダイスボット-夜食表", "no_channel").size(), 20);
+			throw new IOException("Unexpected behavior [21 サンプルダイスボット-夜食表] must be rejected");
+		} catch(IOException e) {
+			// OK
+		}
 
 		String PREFIX = "/hiyoko";
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll " + PREFIX, "", "channel").get(0).contains("で始まるコマンドのみサーバに送信します "));
@@ -193,11 +200,13 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(cli.rolls(PREFIX + " 3 2d6", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + " [パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + " 3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + " 20 サンプルダイスボット-夜食表", "no_channel").size(), 20);
 		// 間にスペースなし
 		assertEquals(cli.rolls(PREFIX + "2d6", "no_channel").size(), 1);
 		assertEquals(cli.rolls(PREFIX + "3 2d6", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + "[パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + "3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "20 サンプルダイスボット-夜食表", "no_channel").size(), 20);
 
 	}
 }

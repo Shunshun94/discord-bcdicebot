@@ -228,6 +228,9 @@ public class BCDiceCLI {
 			String rawCount = isNumMatcher.group(1);
 			int times = Integer.parseInt(rawCount);
 			String requiredCommand = input.replace(rawCount, "").trim();
+			if(times > 20) {
+				throw new IOException(String.format("1度にダイスを振れる回数は20回までです（%d回振ろうとしていました）", times));
+			}
 			for(int i = 0; i < times; i++) {
 				DicerollResult tmpResult = roll(String.format("%s%s" , rollCommand, requiredCommand), channel);
 				logger.debug(tmpResult.toString());
@@ -247,6 +250,9 @@ public class BCDiceCLI {
 			String rawTargetList = isTextMatcher.group(1);
 			String[] targetList = rawTargetList.split(",");
 			String requiredCommand = input.replace(isTextMatcher.group(), "").trim();
+			if(targetList.length > 20) {
+				throw new IOException(String.format("1度にダイスを振れる回数は20回までです（%d回振ろうとしていました）", targetList.length));
+			}
 			for(String target: targetList) {
 				DicerollResult tmpResult = roll(String.format("%s%s" , rollCommand, requiredCommand), channel);
 				result.add( new DicerollResult(
