@@ -20,6 +20,14 @@ public class DicerollResult {
 		this.isError = false;
 	}
 
+	public DicerollResult(String text, String system, boolean secret, boolean rolled, boolean error) {
+		this.text = text;
+		this.secret = secret;
+		this.rolled = rolled;
+		this.system = system;
+		this.isError = error;
+	}
+
 	public DicerollResult(String json, String usedSystem) {
 		JsonObject result = Json.parse(json).asObject();
 		this.rolled = result.getBoolean("ok", false);
@@ -31,8 +39,8 @@ public class DicerollResult {
 		} else {
 			this.system = "";
 			this.secret = false;
-
 			String text = result.getString("reason", "");
+			
 			if(text.equals(UNSUPPORTED_DICEBOT)) {
 				this.isError = true;
 				this.text = String.format("対応していないシステム ( `%s` ) を使っているようです。スペルが間違っている、または未対応のシステムかもしれません。対応しているシステムを `bcdice set システム名` で設定してください。ダイスボットの一覧を参照するには `bcdice list` をご利用ください", usedSystem) ;

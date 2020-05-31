@@ -19,7 +19,7 @@ import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
  * @author @Shunshun94
  */
 public class BCDiceBot {
-
+	final Logger logger = LoggerFactory.getLogger(BCDiceBot.class);
 	/**
 	 * Constructor.
 	 * @param token Discord bot token
@@ -29,13 +29,7 @@ public class BCDiceBot {
 		new BCDiceBot(token, bcDiceUrl, true);
 	}
 
-	/**
-	 * @param token Discord bot token
-	 * @param bcDiceUrl BCDice-API URL
-	 * @param errorSensitive
-	 */
-	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive) {
-		final Logger logger = LoggerFactory.getLogger(BCDiceBot.class);
+	private List<String> getUrlList(String bcDiceUrl) {
 		List<String> urlList = new ArrayList<String>();
 		urlList.add(bcDiceUrl);
 		String secondaryUrl = System.getenv("BCDICE_API_SECONDARY");
@@ -44,9 +38,27 @@ public class BCDiceBot {
 			logger.info(String.format("  Primary URL: %s", bcDiceUrl));
 			logger.info(String.format("Secondary URL: %s", secondaryUrl));
 		}
-		BCDiceCLI bcDice = new BCDiceCLI(urlList, errorSensitive);
+		return urlList;
+	}
+
+	private String getDefaultSystem() {
+		String defaultSystem = System.getenv("BCDICE_DEFAULT_SYSTEM");
+		if(defaultSystem == null) {
+			return "DiceBot";
+		} else {
+			return defaultSystem;
+		}
+	}
+
+	/**
+	 * @param token Discord bot token
+	 * @param bcDiceUrl BCDice-API URL
+	 * @param errorSensitive
+	 */
+	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive) {
+		BCDiceCLI bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive);
 		new DiscordApiBuilder().setToken(token).login().thenAccept(api -> {
-			
+
 			String myId = api.getYourself().getIdAsString();
 			api.addMessageCreateListener(event -> {
 				String channel = event.getChannel().getIdAsString();
@@ -97,8 +109,6 @@ public class BCDiceBot {
 					logger.warn("Failed to reply to user request", e);
 				}
 			});
-			
-			
 		});
 	}
 
