@@ -77,6 +77,13 @@
 	<li>(推奨) 管理用パスワードを決め、<strong>PleaseChangeMeIfYouUseThis</strong>を決めた管理用パスワードに書き換えます</li>
 	<li>(推奨) start.bat を編集している場合は <strong>REM set BCDICE_PASSWORD=PleaseChangeMeIfYouUseThis</strong>の "REM" を削除します<br/>
 start.sh を編集している場合は <strong># BCDICE_PASSWORD=PleaseChangeMeIfYouUseThis</strong>の "#" を削除します</li>
+	<li>(推奨) start.bat を編集している場合は <strong>REM set BCDICE_API_SECONDARY=http://secondary.bcdice-api.yourdomain.co.jp/</strong>の "REM" を削除します
+<br/>その上で <code>http://secondary.bcdice-api.yourdomain.co.jp/</code> を3で指定した BCDice-API サーバが利用不能の際に利用する予定の BCDice-API サーバの URL に書き換えます
+<br/>start.sh を編集している場合は <strong># BCDICE_API_SECONDARY=http://secondary.bcdice-api.yourdomain.co.jp/</strong>の "#" を削除します
+<br/>その上で <code>http://secondary.bcdice-api.yourdomain.co.jp/</code> を3で指定した BCDice-API サーバが利用不能の際に利用する予定の BCDice-API サーバの URL に書き換えます</li>
+	<li>(推奨) start.bat を編集している場合は <strong>REM set BCDICE_DEFAULT_SYSTEM=DiceBot</strong>の "REM" を削除し、<code>DiceBot</code>を利用するデフォルトのシステム名に書き換えます<br/>
+start.sh を編集している場合は <strong># BCDICE_DEFAULT_SYSTEM=DiceBot</strong>の "#" を削除し、<code>DiceBot</code>を利用するデフォルトのシステム名に書き換えます<br/>
+何のシステムを利用するか指定していないチャンネルにおいてはここで指定したシステムのダイスボットが利用されます</li>
 	<li>Windows を使っている方は メモ帳を閉じ、 start.bat をダブルクリックします<br/>Linux/macOS を使っている方は編集を保存・完了し start.sh を実行します</li>
 	<li>Bot が起動します。Discord の参加者一覧に Bot がオンラインの状態で存在すれば成功です</li>
 	<li>終了はキーボードの Ctrl + C を押してください</li>
@@ -185,10 +192,14 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v1.13</dt>
+	<dd>ダイスを一度に複数回振る機能を追加しました</dd>
+	<dd>BCDice API サーバが不調の際に別の BCDice API サーバに自動で切り替える機能を追加しました</dd>
+	<dd>ダイスボットの種類を指定していない際に利用されるデフォルトのダイスボットを指定する機能を追加しました</dd>
 	<dt>v1.12.2</dt>
 	<dd>システムの名称にスペースが入っている場合にダイスボットの設定やコマンドの参照ができない問題を修正しました</dd>
 	<dt>v1.12.1</dt>
-	<dd>ダイスを振る際に接頭語を必要とする設定にしている際、オリジナルのダイスボットについて接頭語の設定が有効になってなかった問題を修正</dd>
+	<dd>ダイスを振る際に接頭語を必要とする設定にしている際、オリジナルのダイスボットについて接頭語の設定が有効になってなかった問題を修正しました</dd>
 	<dt>v1.12</dt>
 	<dd>BCDice-API へのリクエスト送信頻度を下げる機能を追加しました</dd>
 	<dd>管理者がオリジナルのダイスボット表を追加できる機能を追加しました</dd>
@@ -198,32 +209,32 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 	<dt>v1.10</dt>
 	<dd>Linux/macOS 環境向けの起動スクリプトを追加。スクリプトを共有くださった<a href="https://twitter.com/ochaochaocha3">おちゃさん</a>、ありがとうございます！</dd>
 	<dt>v1.9</dt>
-	<dd>ダイスボットのスペルが間違えている時に警告が出ない問題を解消</dd>
+	<dd>ダイスボットのスペルが間違えている時に警告が出ない問題を解消しました</dd>
 	<dt>v1.8.1(2019/07/24)</dt>
-	<dd>本ドキュメントの軽微な修正を実施。</dd>
+	<dd>本ドキュメントの軽微な修正を実施しました</dd>
 	<dt>v1.8(2019/07/23)</dt>
-	<dd>ダイスコマンドに関するバグを修正 (<a href="https://github.com/Shunshun94/discord-bcdicebot/issues/13">詳細</a>)。</dd>
-	<dd>管理用コマンドとして BCDice-API の接続先を変更する機能を追加</dd>
-	<dd>管理用コマンドとして全部屋に設定されたダイスボット一覧を取得する機能を追加</dd>
-	<dd>管理用コマンドとして全部屋にダイスボットを設定する機能を追加</dd>
+	<dd>ダイスコマンドに関するバグを修正しました (<a href="https://github.com/Shunshun94/discord-bcdicebot/issues/13">詳細</a>)。</dd>
+	<dd>管理用コマンドとして BCDice-API の接続先を変更する機能を追加しました</dd>
+	<dd>管理用コマンドとして全部屋に設定されたダイスボット一覧を取得する機能を追加しました</dd>
+	<dd>管理用コマンドとして全部屋にダイスボットを設定する機能を追加しました</dd>
 	<dt>v1.7(2019/06/10)</dt>
-	<dd>bcdice list でダイスボットの一覧が表示されないことがある問題を修正した</dd>
+	<dd>bcdice list でダイスボットの一覧が表示されないことがある問題を修正しました</dd>
 	<dt>v1.6(2018/11/11)</dt>
-	<dd>一部のエラーを無視する機能を追加。詳しくは上述の <q>ダイスを振るコマンド以外を入力すると <strong>[ERROR][500] ～</strong> って出る。設定は合っているはずなのに</q> 参照</dd>
-	<dd>設定用コマンドを一部修正した</dd>
+	<dd>一部のエラーを無視する機能を追加しました。詳しくは上述の <q>ダイスを振るコマンド以外を入力すると <strong>[ERROR][500] ～</strong> って出る。設定は合っているはずなのに</q> を参照してください</dd>
+	<dd>設定用コマンドを一部修正しました</dd>
 	<dt>v1.5(2018/03/24)</dt>
-	<dd>ダイスコマンドに関するバグを修正 (<a href="https://github.com/Shunshun94/discord-bcdicebot/pull/10">詳細</a>)。問題の指摘と修正手法の共有をしてくださった<a href="https://github.com/c-ardinal">cardinal</a> さん、ありがとうございます！</dd>
+	<dd>ダイスコマンドに関するバグを修正しました (<a href="https://github.com/Shunshun94/discord-bcdicebot/pull/10">詳細</a>)。問題の指摘と修正手法の共有をしてくださった<a href="https://github.com/c-ardinal">cardinal</a> さん、ありがとうございます！</dd>
 	<dt>v1.4(2017/10/07)</dt>
-	<dd>利用しているライブラリ起因の問題に対してライブラリをバージョンアップして対応。問題の指摘をくださった<a href="https://github.com/C0ela">シーラさん</a>、ありがとうございます！</dd>
-	<dd>アプリ終了後に待機するように start.bat を変更。ログの収集が容易になった</dd>
+	<dd>利用しているライブラリ起因の問題に対してライブラリをバージョンアップして対応しました。問題の指摘をくださった<a href="https://github.com/C0ela">シーラさん</a>、ありがとうございます！</dd>
+	<dd>アプリ終了後に待機するように start.bat を変更しました。ログの収集が容易になりました</dd>
 	<dt>v1.3(2017/07/13)</dt>
-	<dd>Channel 毎に異なるダイスボットを利用できるように変更。特に設定していない場合は general のものを利用</dd>
+	<dd>Channel 毎に異なるダイスボットを利用できるように変更しました。特に設定していない場合は general のものを利用しています</dd>
 	<dt>v1.2(2017/07/06)</dt>
-	<dd>BCDice-API v0.4.0 に対応。問題の指摘をくださった<a href="https://twitter.com/ysakasin">酒田　シンジさん</a>、ありがとうございます！</dd>
+	<dd>BCDice-API v0.4.0 に対応しました。問題の指摘をくださった<a href="https://twitter.com/ysakasin">酒田　シンジさん</a>、ありがとうございます！</dd>
 	<dt>v1.1.1(2017/06/30)</dt>
-	<dd>本ドキュメントの権利的な問題に対応</dd>
+	<dd>本ドキュメントの権利的な問題に対応しました</dd>
 	<dt>v1.1(2017/06/30)</dt>
-	<dd>いくらかの内部的な問題を修正。機能への変更はなし</dd>
+	<dd>いくらかの内部的な問題を修正。機能への変更はありません</dd>
 	<dt>v1.0 (2017/06/26)</dt>
 	<dd>公開</dd>
 </dl>
