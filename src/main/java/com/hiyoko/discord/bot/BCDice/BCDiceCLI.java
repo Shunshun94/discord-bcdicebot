@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 
 /**
  * Client for BCDice.
- * The isntance gets the command as String.
+ * The instance gets the command as String.
  * If it's required, dispatch the command to BCDice.
  * @author @Shunshun94
  *
@@ -45,6 +45,8 @@ public class BCDiceCLI {
 	private final Logger logger = LoggerFactory.getLogger(BCDiceCLI.class);
 	private static final Pattern GAMESYSTEM_ROOM_PAIR_REGEXP = Pattern.compile("^(\\d*):(.*)");
 	private static final Pattern RESULT_VALUE_REGEXP = Pattern.compile("(\\d+)$");
+	private static final Pattern MULTIROLL_NUM_PREFIX = Pattern.compile("^(\\d+) ");
+	private static final Pattern MULTIROLL_TEXT_PREFIX = Pattern.compile("^\\[(.+)\\] ");
 
 	public static final String HELP = "使い方\n"
 			+ "# ダイスボット一覧を確認する\n> bcdice list\n"
@@ -66,7 +68,7 @@ public class BCDiceCLI {
 			+ "> bcdice admin PASSWORD suppressroll /diceroll # /diceroll 2d6 等としないとダイスを振れない\n"
 			+ "> bcdice admin PASSWORD suppressroll /r # /r 2d6 等としないとダイスを振れない\n"
 			+ "# ダイスボット表を追加する\n"
-			+ "# ダイスボットのファイルを Disord にアップロードし、アップロードする際のコメントを以下のようにする\n"
+			+ "# ダイスボットのファイルを Discord にアップロードし、アップロードする際のコメントを以下のようにする\n"
 			+ "# ダイスボット名をチャットに書き込むと誰でもダイスボット表を振れる\n"
 			+ "> bcdice admin PASSWORD addDiceBot ダイスボット名\n"
 			+ "> bcdice admin PASSWORD addDiceBot # アップロードしたダイスボットのファイル名がコマンドになる\n"
@@ -122,6 +124,7 @@ public class BCDiceCLI {
 	
 	/**
 	 * @param url BCDice-API URL.
+	 * @param errorSensitive all errors throws Exception or not. If version is older, this should be false
 	 */
 	public BCDiceCLI(String url, boolean errorSenstive) {
 		client = DiceClientFactory.getDiceClient(url, errorSenstive);
@@ -129,9 +132,20 @@ public class BCDiceCLI {
 		savedMessage = new HashMap<String, List<String>>();
 		password = getPassword();
 	}
-	
+
 	/**
 	 * 
+	 * @param urls
+	 * @param errorSenstive
+	 */
+	public BCDiceCLI(List<String> urls, boolean errorSenstive) {
+		client = DiceClientFactory.getDiceClient(urls, errorSenstive);
+		originalDiceBotClient = new OriginalDiceBotClient();
+		savedMessage = new HashMap<String, List<String>>();
+		password = getPassword();
+	}
+	
+	/**
 	 * @param url BCDice-API URL.
 	 * @param system BCDice game system
 	 */
@@ -142,7 +156,15 @@ public class BCDiceCLI {
 		savedMessage = new HashMap<String, List<String>>();
 		password = getPassword();
 	}
-	
+
+	public BCDiceCLI(List<String> urls, String system, boolean errorSensitive) {
+		client = DiceClientFactory.getDiceClient(urls, errorSensitive);
+		client.setSystem(system);
+		originalDiceBotClient = new OriginalDiceBotClient();
+		savedMessage = new HashMap<String, List<String>>();
+		password = getPassword();
+	}
+
 	/**
 	 * @param inputted command
 	 * @return If the command is for roll dice command, true. If not false
@@ -193,6 +215,61 @@ public class BCDiceCLI {
 		} catch (IOException e) {
 			throw new IOException("ダイスを振るのに失敗しました", e);
 		}
+	}
+
+	public List<DicerollResult> rolls(String rawInput, String channel) throws IOException {
+		List<DicerollResult> result = new ArrayList<DicerollResult>();
+		if(! (rollCommand.isEmpty() || rawInput.trim().startsWith(rollCommand))) {
+			return result;
+		}
+		String input = rawInput.replaceFirst(rollCommand, "").trim();
+		Matcher isNumMatcher = MULTIROLL_NUM_PREFIX.matcher(input);
+		if(isNumMatcher.find()) {
+			String rawCount = isNumMatcher.group(1);
+			int times = Integer.parseInt(rawCount);
+			String requiredCommand = input.replace(rawCount, "").trim();
+			if(times > 20) {
+				throw new IOException(String.format("1度にダイスを振れる回数は20回までです（%d回振ろうとしていました）", times));
+			}
+			for(int i = 0; i < times; i++) {
+				DicerollResult tmpResult = roll(String.format("%s%s" , rollCommand, requiredCommand), channel);
+				logger.debug(tmpResult.toString());
+				result.add( new DicerollResult(
+								tmpResult.getText(),
+								String.format("%s: %s", i + 1, tmpResult.getSystem()),
+								tmpResult.isSecret(),
+								tmpResult.isRolled(),
+								tmpResult.isError()
+						));
+			}
+			return result;
+		}
+
+		Matcher isTextMatcher = MULTIROLL_TEXT_PREFIX.matcher(input);
+		if(isTextMatcher.find()) {
+			String rawTargetList = isTextMatcher.group(1);
+			String[] targetList = rawTargetList.split(",");
+			String requiredCommand = input.replace(isTextMatcher.group(), "").trim();
+			if(targetList.length > 20) {
+				throw new IOException(String.format("1度にダイスを振れる回数は20回までです（%d回振ろうとしていました）", targetList.length));
+			}
+			for(String target: targetList) {
+				DicerollResult tmpResult = roll(String.format("%s%s" , rollCommand, requiredCommand), channel);
+				result.add( new DicerollResult(
+								tmpResult.getText(),
+								String.format("%s: %s", target, tmpResult.getSystem()),
+								tmpResult.isSecret(),
+								tmpResult.isRolled(),
+								tmpResult.isError()
+						));
+			}
+			return result;
+		}
+		DicerollResult tmpResult = roll(rawInput, channel);
+		if(tmpResult.isRolled() || tmpResult.isError()) {
+			result.add(tmpResult);
+		} 
+		return result;
 	}
 
 	/**
@@ -462,10 +539,15 @@ public class BCDiceCLI {
 				return resultList;
 			} else {
 				client.setDiceServer(command[4]);
-				resultList.add("ダイスサーバを再設定しました");
 				try {
 					VersionInfo vi = client.getVersion();
-					resultList.add(client.toString() + "(API v." + vi.getApiVersion() + " / BCDice v." + vi.getDiceVersion() + ")");
+					String msg = client.toString() + "(API v." + vi.getApiVersion() + " / BCDice v." + vi.getDiceVersion() + ")";
+					if(msg.contains(command[4])) {
+						resultList.add("ダイスサーバを再設定しました");
+					} else {
+						resultList.add("ダイスサーバの設定に失敗しました。以下のサーバを利用します");
+					}
+					resultList.add(msg);
 				} catch(IOException e) {
 					resultList.add(client.toString() + "(ダイスサーバの情報の取得に失敗しました)");
 				}

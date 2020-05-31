@@ -1,6 +1,7 @@
 package com.hiyoko.discord.bot.BCDice;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -18,7 +19,7 @@ import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
  * @author @Shunshun94
  */
 public class BCDiceBot {
-
+	final Logger logger = LoggerFactory.getLogger(BCDiceBot.class);
 	/**
 	 * Constructor.
 	 * @param token Discord bot token
@@ -28,16 +29,36 @@ public class BCDiceBot {
 		new BCDiceBot(token, bcDiceUrl, true);
 	}
 
+	private List<String> getUrlList(String bcDiceUrl) {
+		List<String> urlList = new ArrayList<String>();
+		urlList.add(bcDiceUrl);
+		String secondaryUrl = System.getenv("BCDICE_API_SECONDARY");
+		if(secondaryUrl != null) {
+			urlList.add(secondaryUrl);
+			logger.info(String.format("  Primary URL: %s", bcDiceUrl));
+			logger.info(String.format("Secondary URL: %s", secondaryUrl));
+		}
+		return urlList;
+	}
+
+	private String getDefaultSystem() {
+		String defaultSystem = System.getenv("BCDICE_DEFAULT_SYSTEM");
+		if(defaultSystem == null) {
+			return "DiceBot";
+		} else {
+			return defaultSystem;
+		}
+	}
+
 	/**
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
 	 * @param errorSensitive
 	 */
 	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive) {
-		BCDiceCLI bcDice = new BCDiceCLI(bcDiceUrl, errorSensitive);
-		final Logger logger = LoggerFactory.getLogger(BCDiceBot.class);
+		BCDiceCLI bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive);
 		new DiscordApiBuilder().setToken(token).login().thenAccept(api -> {
-			
+
 			String myId = api.getYourself().getIdAsString();
 			api.addMessageCreateListener(event -> {
 				String channel = event.getChannel().getIdAsString();
@@ -61,23 +82,25 @@ public class BCDiceBot {
 				}
 
 				try {
-					DicerollResult rollResult = bcDice.roll(message, channel);
+					List<DicerollResult> rollResults = bcDice.rolls(message, channel);
 					logger.debug("Dice command request for dice server is done");
-					if(rollResult.isError()) {
-						throw new IOException(rollResult.getText());
-					}
-					if( rollResult.isRolled() ) {
-						event.getChannel().sendMessage(String.format("＞%s\n%s", name, rollResult.toString()));
-					}
-					if( rollResult.isSecret() ) {
-						int index = Integer.parseInt(bcDice.inputs("bcdice save " + rollResult.getSystem() + rollResult.getText(), userId, "dummy").get(0));
-						try {
-							api.getUserById(userId).get().sendMessage(rollResult.getSystem() + rollResult.getText());
-							api.getUserById(userId).get().sendMessage("To recall this,\nbcdice load " + index);
-						} catch (InterruptedException e) {
-							throw new IOException(e.getMessage(), e);
-						} catch (ExecutionException e) {
-							throw new IOException(e.getMessage(), e);
+					for(DicerollResult rollResult : rollResults) {
+						if(rollResult.isError()) {
+							throw new IOException(rollResult.getText());
+						}
+						if( rollResult.isRolled() ) {
+							event.getChannel().sendMessage(String.format("＞%s\n%s", name, rollResult.toString()));
+						}
+						if( rollResult.isSecret() ) {
+							int index = Integer.parseInt(bcDice.inputs("bcdice save " + rollResult.getSystem() + rollResult.getText(), userId, "dummy").get(0));
+							try {
+								api.getUserById(userId).get().sendMessage(rollResult.getSystem() + rollResult.getText());
+								api.getUserById(userId).get().sendMessage("To recall this,\nbcdice load " + index);
+							} catch (InterruptedException e) {
+								throw new IOException(e.getMessage(), e);
+							} catch (ExecutionException e) {
+								throw new IOException(e.getMessage(), e);
+							}
 						}
 					}
 				} catch (IOException e) {
@@ -86,8 +109,6 @@ public class BCDiceBot {
 					logger.warn("Failed to reply to user request", e);
 				}
 			});
-			
-			
 		});
 	}
 
@@ -98,7 +119,7 @@ public class BCDiceBot {
 	public static void main(String[] args) {
 		if( args.length < 2 || args[0].equals("help") ||
 			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
-			System.out.println("Discord-BCDicebot Version 1.12.2");
+			System.out.println("Discord-BCDicebot Version 1.13");
 			System.out.println("This application requires two params");
 			System.out.println("  1. Discord Bot Token");
 			System.out.println("  2. BCDice-api server URL");
