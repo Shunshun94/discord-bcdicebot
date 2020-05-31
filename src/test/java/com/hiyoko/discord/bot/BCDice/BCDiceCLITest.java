@@ -87,7 +87,7 @@ public class BCDiceCLITest extends TestCase {
 	}
 	
 	public void testInputStringString() {
-		assertEquals(cli.inputs("bcdice status", "", "channel").get(0), cli.input("bcdice status", "koneko"));
+		assertEquals(cli.inputs("bcdice status", "", "channel").get(0), cli.inputs("bcdice status", "koneko", "channel").get(0));
 	}
 	
 	public void testMultiChannel() {
@@ -104,12 +104,12 @@ public class BCDiceCLITest extends TestCase {
 
 	public void testNormalizeCommand() throws IOException {
 		// From https://github.com/Shunshun94/discord-bcdicebot/pull/10#issuecomment-374023404
-		String acctualText = cli.roll("2d6 <= 8 / ああああaaa[~'()&?!]").getText();
+		String acctualText = cli.roll("2d6 <= 8 / ああああaaa[~'()&?!]", "nonChannel").getText();
 		String expectedText = "2d6%3C%3D8%20%2F%20%E3%81%82%E3%81%82%E3%81%82%E3%81%82aaa%5B~%27%28%29%26%3F%21%5D";
 		assertEquals(expectedText, acctualText);
-		assertEquals("1d10%3C5", cli.roll("1d10 < 5").getText());
-		assertEquals("1d10%3E5", cli.roll("1d10 > 5").getText());
-		assertEquals("2d6aa%20a%3Cbb%20b%3Dc%20cc%3Edd%20d%3C%3D%3E%3D%3D%3C%3D%3Edd%20d", cli.roll("2d6aa a < bb b = c cc > dd d <= >=  =< => dd d").getText());
+		assertEquals("1d10%3C5", cli.roll("1d10 < 5", "nonChannel").getText());
+		assertEquals("1d10%3E5", cli.roll("1d10 > 5", "nonChannel").getText());
+		assertEquals("2d6aa%20a%3Cbb%20b%3Dc%20cc%3Edd%20d%3C%3D%3E%3D%3D%3C%3D%3Edd%20d", cli.roll("2d6aa a < bb b = c cc > dd d <= >=  =< => dd d", "nonChannel").getText());
 	}
 
 	public void testAdmin() {

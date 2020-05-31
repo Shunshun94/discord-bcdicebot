@@ -144,13 +144,6 @@ public class BCDiceCLI {
 		savedMessage = new HashMap<String, List<String>>();
 		password = getPassword();
 	}
-
-	public BCDiceCLI(String url, String subUrl, boolean errorSenstive) {
-		client = DiceClientFactory.getDiceClient(url, errorSenstive);
-		originalDiceBotClient = new OriginalDiceBotClient();
-		savedMessage = new HashMap<String, List<String>>();
-		password = getPassword();
-	}
 	
 	/**
 	 * @param url BCDice-API URL.
@@ -163,7 +156,15 @@ public class BCDiceCLI {
 		savedMessage = new HashMap<String, List<String>>();
 		password = getPassword();
 	}
-	
+
+	public BCDiceCLI(List<String> urls, String system, boolean errorSensitive) {
+		client = DiceClientFactory.getDiceClient(urls, errorSensitive);
+		client.setSystem(system);
+		originalDiceBotClient = new OriginalDiceBotClient();
+		savedMessage = new HashMap<String, List<String>>();
+		password = getPassword();
+	}
+
 	/**
 	 * @param inputted command
 	 * @return If the command is for roll dice command, true. If not false
@@ -230,12 +231,12 @@ public class BCDiceCLI {
 			for(int i = 0; i < times; i++) {
 				DicerollResult tmpResult = roll(String.format("%s%s" , rollCommand, requiredCommand), channel);
 				logger.debug(tmpResult.toString());
-				if(! tmpResult.isRolled()) {return result;}
 				result.add( new DicerollResult(
 								tmpResult.getText(),
 								String.format("%s: %s", i + 1, tmpResult.getSystem()),
 								tmpResult.isSecret(),
-								tmpResult.isRolled()
+								tmpResult.isRolled(),
+								tmpResult.isError()
 						));
 			}
 			return result;
@@ -248,18 +249,18 @@ public class BCDiceCLI {
 			String requiredCommand = input.replace(isTextMatcher.group(), "").trim();
 			for(String target: targetList) {
 				DicerollResult tmpResult = roll(String.format("%s%s" , rollCommand, requiredCommand), channel);
-				if(! tmpResult.isRolled()) {return result;}
 				result.add( new DicerollResult(
 								tmpResult.getText(),
 								String.format("%s: %s", target, tmpResult.getSystem()),
 								tmpResult.isSecret(),
-								tmpResult.isRolled()
+								tmpResult.isRolled(),
+								tmpResult.isError()
 						));
 			}
 			return result;
 		}
 		DicerollResult tmpResult = roll(rawInput, channel);
-		if(tmpResult.isRolled()) {
+		if(tmpResult.isRolled() || tmpResult.isError()) {
 			result.add(tmpResult);
 		} 
 		return result;
