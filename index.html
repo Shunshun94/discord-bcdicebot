@@ -71,23 +71,20 @@
 <h3>アプリケーションを起動する</h3>
 <p>Bot を起動し、 Discord 上で BCDice を利用可能にします。サーバ1つにつき代表者1人がアプリを起動すれば大丈夫です</p>
 <ol>
-	<li>Windows を使っている方は start.bat をメモ帳で開きます (ほとんどの方はこちら！)。<br/>Linux/macOS を使っている方は start.sh を適当なテキストエディタで開きます</li>
+	<li>Windows を使っている方は start.bat をメモ帳で開きます (ほとんどの方はこちら！)。<br/>Linux/macOS を使っている方は start.sh を適当なテキストエディタで開きます<br/>以下では start.bat を編集している前提で記載します</li>
 	<li><strong>DISCORD_BOT_TOKEN=</strong> の末尾に先の 4. でメモした Token を貼り付けます</li>
 	<li><strong>BCDICE_API_URL=</strong> の末尾に利用する BCDice-API サーバの URL を貼り付けます</li>
-	<li>(推奨) 管理用パスワードを決め、<strong>PleaseChangeMeIfYouUseThis</strong>を決めた管理用パスワードに書き換えます</li>
-	<li>(推奨) start.bat を編集している場合は <strong>REM set BCDICE_PASSWORD=PleaseChangeMeIfYouUseThis</strong>の "REM" を削除します<br/>
-start.sh を編集している場合は <strong># BCDICE_PASSWORD=PleaseChangeMeIfYouUseThis</strong>の "#" を削除します</li>
-	<li>(推奨) start.bat を編集している場合は <strong>REM set BCDICE_API_SECONDARY=http://secondary.bcdice-api.yourdomain.co.jp/</strong>の "REM" を削除します
-<br/>その上で <code>http://secondary.bcdice-api.yourdomain.co.jp/</code> を3で指定した BCDice-API サーバが利用不能の際に利用する予定の BCDice-API サーバの URL に書き換えます
-<br/>start.sh を編集している場合は <strong># BCDICE_API_SECONDARY=http://secondary.bcdice-api.yourdomain.co.jp/</strong>の "#" を削除します
-<br/>その上で <code>http://secondary.bcdice-api.yourdomain.co.jp/</code> を3で指定した BCDice-API サーバが利用不能の際に利用する予定の BCDice-API サーバの URL に書き換えます</li>
-	<li>(推奨) start.bat を編集している場合は <strong>REM set BCDICE_DEFAULT_SYSTEM=DiceBot</strong>の "REM" を削除し、<code>DiceBot</code>を利用するデフォルトのシステム名に書き換えます<br/>
-start.sh を編集している場合は <strong># BCDICE_DEFAULT_SYSTEM=DiceBot</strong>の "#" を削除し、<code>DiceBot</code>を利用するデフォルトのシステム名に書き換えます<br/>
-何のシステムを利用するか指定していないチャンネルにおいてはここで指定したシステムのダイスボットが利用されます</li>
+	<li>管理用パスワードを決め、<strong>PleaseChangeMeIfYouUseThis</strong>を決めた管理用パスワードに書き換えます</li>
+	<li><strong>REM set BCDICE_PASSWORD=PleaseChangeMeIfYouUseThis</strong>の "REM" を削除します</li>
+	<li>(必須ではない)<br/><strong>REM set BCDICE_API_SECONDARY=http://secondary.bcdice-api.yourdomain.co.jp/</strong>の "REM" を削除します
+<br/>その上で <code>http://secondary.bcdice-api.yourdomain.co.jp/</code> を予備の BCDice-API サーバの URL に書き換えます</li>
+	<li>(必須ではない)<br/><strong>REM set BCDICE_DEFAULT_SYSTEM=DiceBot</strong>の "REM" を削除し、<code>DiceBot</code>を利用するデフォルトのシステム名に書き換えます</li>
 	<li>Windows を使っている方は メモ帳を閉じ、 start.bat をダブルクリックします<br/>Linux/macOS を使っている方は編集を保存・完了し start.sh を実行します</li>
 	<li>Bot が起動します。Discord の参加者一覧に Bot がオンラインの状態で存在すれば成功です</li>
 	<li>終了はキーボードの Ctrl + C を押してください</li>
 </ol>
+
+<div class="comment">start.sh を編集する際は REM ではなく # を消すと上手くいきます</div>
 
 <h3>利用する</h3>
 
@@ -195,6 +192,8 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v1.13.1</dt>
+	<dd>マニュアルを少し修正</dd>
 	<dt>v1.13</dt>
 	<dd>ダイスを一度に複数回振る機能を追加しました</dd>
 	<dd>BCDice API サーバが不調の際に別の BCDice API サーバに自動で切り替える機能を追加しました</dd>
