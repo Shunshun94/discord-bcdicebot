@@ -181,7 +181,7 @@ public class BCDiceCLITest extends TestCase {
 		assertTrue(cli.roll("サンプルダイスボット-夜食表", "no_channel").isRolled());
 	}
 
-	public void testMultiroll() throws IOException {
+	public void testMultiroll() throws Exception {
 		assertEquals(cli.rolls("2d6", "no_channel").size(), 1);
 		assertEquals(cli.rolls("3 2d6", "no_channel").size(), 3);
 		assertEquals(cli.rolls("[パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
@@ -189,7 +189,7 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(cli.rolls("20 サンプルダイスボット-夜食表", "no_channel").size(), 20);
 		try {
 			assertEquals(cli.rolls("21 サンプルダイスボット-夜食表", "no_channel").size(), 20);
-			throw new IOException("Unexpected behavior [21 サンプルダイスボット-夜食表] must be rejected");
+			throw new Exception("Unexpected behavior [21 サンプルダイスボット-夜食表] must be rejected");
 		} catch(IOException e) {
 			// OK
 		}
