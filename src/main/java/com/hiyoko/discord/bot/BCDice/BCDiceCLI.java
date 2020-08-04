@@ -227,7 +227,7 @@ public class BCDiceCLI {
 		if(isNumMatcher.find()) {
 			String rawCount = isNumMatcher.group(1);
 			int times = Integer.parseInt(rawCount);
-			String requiredCommand = String.format("%s%s" , rollCommand, input.replace(rawCount, "").trim());
+			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(rawCount, "").trim());
 			if(times > 20) {
 				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand)) ) {
 					return result;
@@ -253,7 +253,7 @@ public class BCDiceCLI {
 		if(isTextMatcher.find()) {
 			String rawTargetList = isTextMatcher.group(1);
 			String[] targetList = rawTargetList.split(",");
-			String requiredCommand = String.format("%s%s" , rollCommand, input.replace(isTextMatcher.group(), "").trim());
+			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(isTextMatcher.group(), "").trim());
 			if(targetList.length > 20) {
 				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand)) ) {
 					return result;
