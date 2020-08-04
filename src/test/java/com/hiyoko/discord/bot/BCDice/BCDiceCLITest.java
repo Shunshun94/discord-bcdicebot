@@ -209,5 +209,8 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(cli.rolls(PREFIX + "3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + "20 サンプルダイスボット-夜食表", "no_channel").size(), 20);
 
+		assertTrue(cli.rolls(PREFIX + "2 2d6", "no_channel").get(0).getText().contains("2D6"));
+		assertTrue(cli.rolls(PREFIX + "6 2d6", "no_channel").get(0).getText().contains("2D6"));
+		assertTrue(cli.rolls(PREFIX + "1 1d12", "no_channel").get(0).getText().contains("1d12"));
 	}
 }
