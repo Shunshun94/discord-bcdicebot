@@ -42,6 +42,9 @@ public class DiceClientMock implements DiceClient {
 
 	@Override
 	public DicerollResult rollDice(String command, String system) throws IOException {
+		if(command.equals("1d4")) {
+			return new DicerollResult("(1D4) ＞ 2[2] ＞ 2", system, false, true);
+		}
 		if(command.equals("2d6")) {
 			return new DicerollResult("(2D6) ＞ 6[4,2] ＞ 6", system, false, true);
 		}
