@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.io.IOException;
 
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
+import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBot;
 
 import junit.framework.TestCase;
 
@@ -173,6 +174,9 @@ public class BCDiceCLITest extends TestCase {
 		assertTrue(cli.roll(PREFIX + " 2d6", "channel").isRolled());
 		assertTrue(cli.roll("あああああ", "channel").isRolled());
 		assertTrue(cli.roll(PREFIX + " あああああ", "channel").isRolled());
+
+		assertTrue(cli.inputs(PREFIX + "bcdice help サンプルダイスボット-夜食表", "", "channel").get(0).contains(OriginalDiceBot.NO_HELP_MESSAGE));
+		assertTrue(cli.inputs(PREFIX + "bcdice help サンプルダイスボット-ラーメン表", "", "channel").get(0).contains("どんなラーメンか出します"));
 
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll", "", "channel").get(0).contains("まずコマンドじゃないだろう"));
 	}

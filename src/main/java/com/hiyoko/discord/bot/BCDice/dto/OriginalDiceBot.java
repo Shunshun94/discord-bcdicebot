@@ -1,8 +1,12 @@
 package com.hiyoko.discord.bot.BCDice.dto;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OriginalDiceBot {
+	private static final Pattern ORIGINAL_DICEBOT_VALUE_LINE = Pattern.compile("^\\d+[:：]");
+	public static final String NO_HELP_MESSAGE = "このダイスボットにはヘルプが登録されていません";
 	private final String command;
 	private final String name;
 	private final List<String> body;
@@ -16,15 +20,28 @@ public class OriginalDiceBot {
 		return command;
 	}
 
+	public String getHelp() {
+		String lastLine = body.get(body.size() - 1);
+		if(lastLine.isEmpty()) {
+			return NO_HELP_MESSAGE;
+		}
+		Matcher isNotHelpMatcher = ORIGINAL_DICEBOT_VALUE_LINE.matcher(lastLine);
+		if(isNotHelpMatcher.find()) {
+			return NO_HELP_MESSAGE;
+		} else {
+			return lastLine;
+		}
+	}
+
 	public String getResult(String result) {
 		String prefixA = String.format("%s:", result);
 		String prefixB = String.format("%s：", result);
 		for(String line : body) {
 			if( line.startsWith(prefixA) ) {
-				return line.replace(prefixA, "");
+				return line.replaceFirst(prefixA, "");
 			}
 			if( line.startsWith(prefixB) ) {
-				return line.replace(prefixB, "");
+				return line.replaceFirst(prefixB, "");
 			}
 		}
 		return "結果なし";
