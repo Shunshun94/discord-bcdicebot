@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public class OriginalDiceBot {
 	private static final Pattern ORIGINAL_DICEBOT_VALUE_LINE = Pattern.compile("^\\d+[:：]");
-	private static final String NO_HELP_MESSAGE = "このダイスボットにはヘルプが登録されていません";
+	public static final String NO_HELP_MESSAGE = "このダイスボットにはヘルプが登録されていません";
 	private final String command;
 	private final String name;
 	private final List<String> body;
