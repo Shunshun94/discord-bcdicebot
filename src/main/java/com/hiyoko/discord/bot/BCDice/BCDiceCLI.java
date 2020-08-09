@@ -182,16 +182,19 @@ public class BCDiceCLI {
 		}
 	}
 
-	private String isOriginalDicebot(String rawInput) {
-		if(! (rollCommand.isEmpty() || rawInput.startsWith(rollCommand))) {
-			return "";
-		}
+	private String serachOriginalDicebot(String input) {
 		List<String> list = originalDiceBotClient.getDiceBotList();
-		String input = rawInput.replaceFirst(rollCommand, "").trim();
 		for(String name : list) {
 			if(input.startsWith(name)) {return name;}
 		}
 		return "";
+	}
+
+	private String isOriginalDicebot(String rawInput) {
+		if(! (rollCommand.isEmpty() || rawInput.startsWith(rollCommand))) {
+			return "";
+		}
+		return serachOriginalDicebot(rawInput.replaceFirst(rollCommand, "").trim());
 	}
 
 	private DicerollResult rollOriginalDiceBot(String name) throws IOException {
@@ -227,12 +230,16 @@ public class BCDiceCLI {
 		if(isNumMatcher.find()) {
 			String rawCount = isNumMatcher.group(1);
 			int times = Integer.parseInt(rawCount);
-			String requiredCommand = input.replace(rawCount, "").trim();
+			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(rawCount, "").trim());
 			if(times > 20) {
-				throw new IOException(String.format("1度にダイスを振れる回数は20回までです（%d回振ろうとしていました）", times));
+				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand)) ) {
+					return result;
+				} else {
+					throw new IOException(String.format("1度にダイスを振れる回数は20回までです（%d回振ろうとしていました）", times));
+				}
 			}
 			for(int i = 0; i < times; i++) {
-				DicerollResult tmpResult = roll(String.format("%s%s" , rollCommand, requiredCommand), channel);
+				DicerollResult tmpResult = roll(requiredCommand, channel);
 				logger.debug(tmpResult.toString());
 				result.add( new DicerollResult(
 								tmpResult.getText(),
@@ -249,12 +256,16 @@ public class BCDiceCLI {
 		if(isTextMatcher.find()) {
 			String rawTargetList = isTextMatcher.group(1);
 			String[] targetList = rawTargetList.split(",");
-			String requiredCommand = input.replace(isTextMatcher.group(), "").trim();
+			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(isTextMatcher.group(), "").trim());
 			if(targetList.length > 20) {
-				throw new IOException(String.format("1度にダイスを振れる回数は20回までです（%d回振ろうとしていました）", targetList.length));
+				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand)) ) {
+					return result;
+				} else {
+					throw new IOException(String.format("1度にダイスを振れる回数は20回までです（%d回振ろうとしていました）", targetList.length));
+				}
 			}
 			for(String target: targetList) {
-				DicerollResult tmpResult = roll(String.format("%s%s" , rollCommand, requiredCommand), channel);
+				DicerollResult tmpResult = roll(requiredCommand, channel);
 				result.add( new DicerollResult(
 								tmpResult.getText(),
 								String.format("%s: %s", target, tmpResult.getSystem()),
@@ -293,116 +304,6 @@ public class BCDiceCLI {
 	}
 
 	/**
-	 * @deprecated
-	 * @param rawInput Dice roll command
-	 * @return result as DicerollResult instance.
-	 * @throws IOException When command failed
-	 */
-	public DicerollResult roll(String rawInput) throws IOException {
-		return roll(rawInput, "no_channel_id");
-	}
-	
-	/**
-	 * @deprecated
-	 * @param input command (not dice roll)
-	 * @return message from this instance
-	 */
-	public String input(String input) {
-		return input(input, "no_id");
-	}
-
-	/**
-	 * @deprecated
-	 * @param input command (not dice roll)
-	 * @param id unique user id
-	 * @return message from this instance
-	 */
-	public String input(String input, String id) {
-		return input(input, id, "general");
-	}
-	/**
-	 * @deprecated
-	 * @param tmpInput (not dice roll)
-	 * @param id unique user id
-	 * @param channel action target channel
-	 * @return message from this instance
-	 */
-	public String input(String tmpInput, String id, String channel) {
-		String input = tmpInput.split("\n")[0];
-		String[] command = input.split(" ");
-		if(command.length == 1) {
-			return HELP;
-		}
-		if(command[1].equals("help")) {
-			if(command.length > 2) {
-				try {
-					SystemInfo info = client.getSystemInfo(command[2]);
-					return "[" + command[2] + "]\n"
-							+ info.getInfo();
-				} catch (IOException e) {
-					return "[" + command[2] + "]\n"
-							+ e.getMessage();
-				}
-			}
-		}
-		if(command[1].equals("set")) {
-			if(command.length > 2) {
-				client.setSystem(command[2], channel);
-				return "システムを " + command[2] + "に変更します";
-			} else {
-				return "[ERROR] ダイスボットのシステムを変更するには次のコマンドを打つ必要があります\n"
-						+ "   bcdice set SYSTEM_NAME\n"
-						+ "例 bcdice set AceKillerGene";
-			}
-			
-		}
-		if(command[1].equals("list")) {
-			StringBuilder sb = new StringBuilder("[DiceBot List]");
-			try {
-				client.getSystems().getSystemList().forEach(dice->{
-					sb.append("\n" + dice);
-				});
-				return sb.toString();
-			} catch (IOException e) {
-				return e.getMessage();
-			}
-		}
-
-		if(command[1].equals("load")) {
-			if(command.length == 3) {
-				try {
-					return getMessage(id, new Integer(command[2]));
-				} catch(Exception e) {
-					return "Not found (index = " + command[2] + ")";
-				}
-			}
-		}
-
-		if(command[1].equals("save")) {
-			if(command.length > 2) {
-				StringBuilder str = new StringBuilder();
-				for(int i = 2; i < command.length; i++) {
-					str.append(command[i] + " ");
-				} 
-				return saveMessage(id, tmpInput.replaceFirst("bcdice save ", "").trim()) + "";
-			} else {
-				return saveMessage(id, "") + "";
-			}
-		}
-
-		if(command[1].equals("status")) {
-			try {
-				VersionInfo vi = client.getVersion();
-				return client.toString(channel) + "(API v." + vi.getApiVersion() + " / BCDice v." + vi.getDiceVersion() + ")";
-			} catch (IOException e) {
-				return client.toString(channel) + "(バージョンの取得に失敗しました)";
-			}
-		}
-
-		return HELP;
-	}
-
-	/**
 	 * @param tmpInput (not dice roll)
 	 * @param id unique user id
 	 * @param channel action target channel
@@ -433,9 +334,17 @@ public class BCDiceCLI {
 			if(command.length > 2) {
 				String systemName = String.join(" ", Arrays.copyOfRange(command, 2, command.length));
 				try {
-					SystemInfo info = client.getSystemInfo(systemName);
-					resultList.add("[" + systemName + "]\n" + info.getInfo());
-					return resultList;
+					String originalDicebot = serachOriginalDicebot(systemName);
+					if(originalDicebot.isEmpty() ) {
+						SystemInfo info = client.getSystemInfo(systemName);
+						resultList.add("[" + systemName + "]\n" + info.getInfo());
+						return resultList;
+					} else {
+						OriginalDiceBot originalDiceBot = originalDiceBotClient.getDiceBot(originalDicebot);
+						String helpMessage = originalDiceBot.getHelp();
+						resultList.add(helpMessage);
+						return resultList;
+					}
 				} catch (IOException e) {
 					resultList.add("[" + systemName + "]\n" + e.getMessage());
 					return resultList;
