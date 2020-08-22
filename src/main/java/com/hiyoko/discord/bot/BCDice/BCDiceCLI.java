@@ -57,6 +57,8 @@ public class BCDiceCLI {
 	public static final String HELP_ADMIN = "使い方\n"
 			+ "# admin のヘルプを表示する\n> bcdice admin help\n"
 			+ "# BCDice-API サーバを変更する\n> bcdice admin PASSWORD setServer URL\n"
+			+ "# BCDice-API サーバを一覧から削除する\n> bcdice admin PASSWORD removeServer URL\n"
+			+ "# 利用する BCDice-API サーバの一覧を出す\n> bcdice admin PASSWORD listServer\n"
 			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export\n"
 			+ "# 部屋設定をインポートする\n> bcdice admin PASSWORD import\n"
 			+ "# BCDice API サーバへの問い合わせを無制限にする\n"
