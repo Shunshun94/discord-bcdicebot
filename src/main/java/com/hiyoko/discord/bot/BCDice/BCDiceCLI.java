@@ -441,6 +441,29 @@ public class BCDiceCLI {
 			resultList.add("パスワードが違います");
 			return resultList;
 		}
+		if(command[3].equals("listServer")) {
+			resultList.addAll(client.getDiceUrlList());
+			return resultList;
+		}
+		if(command[3].equals("removeServer")) {
+			if(command.length < 5) {
+				resultList.add("URL が足りません");
+				resultList.add(HELP_ADMIN);
+				return resultList;
+			} else {
+				try {
+					boolean removeResult = client.removeDiceServer(command[4]);
+					if(removeResult) {
+						resultList.add(String.format("%s をダイスサーバのリストから削除しました", command[4]));
+					} else {
+						resultList.add(String.format("%s がダイスサーバのリストに見つかりませんでした", command[4]));
+					}
+				} catch(IOException e) {
+					resultList.add(e.getMessage());
+				}
+				return resultList;
+			}
+		}
 		if(command[3].equals("setServer")) {
 			if(command.length < 5) {
 				resultList.add("URL が足りません");

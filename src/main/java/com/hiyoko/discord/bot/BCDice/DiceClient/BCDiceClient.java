@@ -76,7 +76,14 @@ public class BCDiceClient implements DiceClient {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e1) {
+					e.addSuppressed(e1);
 					throw new IOException("Waiting in retry is interrupted", e);
+				}
+				if( urls.size() != 1 ) {
+					urlCursor++;
+            		if(urls.size() <= urlCursor) {
+            			urlCursor = 0;
+            		}
 				}
 				return getUrl(path, rtl - 1);
 			}
@@ -213,5 +220,29 @@ public class BCDiceClient implements DiceClient {
 
 	public List<String> getDiceUrlList() {
 		return urls;
+	}
+
+	public boolean removeDiceServer(String bcDiceUrl) throws IOException {
+		if(urls.size() == 1) {
+			throw new IOException(
+					String.format("今登録されているダイスサーバ %s を削除したらダイスサーバが無くなるため、ダイスサーバの削除ができません",
+							urls.get(0)));
+		}
+		String tmp = bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/";
+		boolean flag = false;
+		List<String> newUrlList = new ArrayList<String>();
+		for(int i = 0; i < urls.size(); i++) {
+			String currentUrl = urls.get(i);
+			if( ! currentUrl.equals(tmp) ) {
+				newUrlList.add(currentUrl);
+			} else {
+				flag = true;
+			}
+		}
+		urls = newUrlList;
+		if(urls.size() <= urlCursor) {
+			urlCursor = 0;
+		}
+		return flag;
 	}
 }
