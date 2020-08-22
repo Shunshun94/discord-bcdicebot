@@ -81,14 +81,14 @@ public class BCDiceClient implements DiceClient {
 				}
 				if( urls.size() != 1 ) {
 					urlCursor++;
-            		if(urls.size() <= urlCursor) {
-            			urlCursor = 0;
-            		}
+					if(urls.size() <= urlCursor) {
+						urlCursor = 0;
+					}
 				}
 				return getUrl(path, rtl - 1);
 			}
 		}
-		
+
         if (! (response.getStatus() == Response.Status.OK.getStatusCode() || response.getStatus() == 400)) {
         	response.close();
         	if(errorSensitive) {
