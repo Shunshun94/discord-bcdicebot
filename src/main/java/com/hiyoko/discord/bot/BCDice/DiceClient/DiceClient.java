@@ -1,6 +1,7 @@
 package com.hiyoko.discord.bot.BCDice.DiceClient;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
@@ -16,8 +17,25 @@ public interface DiceClient {
 	 */
 	public VersionInfo getVersion() throws IOException;
 	
+	/**
+	 * Changing dice server
+	 * @param url 
+	 */
 	public void setDiceServer(String url);
+	
+	/**
+	 * 
+	 * @return dice server url list
+	 */
+	public List<String> getDiceUrlList();
 
+	/**
+	 * 
+	 * @param url
+	 * @throws IOException Remove is not acceptable
+	 */
+	public boolean removeDiceServer(String url) throws IOException;
+	
 	/**
 	 * 
 	 * @return The dice systems list

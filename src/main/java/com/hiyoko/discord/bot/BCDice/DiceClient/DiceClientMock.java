@@ -1,8 +1,10 @@
 package com.hiyoko.discord.bot.BCDice.DiceClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -115,5 +117,15 @@ public class DiceClientMock implements DiceClient {
 	@Override
 	public boolean isDiceCommand(String command) {
 		return DICE_COMMAND_PATTERN.matcher(command).find();
+	}
+
+	@Override
+	public List<String> getDiceUrlList() {
+		return new ArrayList<String>();
+	}
+
+	@Override
+	public boolean removeDiceServer(String url) {
+		return true;
 	}
 }

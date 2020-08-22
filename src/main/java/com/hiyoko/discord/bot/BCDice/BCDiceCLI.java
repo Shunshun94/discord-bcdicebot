@@ -57,6 +57,8 @@ public class BCDiceCLI {
 	public static final String HELP_ADMIN = "使い方\n"
 			+ "# admin のヘルプを表示する\n> bcdice admin help\n"
 			+ "# BCDice-API サーバを変更する\n> bcdice admin PASSWORD setServer URL\n"
+			+ "# BCDice-API サーバを一覧から削除する\n> bcdice admin PASSWORD removeServer URL\n"
+			+ "# 利用する BCDice-API サーバの一覧を出す\n> bcdice admin PASSWORD listServer\n"
 			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export\n"
 			+ "# 部屋設定をインポートする\n> bcdice admin PASSWORD import\n"
 			+ "# BCDice API サーバへの問い合わせを無制限にする\n"
@@ -440,6 +442,29 @@ public class BCDiceCLI {
 		if(! command[2].equals(password)) {
 			resultList.add("パスワードが違います");
 			return resultList;
+		}
+		if(command[3].equals("listServer")) {
+			resultList.addAll(client.getDiceUrlList());
+			return resultList;
+		}
+		if(command[3].equals("removeServer")) {
+			if(command.length < 5) {
+				resultList.add("URL が足りません");
+				resultList.add(HELP_ADMIN);
+				return resultList;
+			} else {
+				try {
+					boolean removeResult = client.removeDiceServer(command[4]);
+					if(removeResult) {
+						resultList.add(String.format("%s をダイスサーバのリストから削除しました", command[4]));
+					} else {
+						resultList.add(String.format("%s がダイスサーバのリストに見つかりませんでした", command[4]));
+					}
+				} catch(IOException e) {
+					resultList.add(e.getMessage());
+				}
+				return resultList;
+			}
 		}
 		if(command[3].equals("setServer")) {
 			if(command.length < 5) {
