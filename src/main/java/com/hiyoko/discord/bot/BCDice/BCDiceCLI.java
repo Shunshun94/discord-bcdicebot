@@ -46,7 +46,8 @@ public class BCDiceCLI {
 	private static final Pattern GAMESYSTEM_ROOM_PAIR_REGEXP = Pattern.compile("^(\\d*):(.*)");
 	private static final Pattern RESULT_VALUE_REGEXP = Pattern.compile("(\\d+)$");
 	private static final Pattern MULTIROLL_NUM_PREFIX = Pattern.compile("^(\\d+) ");
-	private static final Pattern MULTIROLL_TEXT_PREFIX = Pattern.compile("^\\[(.+)\\] ");
+	private static final String MULTIROLL_TEXT_PREFIX_STR = "^\\[(.+)\\] ";
+	private static final Pattern MULTIROLL_TEXT_PREFIX = Pattern.compile(MULTIROLL_TEXT_PREFIX_STR);
 
 	public static final String HELP = "使い方\n"
 			+ "# ダイスボット一覧を確認する\n> bcdice list\n"
@@ -258,7 +259,7 @@ public class BCDiceCLI {
 		if(isTextMatcher.find()) {
 			String rawTargetList = isTextMatcher.group(1);
 			String[] targetList = rawTargetList.split(",");
-			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(isTextMatcher.group(), "").trim());
+			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(MULTIROLL_TEXT_PREFIX_STR, "").trim());
 			if(targetList.length > 20) {
 				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand)) ) {
 					return result;
