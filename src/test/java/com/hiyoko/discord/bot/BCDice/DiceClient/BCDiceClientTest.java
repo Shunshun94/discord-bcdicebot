@@ -52,6 +52,20 @@ public class BCDiceClientTest extends TestCase {
 			System.out.println("Failed");
 			e.printStackTrace();
 		}
+		try {
+			assertEquals(2, client.getUrlCursor());
+			assertFalse(client.removeDiceServer("http://bcdice.not-exist.example.com"));
+			assertTrue(client.removeDiceServer(urlA));
+			assertEquals(2, client.getDiceUrlList().size());
+			assertEquals(0, client.getUrlCursor());
+			assertTrue(client.removeDiceServer(urlB));
+			assertEquals(1, client.getDiceUrlList().size());
+			assertEquals(0, client.getUrlCursor());
+			client.removeDiceServer(urlC);
+			throw new RuntimeException("Failed to test testDiceSecondary. All dice servers must not be removed.");
+		} catch (IOException e) {
+			// NO ACTION. Exception is expected
+		}
 	}
 
 	public void testPresecondary() {

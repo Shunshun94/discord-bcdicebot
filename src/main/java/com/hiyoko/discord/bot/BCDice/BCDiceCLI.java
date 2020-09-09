@@ -46,7 +46,8 @@ public class BCDiceCLI {
 	private static final Pattern GAMESYSTEM_ROOM_PAIR_REGEXP = Pattern.compile("^(\\d*):(.*)");
 	private static final Pattern RESULT_VALUE_REGEXP = Pattern.compile("(\\d+)$");
 	private static final Pattern MULTIROLL_NUM_PREFIX = Pattern.compile("^(\\d+) ");
-	private static final Pattern MULTIROLL_TEXT_PREFIX = Pattern.compile("^\\[(.+)\\] ");
+	private static final String MULTIROLL_TEXT_PREFIX_STR = "^\\[(.+)\\] ";
+	private static final Pattern MULTIROLL_TEXT_PREFIX = Pattern.compile(MULTIROLL_TEXT_PREFIX_STR);
 
 	public static final String HELP = "使い方\n"
 			+ "# ダイスボット一覧を確認する\n> bcdice list\n"
@@ -57,6 +58,8 @@ public class BCDiceCLI {
 	public static final String HELP_ADMIN = "使い方\n"
 			+ "# admin のヘルプを表示する\n> bcdice admin help\n"
 			+ "# BCDice-API サーバを変更する\n> bcdice admin PASSWORD setServer URL\n"
+			+ "# BCDice-API サーバを一覧から削除する\n> bcdice admin PASSWORD removeServer URL\n"
+			+ "# 利用する BCDice-API サーバの一覧を出す\n> bcdice admin PASSWORD listServer\n"
 			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export\n"
 			+ "# 部屋設定をインポートする\n> bcdice admin PASSWORD import\n"
 			+ "# BCDice API サーバへの問い合わせを無制限にする\n"
@@ -256,7 +259,7 @@ public class BCDiceCLI {
 		if(isTextMatcher.find()) {
 			String rawTargetList = isTextMatcher.group(1);
 			String[] targetList = rawTargetList.split(",");
-			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(isTextMatcher.group(), "").trim());
+			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(MULTIROLL_TEXT_PREFIX_STR, "").trim());
 			if(targetList.length > 20) {
 				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand)) ) {
 					return result;
@@ -440,6 +443,29 @@ public class BCDiceCLI {
 		if(! command[2].equals(password)) {
 			resultList.add("パスワードが違います");
 			return resultList;
+		}
+		if(command[3].equals("listServer")) {
+			resultList.addAll(client.getDiceUrlList());
+			return resultList;
+		}
+		if(command[3].equals("removeServer")) {
+			if(command.length < 5) {
+				resultList.add("URL が足りません");
+				resultList.add(HELP_ADMIN);
+				return resultList;
+			} else {
+				try {
+					boolean removeResult = client.removeDiceServer(command[4]);
+					if(removeResult) {
+						resultList.add(String.format("%s をダイスサーバのリストから削除しました", command[4]));
+					} else {
+						resultList.add(String.format("%s がダイスサーバのリストに見つかりませんでした", command[4]));
+					}
+				} catch(IOException e) {
+					resultList.add(e.getMessage());
+				}
+				return resultList;
+			}
 		}
 		if(command[3].equals("setServer")) {
 			if(command.length < 5) {
