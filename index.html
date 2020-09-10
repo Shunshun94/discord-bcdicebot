@@ -100,7 +100,15 @@
 
 <h3>管理コマンドを使う</h3>
 <p>チャットに <code>bcdice admin [パスワード] help</code> と打てば管理者として利用できるコマンドの一覧が出力されます</p>
-<p>接続する BCDice-API サーバを変更する場合は <code>bcdice admin [パスワード] [BCDice-APIサーバのURL]</code></p>
+
+<h4>ダイスサーバの変更および管理</h4>
+<p>接続する BCDice-API サーバを変更する場合は <code>bcdice admin [パスワード] setServer [BCDice-APIサーバのURL]</code><br/>
+ただし、このコマンドを実行した場合、変更前の BCDice-API サーバは bot によって忘れられるのではなく、予備のサーバとして bot の内部に保持されます。<br/>
+もし、BCDice-API サーバへのアクセスになんらかの問題があった場合、 bot は内部に保持された別の BCDice-API サーバを代わりに使おうとします。</p>
+<p>bot が保持する予備のサーバから特定の BCDice-API サーバを削除したい場合は<code>bcdice admin [パスワード] removeServer [BCDice-APIサーバのURL]</code></p>
+<p>bot が保持する予備のサーバから特定の BCDice-API サーバを一覧したい場合は<code>bcdice admin [パスワード] listServer [BCDice-APIサーバのURL]</code></p>
+
+<h4>部屋ごとの設定のエクスポート・インポート</h4>
 <p>各部屋ごとに設定されたダイスボットの一覧を取得する場合は <code>bcdice admin [パスワード] export</code><br/>以下のような結果が得られます</p>
 <pre>
 331084010098917376:SwordWorld2.0
@@ -111,11 +119,15 @@
 331084010098917376:SwordWorld2.0
 551310555730673666:DoubleCross
 541477835299356673:Cthulhu</pre>
+
+<h4>ダイスコマンドに接頭語を設定する</h4>
 <p>チャットに送信されたメッセージを全て BCDice-API サーバに送信したい場合は次のようにします。<br/><code>bcdice admin [パスワード] suppressroll disable</code><br/>
 BCDice-API サーバに送る必要のありそうな発言だけを送信するようにする場合は次のようにします。こちらがデフォルト設定です。<br/><code>bcdice admin [パスワード] suppressroll on</code><br/>
 また、先頭に <code>/r</code> 等が無いと BCDice-API サーバにコマンドを送信しないようにすることもできます。<br/><code>bcdice admin [パスワード] suppressroll /r</code><br/>
 このコマンドワードは <code>/</code> で始まる物であれば任意のものを設定できます。<br/><code>bcdice admin [パスワード] suppressroll /diceroll</code><br/>
 とすれば発言の戦闘に <code>/diceroll</code> があるものだけを BCDice-API サーバに送信します。</p>
+
+<h4>独自のダイスボット（ランダム表）</h4>
 <p>独自のダイスボットを追加する場合は Discord にダイスボットの情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/><code>bcdice admin [パスワード] addDiceBot [ダイスボット名]</code><br/>
 追加した後ダイスボット名がチャット上で発言されるとダイスボットが振られます。この際にアップロードするダイスボットのサンプルは <code>originalDiceBots</code> ディレクトリ内のファイル
 ないしは<a target="_blank" href="https://github.com/Shunshun94/discord-bcdicebot/blob/master/originalDiceBots/サンプルダイスボット-夜食表">discord-bcdicebot/originalDiceBots/サンプルダイスボット-夜食表</a>や
@@ -195,11 +207,13 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v1.14.2</dt>
+	<dd>ヘルプとマニュアルの修正を実施</dd>
 	<dt>v1.14.1</dt>
 	<dd>利用する予定の BCDice API サーバを一覧する機能を追加しました</dd>
 	<dd>利用する予定の BCDice API サーバから特定のサーバを削除する機能を追加しました</dd>
 	<dd>挙動を安定させるために若干修正を加えました</dd>
-	<dt>複数回振る時の挙動に関するバグを修正しました</dt>
+	<dd>複数回振る時の挙動に関するバグを修正しました</dd>
 	<dt>v1.14</dt>
 	<dd>オリジナルのダイスボット表にヘルプテキストを追加できるようにしました</dd>
 	<dd>複数回ロールする機能で発生していたいくつかのバグを修正しました</dd>
