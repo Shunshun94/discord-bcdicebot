@@ -89,12 +89,12 @@
 <h3>利用する</h3>
 
 <p>チャットにただただ <code>2d6</code> 等と打ち込めばダイスが振られます。</p>
-<p>各システム向けの機能を使いたい場合、ダイスボットを切り替えましょう。<br/><code>bcdice set [利用するダイスボットの名前]</code> とチャット上で発言してください。<br/>例えば <code>bcdice set SwordWorld2.0</code> 等です。</p>
-<p>どんなダイスボットが利用できるのかは <code>bcdice list</code> と発言すれば確認できます。</p>
-<p>各ダイスボットでどんな機能が利用できるのかを確認する際は <code>bcdice help [ダイスボットの名前]</code> と発言すれば表示できます。<br/>例えば <code>bcdice help SwordWorld2.0</code> 等です。</p>
+<p>各システム向けの機能を使いたい場合、システムを切り替えましょう。<br/><code>bcdice set [利用するシステムの名前]</code> とチャット上で発言してください。<br/>例えば <code>bcdice set SwordWorld2.0</code> 等です。</p>
+<p>どんなシステムが利用できるのかは <code>bcdice list</code> と発言すれば確認できます。</p>
+<p>各システムでどんな機能が利用できるのかを確認する際は <code>bcdice help [システムの名前]</code> と発言すれば表示できます。<br/>例えば <code>bcdice help SwordWorld2.0</code> 等です。</p>
 <p>ダイスを振る際にダイスコマンドの手前にダイスを振る回数を記入することでその回数分ダイスを振ることができます。例えば<code>3 2d6</code>とすれば3回 2d6 を振ることが可能です。<br/>
 また、数字ではなく<code>[</code>と<code>]</code>でカンマ区切りのリストを与えるとそのリストのそれぞれについてダイスを振ることができます。例えば<code>[こぶた,たぬき,きつね,ねこ] 2d6</code> とすることでこぶた、たぬき、きつね、ねこのそれぞれについて 2d6 を振ることが可能です。</p>
-<p>管理者はオリジナルのランダム表を追加することもできます。詳細は管理コマンドをご確認ください。</p>
+<p>管理者はオリジナルのダイスボット表を追加することもできます。詳細は管理コマンドをご確認ください。</p>
 
 <p>チャットに <code>bcdice help</code> と打てば何ができるのかが一覧されるので困ったときは実行してみてください。</p>
 
@@ -109,13 +109,13 @@
 <p>bot が保持する予備のサーバから特定の BCDice-API サーバを一覧したい場合は<code>bcdice admin [パスワード] listServer [BCDice-APIサーバのURL]</code></p>
 
 <h4>部屋ごとの設定のエクスポート・インポート</h4>
-<p>各部屋ごとに設定されたダイスボットの一覧を取得する場合は <code>bcdice admin [パスワード] export</code><br/>以下のような結果が得られます</p>
+<p>各部屋ごとに設定されたシステムの一覧を取得する場合は <code>bcdice admin [パスワード] export</code><br/>以下のような結果が得られます</p>
 <pre>
 331084010098917376:SwordWorld2.0
 551310555730673666:DoubleCross
 541477835299356673:Cthulhu
 </pre>
-<p>複数の部屋に対してダイスボットを設定する場合は以下のようにします。<br/>アプリを再起動した際は全部屋のダイスボット設定がリセットされますので、import と組み合わせると原状復帰が容易です</p><pre>bcdice admin [パスワード] import
+<p>複数の部屋に対してシステムを設定する場合は以下のようにします。<br/>アプリを再起動した際は全部屋のシステムの設定がリセットされますので、import と組み合わせると原状復帰が容易です</p><pre>bcdice admin [パスワード] import
 331084010098917376:SwordWorld2.0
 551310555730673666:DoubleCross
 541477835299356673:Cthulhu</pre>
@@ -127,14 +127,14 @@ BCDice-API サーバに送る必要のありそうな発言だけを送信する
 このコマンドワードは <code>/</code> で始まる物であれば任意のものを設定できます。<br/><code>bcdice admin [パスワード] suppressroll /diceroll</code><br/>
 とすれば発言の戦闘に <code>/diceroll</code> があるものだけを BCDice-API サーバに送信します。</p>
 
-<h4>独自のダイスボット（ランダム表）</h4>
-<p>独自のダイスボットを追加する場合は Discord にダイスボットの情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/><code>bcdice admin [パスワード] addDiceBot [ダイスボット名]</code><br/>
-追加した後ダイスボット名がチャット上で発言されるとダイスボットが振られます。この際にアップロードするダイスボットのサンプルは <code>originalDiceBots</code> ディレクトリ内のファイル
+<h4>独自のダイスボット表</h4>
+<p>独自のダイスボット表を追加する場合は Discord にダイスボット表の情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/><code>bcdice admin [パスワード] addDiceBot [ダイスボット表名]</code><br/>
+追加した後ダイスボット表の名前がチャット上で発言されるとダイスボット表が振られます。この際にアップロードするダイスボット表のサンプルは <code>originalDiceBots</code> ディレクトリ内のファイル
 ないしは<a target="_blank" href="https://github.com/Shunshun94/discord-bcdicebot/blob/master/originalDiceBots/サンプルダイスボット-夜食表">discord-bcdicebot/originalDiceBots/サンプルダイスボット-夜食表</a>や
 <a target="_blank" href="https://github.com/Shunshun94/discord-bcdicebot/blob/master/originalDiceBots/サンプルダイスボット-ラーメン表">discord-bcdicebot/originalDiceBots/サンプルダイスボット-ラーメン表</a>を参照してください。<br/>
-ダイスボットを削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [ダイスボット名]</code><br/>
-ダイスボットの一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code><br/>
-ダイスボットに記載したヘルプの情報は次のようにすると確認できます。<br/><code>bcdice help [ダイスボット名]</code></p>
+ダイスボット表を削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [ダイスボット表名]</code><br/>
+ダイスボット表の一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code><br/>
+ダイスボットに記載したヘルプの情報は次のようにすると確認できます。<br/><code>bcdice help [ダイスボット表名]</code></p>
 
 <h2>連絡先</h2>
 <h3>バグ報告など</h3>
@@ -207,8 +207,11 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v1.14.3</dt>
+	<dd>利用しているライブラリを更新しました</dd>
+	<dd>アプリ内で使っている用語のいくつかを修正しました</dd>
 	<dt>v1.14.2</dt>
-	<dd>ヘルプとマニュアルの修正を実施</dd>
+	<dd>ヘルプとマニュアルの修正を実施しました</dd>
 	<dt>v1.14.1</dt>
 	<dd>利用する予定の BCDice API サーバを一覧する機能を追加しました</dd>
 	<dd>利用する予定の BCDice API サーバから特定のサーバを削除する機能を追加しました</dd>
