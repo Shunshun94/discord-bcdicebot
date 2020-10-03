@@ -50,9 +50,9 @@ public class BCDiceCLI {
 	private static final Pattern MULTIROLL_TEXT_PREFIX = Pattern.compile(MULTIROLL_TEXT_PREFIX_STR);
 
 	public static final String HELP = "使い方\n"
-			+ "# ダイスボット一覧を確認する\n> bcdice list\n"
-			+ "# ダイスボットのシステムを変更する\n> bcdice set システム名\n"
-			+ "# ダイスボットのシステムのヘルプを表示する\n> bcdice help SYSTEM_NAME\n"
+			+ "# システムの一覧を確認する\n> bcdice list\n"
+			+ "# 現在のチャンネルで利用するシステムを変更する\n> bcdice set システム名\n"
+			+ "# システムのヘルプを表示する\n> bcdice help SYSTEM_NAME\n"
 			+ "# 本ボットの現在の設定を確認する\n> bcdice status\n"
 			+ "# 管理用コマンド\n> bcdice admin PASSWORD COMMAND";
 	public static final String HELP_ADMIN = "使い方\n"
@@ -71,12 +71,12 @@ public class BCDiceCLI {
 			+ "> bcdice admin PASSWORD suppressroll /diceroll # /diceroll 2d6 等としないとダイスを振れない\n"
 			+ "> bcdice admin PASSWORD suppressroll /r # /r 2d6 等としないとダイスを振れない\n"
 			+ "# ダイスボット表を追加する\n"
-			+ "# ダイスボットのファイルを Discord にアップロードし、アップロードする際のコメントを以下のようにする\n"
-			+ "# ダイスボット名をチャットに書き込むと誰でもダイスボット表を振れる\n"
-			+ "> bcdice admin PASSWORD addDiceBot ダイスボット名\n"
-			+ "> bcdice admin PASSWORD addDiceBot # アップロードしたダイスボットのファイル名がコマンドになる\n"
+			+ "# ダイスボット表のファイルを Discord にアップロードし、アップロードする際のコメントを以下のようにする\n"
+			+ "# ダイスボット表名をチャットに書き込むと誰でもダイスボット表を振れる\n"
+			+ "> bcdice admin PASSWORD addDiceBot ダイスボット表名\n"
+			+ "> bcdice admin PASSWORD addDiceBot # アップロードしたダイスボット表のファイル名がコマンドになる\n"
 			+ "# ダイスボット表を削除する\n"
-			+ "> bcdice admin PASSWORD removeDiceBot ダイスボット名\n"
+			+ "> bcdice admin PASSWORD removeDiceBot ダイスボット表名\n"
 			+ "# ダイスボット表の一覧を表示する\n"
 			+ "> bcdice admin PASSWORD listDiceBot";
 
@@ -203,11 +203,11 @@ public class BCDiceCLI {
 	private DicerollResult rollOriginalDiceBot(String name) throws IOException {
 		OriginalDiceBot diceBot;
 		DicerollResult rawRollResult;
-		logger.debug(String.format("ダイスボット [%s] を実行します", name));
+		logger.debug(String.format("ダイスボット表 [%s] を実行します", name));
 		try {
 			diceBot = originalDiceBotClient.getDiceBot(name);
 		} catch (IOException e) {
-			throw new IOException(String.format("ダイスボット [%s] が取得できませんでした", name), e);
+			throw new IOException(String.format("ダイスボット表 [%s] が取得できませんでした", name), e);
 		}
 		try {
 			rawRollResult = client.rollDice(normalizeDiceCommand(diceBot.getCommand()));
@@ -542,7 +542,7 @@ public class BCDiceCLI {
 
 		if(command[3].equals("addDiceBot")) {
 			if(attachements.isEmpty()) {
-				resultList.add("ダイスボットを登録する際はダイスボットのファイルをアップロードする必要があります");
+				resultList.add("ダイスボット表を登録する際はダイスボット表のファイルをアップロードする必要があります");
 				return resultList;
 			}
 
@@ -550,27 +550,27 @@ public class BCDiceCLI {
 				String botName = (command.length > 4) ? command[4] : attachements.get(0).getFileName().split("\\.")[0];
 				URL url = attachements.get(0).getUrl();
 				originalDiceBotClient.registerDiceBot(url, botName);
-				String logMessage = String.format("ダイスボット [%s] を登録しました", botName);
+				String logMessage = String.format("ダイスボット表 [%s] を登録しました", botName);
 				logger.info(logMessage);
 				resultList.add(logMessage);
 				return resultList;
 			} catch(Exception e) {
-				logger.warn("ダイスボットの登録に失敗しました", e);
+				logger.warn("ダイスボット表の登録に失敗しました", e);
 				resultList.add(e.getMessage());
 				return resultList;
 			}
 		}
 		if(command[3].equals("removeDiceBot")) {
 			if(command.length < 5) {
-				resultList.add("ダイスボットの名前を指定してください");
+				resultList.add("ダイスボット表の名前を指定してください");
 				return resultList;
 			}
 			try {
 				originalDiceBotClient.unregisterDiceBot(command[4]);
-				resultList.add(String.format("ダイスボット [%s] を削除しました", command[4]));
+				resultList.add(String.format("ダイスボット表 [%s] を削除しました", command[4]));
 				return resultList;
 			} catch(IOException e) {
-				logger.warn("ダイスボットの削除に失敗しました", e);
+				logger.warn("ダイスボット表の削除に失敗しました", e);
 				resultList.add(e.getMessage());
 				return resultList;
 			}
