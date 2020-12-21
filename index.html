@@ -125,7 +125,7 @@
 BCDice-API サーバに送る必要のありそうな発言だけを送信するようにする場合は次のようにします。こちらがデフォルト設定です。<br/><code>bcdice admin [パスワード] suppressroll on</code><br/>
 また、先頭に <code>/r</code> 等が無いと BCDice-API サーバにコマンドを送信しないようにすることもできます。<br/><code>bcdice admin [パスワード] suppressroll /r</code><br/>
 このコマンドワードは <code>/</code> で始まる物であれば任意のものを設定できます。<br/><code>bcdice admin [パスワード] suppressroll /diceroll</code><br/>
-とすれば発言の戦闘に <code>/diceroll</code> があるものだけを BCDice-API サーバに送信します。</p>
+とすれば発言の先頭に <code>/diceroll</code> があるものだけを BCDice-API サーバに送信します。</p>
 
 <h4>独自のダイスボット表</h4>
 <p>独自のダイスボット表を追加する場合は Discord にダイスボット表の情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/><code>bcdice admin [パスワード] addDiceBot [ダイスボット表名]</code><br/>
@@ -207,6 +207,8 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v1.14.5</dt>
+	<dd>このファイルのタイポを修正頂きました（<a href="https://github.com/Shunshun94/discord-bcdicebot/pull/72">詳細</a>）。<a href="https://github.com/blhsrwznrghfzpr">yoshi さん</a>、ありがとうございます！</dd>
 	<dt>v1.14.4</dt>
 	<dd>利用しているライブラリを更新しました</dd>
 	<dt>v1.14.3</dt>
