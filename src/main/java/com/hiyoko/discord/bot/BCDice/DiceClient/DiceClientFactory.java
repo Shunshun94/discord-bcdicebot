@@ -13,7 +13,7 @@ public class DiceClientFactory {
 			isBcDice = isBcDice && diceSeed.startsWith("http");
 		}
 		if(isBcDice) {
-			return new BCDiceClient(diceSeeds, errorSensitive);
+			return new BCDiceV2Client(diceSeeds, errorSensitive);
 		} else {
 			return new DiceClientMock();
 		}
@@ -21,7 +21,7 @@ public class DiceClientFactory {
 
 	public static DiceClient getDiceClient(String diceSeed, boolean errorSensitive) {
 		if(diceSeed.startsWith("http")) {
-			return new BCDiceClient(diceSeed, errorSensitive);
+			return new BCDiceV2Client(diceSeed, errorSensitive);
 		} else {
 			return new DiceClientMock();
 		}

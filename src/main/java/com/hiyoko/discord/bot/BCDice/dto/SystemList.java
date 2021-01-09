@@ -17,11 +17,11 @@ public class SystemList {
 	
 	public SystemList(String json) {
 		JsonObject result = Json.parse(json).asObject();
-		JsonArray systemListJson = result.get("systems").asArray();
-		
+		JsonArray systemListJson = result.get("game_system").asArray();
+
 		List<String> list = new ArrayList<String>();
 		for(JsonValue system : systemListJson) {
-			list.add(system.asString());
+			list.add(system.asObject().get("id").asString());
 		}
 		systems = list;
 	}
