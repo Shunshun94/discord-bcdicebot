@@ -233,8 +233,8 @@ public class BCDiceCLI {
 		if(isNumMatcher.find()) { // いずれ消す
 			String rawCount = isNumMatcher.group(1);
 			String withoutRepeat = input.replaceFirst(rawCount, "").trim();
-
-			String originalDiceBot = isOriginalDicebot(withoutRepeat);
+			String originalDiceBot = isOriginalDicebot(String.format("%s%s", rollCommand, withoutRepeat));
+			System.out.println(String.format("ODB: %s : %s", withoutRepeat, originalDiceBot.isEmpty() ? "-" : originalDiceBot));
 			if(! originalDiceBot.isEmpty()) {
 				OriginalDiceBot diceBot = null;
 				try {
@@ -252,12 +252,12 @@ public class BCDiceCLI {
 							result.add(new DicerollResult(rollResult, originalDiceBot, false, true));
 						}
 					}
+					return result;
 				} catch (IOException e) {
 					throw new IOException("ダイスを振るのに失敗しました", e);
 				}
-
 			} else {
-				rawInput = "repeat" + rawInput;
+				rawInput = String.format("%s repeat%s %s", rollCommand, rawCount, withoutRepeat).trim();
 			}
 		}
 

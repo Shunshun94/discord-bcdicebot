@@ -186,7 +186,6 @@ public class BCDiceCLITest extends TestCase {
 	}
 
 	public void testMultiroll() throws Exception {
-		System.out.println("@testMultiroll");
 		assertEquals(1, cli.rolls("2d6", "no_channel").size());
 		assertEquals(1, cli.rolls("repeat3 2d6", "no_channel").size());
 		assertEquals(1, cli.rolls("3 2d6", "no_channel").size());
@@ -194,29 +193,20 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(3, cli.rolls("3 サンプルダイスボット-夜食表", "no_channel").size());
 		assertEquals(20, cli.rolls("20 サンプルダイスボット-夜食表", "no_channel").size());
 		assertEquals(0, cli.rolls("21 なにもない", "no_channel").size());
-		try {
-			assertEquals(cli.rolls("21 サンプルダイスボット-夜食表", "no_channel").size(), 20);
-			throw new Exception("Unexpected behavior [21 サンプルダイスボット-夜食表] must be rejected");
-		} catch(IOException e) {
-			// OK
-		}
 
 		String PREFIX = "/hiyoko";
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll " + PREFIX, "", "channel").get(0).contains("で始まるコマンドのみサーバに送信します "));
 		assertEquals(cli.rolls(PREFIX + " 2d6", "no_channel").size(), 1);
-		assertEquals(cli.rolls(PREFIX + " 3 2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + " 3 2d6", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + " repeat3 2d6", "no_channel").size(), 1);
 		assertEquals(cli.rolls(PREFIX + " [パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + " 3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + " 20 サンプルダイスボット-夜食表", "no_channel").size(), 20);
 		// 間にスペースなし
 		assertEquals(cli.rolls(PREFIX + "2d6", "no_channel").size(), 1);
-		assertEquals(cli.rolls(PREFIX + "3 2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "3 2d6", "no_channel").size(), 1);
 		assertEquals(cli.rolls(PREFIX + "[パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + "3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + "20 サンプルダイスボット-夜食表", "no_channel").size(), 20);
-
-		assertTrue(cli.rolls(PREFIX + "2 2d6", "no_channel").get(0).getText().contains("2D6"));
-		assertTrue(cli.rolls(PREFIX + "6 2d6", "no_channel").get(0).getText().contains("2D6"));
-		assertTrue(cli.rolls(PREFIX + "1 1d12", "no_channel").get(0).getText().contains("1d12"));
 	}
 }
