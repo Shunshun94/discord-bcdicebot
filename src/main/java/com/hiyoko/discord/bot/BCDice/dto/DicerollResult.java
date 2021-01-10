@@ -104,9 +104,9 @@ public class DicerollResult {
 
 	public String toString() {
 		if(secret) {
-			return system + ": [Secret Dice]";
+			return "[Secret Dice]";
 		} else {
-			return system + text;
+			return text;
 		}
 	}
 }

@@ -186,12 +186,14 @@ public class BCDiceCLITest extends TestCase {
 	}
 
 	public void testMultiroll() throws Exception {
-		assertEquals(cli.rolls("2d6", "no_channel").size(), 1);
-		assertEquals(cli.rolls("3 2d6", "no_channel").size(), 3);
-		assertEquals(cli.rolls("[パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
-		assertEquals(cli.rolls("3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
-		assertEquals(cli.rolls("20 サンプルダイスボット-夜食表", "no_channel").size(), 20);
-		assertEquals(cli.rolls("21 なにもない", "no_channel").size(), 0);
+		System.out.println("@testMultiroll");
+		assertEquals(1, cli.rolls("2d6", "no_channel").size());
+		assertEquals(1, cli.rolls("repeat3 2d6", "no_channel").size());
+		assertEquals(1, cli.rolls("3 2d6", "no_channel").size());
+		assertEquals(3, cli.rolls("[パンダ,うさぎ,コアラ] 2d6", "no_channel").size());
+		assertEquals(3, cli.rolls("3 サンプルダイスボット-夜食表", "no_channel").size());
+		assertEquals(20, cli.rolls("20 サンプルダイスボット-夜食表", "no_channel").size());
+		assertEquals(0, cli.rolls("21 なにもない", "no_channel").size());
 		try {
 			assertEquals(cli.rolls("21 サンプルダイスボット-夜食表", "no_channel").size(), 20);
 			throw new Exception("Unexpected behavior [21 サンプルダイスボット-夜食表] must be rejected");

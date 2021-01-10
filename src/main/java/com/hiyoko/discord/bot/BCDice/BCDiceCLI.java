@@ -230,29 +230,35 @@ public class BCDiceCLI {
 		}
 		String input = rawInput.replaceFirst(rollCommand, "").trim();
 		Matcher isNumMatcher = MULTIROLL_NUM_PREFIX.matcher(input);
-		if(isNumMatcher.find()) {
+		if(isNumMatcher.find()) { // いずれ消す
 			String rawCount = isNumMatcher.group(1);
-			int times = Integer.parseInt(rawCount);
-			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(rawCount, "").trim());
-			if(times > 20) {
-				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand)) ) {
-					return result;
-				} else {
-					throw new IOException(String.format("1度にダイスを振れる回数は20回までです（%d回振ろうとしていました）", times));
+			String withoutRepeat = input.replaceFirst(rawCount, "").trim();
+
+			String originalDiceBot = isOriginalDicebot(withoutRepeat);
+			if(! originalDiceBot.isEmpty()) {
+				OriginalDiceBot diceBot = null;
+				try {
+					diceBot = originalDiceBotClient.getDiceBot(originalDiceBot);
+				} catch (IOException e) {
+					throw new IOException(String.format("ダイスボット表 [%s] が取得できませんでした", originalDiceBot), e);
 				}
+				try {
+					int times = Integer.parseInt(rawCount);
+					for(int i = 0; i < times; i++) {
+						DicerollResult rawRollResult = client.rollDice(normalizeDiceCommand(diceBot.getCommand()));
+						Matcher matchResult = RESULT_VALUE_REGEXP.matcher(rawRollResult.getText());
+						if(matchResult.find()) {
+							String rollResult = diceBot.getResultAsShow(matchResult.group(1));
+							result.add(new DicerollResult(rollResult, originalDiceBot, false, true));
+						}
+					}
+				} catch (IOException e) {
+					throw new IOException("ダイスを振るのに失敗しました", e);
+				}
+
+			} else {
+				rawInput = "repeat" + rawInput;
 			}
-			for(int i = 0; i < times; i++) {
-				DicerollResult tmpResult = roll(requiredCommand, channel);
-				logger.debug(tmpResult.toString());
-				result.add( new DicerollResult(
-								tmpResult.getText(),
-								String.format("%s: %s", i + 1, tmpResult.getSystem()),
-								tmpResult.isSecret(),
-								tmpResult.isRolled(),
-								tmpResult.isError()
-						));
-			}
-			return result;
 		}
 
 		Matcher isTextMatcher = MULTIROLL_TEXT_PREFIX.matcher(input);
