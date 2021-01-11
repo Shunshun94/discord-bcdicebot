@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
@@ -234,7 +235,6 @@ public class BCDiceCLI {
 			String rawCount = isNumMatcher.group(1);
 			String withoutRepeat = input.replaceFirst(rawCount, "").trim();
 			String originalDiceBot = isOriginalDicebot(String.format("%s%s", rollCommand, withoutRepeat));
-			System.out.println(String.format("ODB: %s : %s", withoutRepeat, originalDiceBot.isEmpty() ? "-" : originalDiceBot));
 			if(! originalDiceBot.isEmpty()) {
 				OriginalDiceBot diceBot = null;
 				try {
@@ -322,6 +322,24 @@ public class BCDiceCLI {
 		return inputs(tmpInput, id, channel, new ArrayList<MessageAttachment>());
 	}
 
+	public List<String> separateStringWithLengthLimitation(List<String> raw, int limitLength) {
+		List<String> result = new ArrayList<String>();
+		StringBuilder sb = new StringBuilder("");
+		raw.forEach(line->{
+			sb.append(line + "\n");
+			if(sb.length() > limitLength) {
+				result.add(sb.toString());
+				sb.delete(0, sb.length());
+			}
+		});
+		result.add(sb.toString());
+		return result;
+	}
+
+	public List<String> separateStringWithLengthLimitation(String raw, int limitLength) {
+		return separateStringWithLengthLimitation(Arrays.asList(raw.split("\\n")), limitLength);
+	}
+
 	/**
 	 * 
 	 * @param tmpInput (not dice roll)
@@ -375,16 +393,9 @@ public class BCDiceCLI {
 			}
 		}
 		if(command[1].equals("list")) {
-			StringBuilder sb = new StringBuilder("[DiceBot List]");
 			try {
-				client.getSystems().getSystemList().forEach(dice->{
-					sb.append("\n" + dice);
-					if(sb.length() > 1000) {
-						resultList.add(sb.toString());
-						sb.delete(0, sb.length());
-					}
-				});
-				resultList.add(sb.toString());
+				resultList.add("[DiceBot List]");
+				resultList.addAll(separateStringWithLengthLimitation(client.getSystems().getSystemList(), 1000));
 				return resultList;
 			} catch (IOException e) {
 				resultList.add(e.getMessage());
@@ -497,15 +508,8 @@ public class BCDiceCLI {
 		}
 		if(command[3].equals("export")) {
 			Map<String, String> roomList = client.getRoomsSystem();
-			StringBuilder sb = new StringBuilder("Room-System List\n");
-			roomList.forEach((room, system)->{
-				sb.append(room + ":" + system + "\n");
-				if(sb.length() > 1000) {
-					resultList.add(sb.toString());
-					sb.delete(0, sb.length());
-				}
-			});
-			resultList.add(sb.toString());
+			resultList.add("Room-System List\n");
+			resultList.addAll(separateStringWithLengthLimitation(roomList.entrySet().stream().map(p -> String.format("%s:%s\n", p.getKey(), p.getValue() )).collect(Collectors.toList()), 1000));
 			return resultList;
 		}
 		if(command[3].equals("import")) {
@@ -583,15 +587,7 @@ public class BCDiceCLI {
 		}
 		if(command[3].equals("listDiceBot")) {
 			List<String> dicebotList = originalDiceBotClient.getDiceBotList();
-			StringBuilder sb = new StringBuilder();
-			dicebotList.forEach((name)->{
-				sb.append(name + "\n");
-				if(sb.length() > 1000) {
-					resultList.add(sb.toString());
-					sb.delete(0, sb.length());
-				}
-			});
-			resultList.add(sb.toString());
+			resultList.addAll(separateStringWithLengthLimitation(dicebotList, 1000));
 			return resultList;
 		}
 

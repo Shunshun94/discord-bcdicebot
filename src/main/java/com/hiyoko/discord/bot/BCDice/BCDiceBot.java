@@ -89,7 +89,9 @@ public class BCDiceBot {
 							throw new IOException(rollResult.getText());
 						}
 						if( rollResult.isRolled() ) {
-							event.getChannel().sendMessage(String.format("＞%s\n%s", name, rollResult.toString()));
+							bcDice.separateStringWithLengthLimitation(String.format("＞%s\n%s", name, rollResult.toString()), 1000).forEach((post)->{
+								event.getChannel().sendMessage(post);
+							});
 						}
 						if( rollResult.isSecret() ) {
 							int index = Integer.parseInt(bcDice.inputs("bcdice save " + rollResult.getSystem() + rollResult.getText(), userId, "dummy").get(0));
