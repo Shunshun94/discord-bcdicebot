@@ -61,11 +61,11 @@ public class DicerollResult {
 
 	public DicerollResult(String json) {
 		JsonObject result = Json.parse(json).asObject();
-		rolled = result.getBoolean("ok", false);
+		this.rolled = result.getBoolean("ok", false);
 		if(rolled) {
 			system = "DiceBot";
-			text = result.getString("result", "[ERROR] コマンドが成功しているにも関わらずメッセージが取得できませんでした");
-			secret = result.getBoolean("secret", false);
+			text = result.getString("text", "[ERROR] コマンドが成功しているにも関わらずメッセージが取得できませんでした");
+			secret = false;
 			this.isError = false;
 		} else {
 			system = "";

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
+import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.SystemList;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
@@ -134,5 +135,10 @@ public class DiceClientMock implements DiceClient {
 	@Override
 	public boolean removeDiceServer(String url) {
 		return true;
+	}
+
+	@Override
+	public DicerollResult rollOriginalDiceBotTable(OriginalDiceBotTable diceBot) throws IOException {
+		return new DicerollResult("なんか適当な結果", "架空のシステム", false, true);
 	}
 }

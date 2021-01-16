@@ -3,12 +3,12 @@ package com.hiyoko.discord.bot.BCDice.dto;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OriginalDiceBotV2 {
+public class OriginalDiceBotTable {
 	private static final Pattern ORIGINAL_DICEBOT_VALUE_LINE = Pattern.compile("^\\d+[:：]");
 	private static final Pattern DICE_COMMAND_PATTERN = Pattern.compile("\\d*[Dd]\\d+[AaNnSsDd]");
 	public static final String NO_HELP_MESSAGE = "このダイスボットにはヘルプが登録されていません";
 	private final String body;
-	public OriginalDiceBotV2(String fileContents, String name) {
+	public OriginalDiceBotTable(String fileContents, String name) {
 		String firstLine = fileContents.split("\\n")[0].trim();
 		Matcher isDiceCommand = DICE_COMMAND_PATTERN.matcher(firstLine);
 		if(isDiceCommand.find()) {

@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBot;
+import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 
 public class OriginalDiceBotClient {
 	private final Client client;
@@ -79,7 +79,7 @@ public class OriginalDiceBotClient {
 		}
 	}
 
-	public OriginalDiceBot getDiceBot(String name) throws IOException {
+	public OriginalDiceBotTable getDiceBot(String name) throws IOException {
 		if(! diceBotList.contains(name)) {
 			throw new IOException(String.format("ダイスボット [%s] が見つかりませんでした", name));
 		}
@@ -88,12 +88,12 @@ public class OriginalDiceBotClient {
 				FileReader fr = new FileReader(file);
 				BufferedReader br = new BufferedReader(fr);
 				) {
-			List<String> lines = new ArrayList<String>();
+			StringBuilder sb = new StringBuilder();
 			String line;
 			while((line = br.readLine()) != null) {
-				lines.add(line.replaceAll("\\\\n", "\n"));
+				sb.append(line.replaceAll("\\\\n", "\n"));
 			}
-			return new OriginalDiceBot(lines, name);
+			return new OriginalDiceBotTable(sb.toString(), name);
 		} catch (IOException e) {
 			throw new IOException(String.format("ダイスボット [%s] の読み込みに失敗しました", name));
 		}

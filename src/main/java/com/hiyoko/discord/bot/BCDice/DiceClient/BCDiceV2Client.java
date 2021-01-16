@@ -1,12 +1,16 @@
 package com.hiyoko.discord.bot.BCDice.DiceClient;
 
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
+import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.SystemList;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -58,6 +62,61 @@ public class BCDiceV2Client implements DiceClient {
 		system = new HashMap<String, String>();
 		system.put(DEFAULT_CHANNEL, "DiceBot");
 		errorSensitive = es;
+	}
+
+	private String postUrl(String path, Entity<Form> entity, int rtl) throws IOException {
+		String targetUrl = urls.get(urlCursor) + path;
+		Response response = null;
+		try {
+			response = client.target(targetUrl).request().post(entity);
+		} catch(Exception e) {
+			if(response != null) {
+				response.close();
+			}
+			if( rtl == 0 ) {
+				throw new IOException(e.getMessage() + "(" + targetUrl + ")", e);
+			} else {
+				System.err.println(String.format("Failed to request to %s, %s, app will try %s", targetUrl, e.getMessage(), rtl));
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+					e.addSuppressed(e1);
+					throw new IOException("Waiting in retry is interrupted", e);
+				}
+				if( urls.size() != 1 ) {
+					urlCursor++;
+					if(urls.size() <= urlCursor) {
+						urlCursor = 0;
+					}
+				}
+				return postUrl(path, entity, rtl - 1);
+			}
+		}
+        if (! (response.getStatus() == Response.Status.OK.getStatusCode() || response.getStatus() == 400)) {
+        	response.close();
+        	if(errorSensitive) {
+            	String msg = String.format("[%s] %s", response.getStatus(), targetUrl);
+            	if(msg.startsWith("[5") && (urls.size() != 1) && (rtl > 0)) { // 5XX Error であれば かつ 予備 URL があれば
+            		urlCursor++;
+            		if(urls.size() <= urlCursor) {
+            			urlCursor = 0;
+            		}
+            		System.err.println(String.format("Failed to request to %s, %s, app will try %s with dice server %s",
+            				targetUrl,
+            				response.getStatus(),
+            				rtl,
+            				urls.get(urlCursor)));
+            		return postUrl(path, entity, rtl - 1);
+            	}
+            	throw new IOException(msg);
+        	} else {
+        		return "{\"ok\":false,\"reason\":\"error handling dummy data\"}";
+        	}
+        }
+        String result = response.readEntity(String.class);
+        response.close();
+        return result;
+		
 	}
 
 	private String getUrl(String path, int rtl) throws IOException {
@@ -144,6 +203,12 @@ public class BCDiceV2Client implements DiceClient {
 		}
 	}
 
+	@Override
+	public DicerollResult rollOriginalDiceBotTable(OriginalDiceBotTable diceBot) throws IOException {
+		Entity<Form> entity = Entity.entity(new Form().param("table", diceBot.toString()), MediaType.APPLICATION_FORM_URLENCODED);
+		String result = postUrl("v2/original_table", entity, 5);
+		return new DicerollResult(result);
+	}
 
 	@Override
 	public DicerollResult rollDiceWithChannel(String command, String channel) throws IOException {

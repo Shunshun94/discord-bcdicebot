@@ -1,6 +1,7 @@
 package com.hiyoko.discord.bot.BCDice.DiceClient;
 
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
+import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.SystemList;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
@@ -244,5 +245,12 @@ public class BCDiceClient implements DiceClient {
 			urlCursor = 0;
 		}
 		return flag;
+	}
+
+	@Override
+	public DicerollResult rollOriginalDiceBotTable(OriginalDiceBotTable diceBot) throws IOException {
+		throw new IOException(
+				"rollOriginalDiceBotTable はこのバージョンでは使えません",
+				new UnsupportedOperationException("API V1 はオリジナルダイスボット表をサポートしていません"));
 	}
 }

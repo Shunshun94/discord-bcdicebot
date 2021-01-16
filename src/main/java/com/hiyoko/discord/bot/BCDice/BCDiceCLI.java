@@ -22,6 +22,7 @@ import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBot;
+import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
@@ -202,8 +203,7 @@ public class BCDiceCLI {
 	}
 
 	private DicerollResult rollOriginalDiceBot(String name) throws IOException {
-		OriginalDiceBot diceBot;
-		DicerollResult rawRollResult;
+		OriginalDiceBotTable diceBot;
 		logger.debug(String.format("ダイスボット表 [%s] を実行します", name));
 		try {
 			diceBot = originalDiceBotClient.getDiceBot(name);
@@ -211,14 +211,7 @@ public class BCDiceCLI {
 			throw new IOException(String.format("ダイスボット表 [%s] が取得できませんでした", name), e);
 		}
 		try {
-			rawRollResult = client.rollDice(normalizeDiceCommand(diceBot.getCommand()));
-			Matcher matchResult = RESULT_VALUE_REGEXP.matcher(rawRollResult.getText());
-			if(matchResult.find()) {
-				String rollResult = diceBot.getResultAsShow(matchResult.group(1));
-				return new DicerollResult(rollResult, name, false, true);
-			} else {
-				return new DicerollResult("", "", false, false);
-			}
+			return client.rollOriginalDiceBotTable(diceBot);
 		} catch (IOException e) {
 			throw new IOException("ダイスを振るのに失敗しました", e);
 		}
@@ -236,7 +229,7 @@ public class BCDiceCLI {
 			String withoutRepeat = input.replaceFirst(rawCount, "").trim();
 			String originalDiceBot = isOriginalDicebot(String.format("%s%s", rollCommand, withoutRepeat));
 			if(! originalDiceBot.isEmpty()) {
-				OriginalDiceBot diceBot = null;
+				OriginalDiceBotTable diceBot = null;
 				try {
 					diceBot = originalDiceBotClient.getDiceBot(originalDiceBot);
 				} catch (IOException e) {
@@ -245,11 +238,9 @@ public class BCDiceCLI {
 				try {
 					int times = Integer.parseInt(rawCount);
 					for(int i = 0; i < times; i++) {
-						DicerollResult rawRollResult = client.rollDice(normalizeDiceCommand(diceBot.getCommand()));
-						Matcher matchResult = RESULT_VALUE_REGEXP.matcher(rawRollResult.getText());
-						if(matchResult.find()) {
-							String rollResult = diceBot.getResultAsShow(matchResult.group(1));
-							result.add(new DicerollResult(rollResult, originalDiceBot, false, true));
+						DicerollResult rollResult = client.rollOriginalDiceBotTable(diceBot);
+						if(rollResult.isRolled()) {
+							result.add(rollResult);
 						}
 					}
 					return result;
@@ -367,7 +358,7 @@ public class BCDiceCLI {
 						resultList.add("[" + systemName + "]\n" + info.getInfo());
 						return resultList;
 					} else {
-						OriginalDiceBot originalDiceBot = originalDiceBotClient.getDiceBot(originalDicebot);
+						OriginalDiceBotTable originalDiceBot = originalDiceBotClient.getDiceBot(originalDicebot);
 						String helpMessage = originalDiceBot.getHelp();
 						resultList.add(helpMessage);
 						return resultList;
