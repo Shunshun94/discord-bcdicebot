@@ -213,7 +213,7 @@ public class BCDiceCLI {
 		try {
 			return client.rollOriginalDiceBotTable(diceBot);
 		} catch (IOException e) {
-			throw new IOException("ダイスを振るのに失敗しました", e);
+			throw new IOException("ダイスを振るのに失敗しました。ダイスボット表の形式が不正かもしれません。確認してください", e);
 		}
 	}
 
@@ -245,7 +245,7 @@ public class BCDiceCLI {
 					}
 					return result;
 				} catch (IOException e) {
-					throw new IOException("ダイスを振るのに失敗しました", e);
+					throw new IOException("ダイスを振るのに失敗しました。ダイスボット表の形式が不正かもしれません。確認してください", e);
 				}
 			} else {
 				rawInput = String.format("%s repeat%s %s", rollCommand, rawCount, withoutRepeat).trim();

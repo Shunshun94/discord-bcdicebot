@@ -1,13 +1,13 @@
 package com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,17 +83,8 @@ public class OriginalDiceBotClient {
 		if(! diceBotList.contains(name)) {
 			throw new IOException(String.format("ダイスボット [%s] が見つかりませんでした", name));
 		}
-		File file = new File(String.format("%s/%s", dicebotDirectoryPath, name));
-		try (
-				FileReader fr = new FileReader(file);
-				BufferedReader br = new BufferedReader(fr);
-				) {
-			StringBuilder sb = new StringBuilder();
-			String line;
-			while((line = br.readLine()) != null) {
-				sb.append(line.replaceAll("\\\\n", "\n"));
-			}
-			return new OriginalDiceBotTable(sb.toString(), name);
+		try {
+			return new OriginalDiceBotTable(Files.readAllLines(FileSystems.getDefault().getPath("originalDiceBots", name)), name);
 		} catch (IOException e) {
 			throw new IOException(String.format("ダイスボット [%s] の読み込みに失敗しました", name));
 		}

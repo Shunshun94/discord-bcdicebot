@@ -8,9 +8,6 @@ import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -64,11 +61,11 @@ public class BCDiceV2Client implements DiceClient {
 		errorSensitive = es;
 	}
 
-	private String postUrl(String path, Entity<Form> entity, int rtl) throws IOException {
+	private String postUrl(String path, int rtl) throws IOException {
 		String targetUrl = urls.get(urlCursor) + path;
 		Response response = null;
 		try {
-			response = client.target(targetUrl).request().post(entity);
+			response = client.target(targetUrl).request().post(null);
 		} catch(Exception e) {
 			if(response != null) {
 				response.close();
@@ -89,7 +86,7 @@ public class BCDiceV2Client implements DiceClient {
 						urlCursor = 0;
 					}
 				}
-				return postUrl(path, entity, rtl - 1);
+				return postUrl(path, rtl - 1);
 			}
 		}
         if (! (response.getStatus() == Response.Status.OK.getStatusCode() || response.getStatus() == 400)) {
@@ -106,7 +103,7 @@ public class BCDiceV2Client implements DiceClient {
             				response.getStatus(),
             				rtl,
             				urls.get(urlCursor)));
-            		return postUrl(path, entity, rtl - 1);
+            		return postUrl(path, rtl - 1);
             	}
             	throw new IOException(msg);
         	} else {
@@ -205,8 +202,8 @@ public class BCDiceV2Client implements DiceClient {
 
 	@Override
 	public DicerollResult rollOriginalDiceBotTable(OriginalDiceBotTable diceBot) throws IOException {
-		Entity<Form> entity = Entity.entity(new Form().param("table", diceBot.toString()), MediaType.APPLICATION_FORM_URLENCODED);
-		String result = postUrl("v2/original_table", entity, 5);
+		String result = postUrl("v2/original_table?table=" + URLEncoder.encode(diceBot.toString(), "UTF-8").replaceAll("%2520", "%20"),
+				5);
 		return new DicerollResult(result);
 	}
 
