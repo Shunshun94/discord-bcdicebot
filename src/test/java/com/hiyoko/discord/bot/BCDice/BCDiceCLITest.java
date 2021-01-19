@@ -1,5 +1,6 @@
 package com.hiyoko.discord.bot.BCDice;
 
+import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Field;
 import java.io.IOException;
@@ -92,15 +93,15 @@ public class BCDiceCLITest extends TestCase {
 	}
 	
 	public void testMultiChannel() {
-		String[] diceBotList = cli.inputs("bcdice list", "", "channel").get(0).split("\n");
-		cli.inputs("bcdice set " + diceBotList[1], "hiyoko", "no_id");
+		List<String> diceBotList = cli.inputs("bcdice list", "", "channel");
+		cli.inputs("bcdice set " + diceBotList.get(1) , "hiyoko", "no_id");
 		assertEquals(cli.inputs("bcdice status", "hiyoko", "general").get(0), cli.inputs("bcdice status", "hiyoko", "general").get(0));
 		assertEquals(cli.inputs("bcdice status", "hiyoko", "general").get(0), cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0));
-		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList[1]));
-		cli.inputs("bcdice set " + diceBotList[2], "hiyoko", "ungeneral");
-		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList[2]));
-		assertFalse(cli.inputs("bcdice status", "hiyoko", "general").get(0).contains(diceBotList[2]));
-		assertTrue(cli.inputs("bcdice status", "hiyoko", "dummydummy").get(0).contains(diceBotList[1]));
+		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(0)));
+		cli.inputs("bcdice set " + diceBotList.get(2), "hiyoko", "ungeneral");
+		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(2)));
+		assertFalse(cli.inputs("bcdice status", "hiyoko", "general").get(0).contains(diceBotList.get(2)));
+		assertTrue(cli.inputs("bcdice status", "hiyoko", "dummydummy").get(0).contains(diceBotList.get(1)));
 	}
 
 	public void testNormalizeCommand() throws IOException {
