@@ -51,18 +51,18 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(cli.inputs("bcdice help", "", "channel").get(0) , BCDiceCLI.HELP);
 		assertEquals(cli.inputs("bcdice", "", "channel").get(0), BCDiceCLI.HELP);
 		assertEquals(cli.inputs("bcdice nonsense", "", "channel").get(0), BCDiceCLI.HELP);
-		String[] diceBotList = cli.inputs("bcdice list", "dummy", "dummy").get(0).split("\n");
+		List<String> diceBotList = cli.inputs("bcdice list", "dummy", "dummy");
 		assertTrue(cli.inputs("bcdice help nonsense", "", "channel").get(0).indexOf("is not found") > -1);
-		assertTrue(cli.inputs("bcdice help " + diceBotList[1], "", "channel").get(0).indexOf("is not found") == -1);
-		assertTrue(cli.inputs("bcdice help " + diceBotList[1] + "\ndayodayo", "", "channel").get(0).indexOf("is not found") == -1);
+		assertTrue(cli.inputs("bcdice help " + diceBotList.get(1), "", "channel").get(0).indexOf("is not found") == -1);
+		assertTrue(cli.inputs("bcdice help " + diceBotList.get(1) + "\ndayodayo", "", "channel").get(0).indexOf("is not found") == -1);
 	}
 	
 	public void testInputStringSet() {
-		String[] diceBotList = cli.inputs("bcdice list", "dummy", "dummy").get(0).split("\n");
+		List<String> diceBotList = cli.inputs("bcdice list", "dummy", "dummy");
 		assertTrue(cli.inputs("bcdice set", "", "channel").get(0).indexOf("ERROR") > -1);
-		assertTrue(cli.inputs("bcdice set " + diceBotList[1], "", "channel").get(0).indexOf("ERROR") == -1);
-		assertTrue(cli.inputs("bcdice set " + diceBotList[1] + " nonsense", "", "channel").get(0).indexOf("ERROR") == -1);
-		assertTrue(cli.inputs("bcdice set " + diceBotList[1] + "\nhiyohiyo", "", "channel").get(0).indexOf("ERROR") == -1);
+		assertTrue(cli.inputs("bcdice set " + diceBotList.get(1), "", "channel").get(0).indexOf("ERROR") == -1);
+		assertTrue(cli.inputs("bcdice set " + diceBotList.get(1) + " nonsense", "", "channel").get(0).indexOf("ERROR") == -1);
+		assertTrue(cli.inputs("bcdice set " + diceBotList.get(1) + "\nhiyohiyo", "", "channel").get(0).indexOf("ERROR") == -1);
 		assertTrue(cli.inputs("bcdice set Hiyoko", "", "hiyohitsu").get(0).contains("Hiyoko"));
 		assertTrue(cli.inputs("bcdice set hitsuji & hiyoko", "", "hiyohitsu").get(0).contains("hitsuji & hiyoko"));
 	}
@@ -94,14 +94,14 @@ public class BCDiceCLITest extends TestCase {
 	
 	public void testMultiChannel() {
 		List<String> diceBotList = cli.inputs("bcdice list", "", "channel");
-		cli.inputs("bcdice set " + diceBotList.get(1) , "hiyoko", "no_id");
+		cli.inputs("bcdice set " + diceBotList.get(0) , "hiyoko", "no_id");
 		assertEquals(cli.inputs("bcdice status", "hiyoko", "general").get(0), cli.inputs("bcdice status", "hiyoko", "general").get(0));
 		assertEquals(cli.inputs("bcdice status", "hiyoko", "general").get(0), cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0));
-		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(0)));
-		cli.inputs("bcdice set " + diceBotList.get(2), "hiyoko", "ungeneral");
-		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(2)));
-		assertFalse(cli.inputs("bcdice status", "hiyoko", "general").get(0).contains(diceBotList.get(2)));
-		assertTrue(cli.inputs("bcdice status", "hiyoko", "dummydummy").get(0).contains(diceBotList.get(1)));
+		assertFalse(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(0)));
+		cli.inputs("bcdice set " + diceBotList.get(1), "hiyoko", "ungeneral");
+		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(1)));
+		assertFalse(cli.inputs("bcdice status", "hiyoko", "general").get(0).contains(diceBotList.get(1)));
+		assertTrue(cli.inputs("bcdice status", "hiyoko", "dummydummy").get(0).contains(diceBotList.get(0)));
 	}
 
 	public void testNormalizeCommand() throws IOException {
@@ -175,9 +175,6 @@ public class BCDiceCLITest extends TestCase {
 		assertTrue(cli.roll(PREFIX + " 2d6", "channel").isRolled());
 		assertTrue(cli.roll("あああああ", "channel").isRolled());
 		assertTrue(cli.roll(PREFIX + " あああああ", "channel").isRolled());
-
-		assertTrue(cli.inputs(PREFIX + "bcdice help サンプルダイスボット-夜食表", "", "channel").get(0).contains(OriginalDiceBot.NO_HELP_MESSAGE));
-		assertTrue(cli.inputs(PREFIX + "bcdice help サンプルダイスボット-ラーメン表", "", "channel").get(0).contains("Which ramen noodle you should eat"));
 
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll", "", "channel").get(0).contains("まずコマンドじゃないだろう"));
 	}
