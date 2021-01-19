@@ -46,7 +46,7 @@ public class BCDiceCLI {
 	private static final String[] REMOVE_WHITESPACE_TARGETS = {"<", ">", "="};
 	private final Logger logger = LoggerFactory.getLogger(BCDiceCLI.class);
 	private static final Pattern GAMESYSTEM_ROOM_PAIR_REGEXP = Pattern.compile("^(\\d*):(.*)");
-	private static final Pattern RESULT_VALUE_REGEXP = Pattern.compile("(\\d+)$");
+	private static final Pattern MULTIROLL_OFFICIAL_PREFIX = Pattern.compile("^(x|rep|repeat)(\\d+)");
 	private static final Pattern MULTIROLL_NUM_PREFIX = Pattern.compile("^(\\d+) ");
 	private static final String MULTIROLL_TEXT_PREFIX_STR = "^\\[(.+)\\] ";
 	private static final Pattern MULTIROLL_TEXT_PREFIX = Pattern.compile(MULTIROLL_TEXT_PREFIX_STR);
@@ -201,20 +201,28 @@ public class BCDiceCLI {
 		}
 		return serachOriginalDicebot(rawInput.replaceFirst(rollCommand, "").trim());
 	}
+	
+	private List<DicerollResult> rollOriginalDiceBotMultiple(OriginalDiceBotTable dbt, int times) throws IOException {
+		logger.debug(String.format("ダイスボット表 [%s] を%s回 実行します", dbt.getName(), times));
+		List<DicerollResult> list = new ArrayList<DicerollResult>();
+		try {
+			for(int i = 0; i < times; i++) {
+				list.add(client.rollOriginalDiceBotTable(dbt));
+			}
+			return list;
+		} catch (IOException e) {
+			throw new IOException("ダイスを振るのに失敗しました。ダイスボット表の形式が不正かもしれません。フォーマットないし表の長さを確認してください", e);
+		}
+	}
 
 	private DicerollResult rollOriginalDiceBot(String name) throws IOException {
-		OriginalDiceBotTable diceBot;
-		logger.debug(String.format("ダイスボット表 [%s] を実行します", name));
+		OriginalDiceBotTable diceBot = null;
 		try {
 			diceBot = originalDiceBotClient.getDiceBot(name);
 		} catch (IOException e) {
 			throw new IOException(String.format("ダイスボット表 [%s] が取得できませんでした", name), e);
 		}
-		try {
-			return client.rollOriginalDiceBotTable(diceBot);
-		} catch (IOException e) {
-			throw new IOException("ダイスを振るのに失敗しました。ダイスボット表の形式が不正かもしれません。確認してください", e);
-		}
+		return rollOriginalDiceBotMultiple(diceBot, 1).get(0);
 	}
 
 	public List<DicerollResult> rolls(String rawInput, String channel) throws IOException {
@@ -223,8 +231,25 @@ public class BCDiceCLI {
 			return result;
 		}
 		String input = rawInput.replaceFirst(rollCommand, "").trim();
+
+		Matcher isOfficialMultiRollMatcher = MULTIROLL_OFFICIAL_PREFIX.matcher(input);
+		if(isOfficialMultiRollMatcher.find()) {
+			String withoutRepeat = input.replaceFirst(isOfficialMultiRollMatcher.group(), "").trim();
+			String originalDiceBot = isOriginalDicebot(String.format("%s%s", rollCommand, withoutRepeat));
+			if(! originalDiceBot.isEmpty()) {
+				OriginalDiceBotTable diceBot = null;
+				try {
+					diceBot = originalDiceBotClient.getDiceBot(originalDiceBot);
+				} catch (IOException e) {
+					throw new IOException(String.format("ダイスボット表 [%s] が取得できませんでした", originalDiceBot), e);
+				}
+				int times = Integer.parseInt(isOfficialMultiRollMatcher.group(2));
+				return rollOriginalDiceBotMultiple(diceBot, times);
+			}
+		}
+
 		Matcher isNumMatcher = MULTIROLL_NUM_PREFIX.matcher(input);
-		if(isNumMatcher.find()) { // いずれ消す
+		if(isNumMatcher.find()) { // いずれ消す。オフィシャルの繰り返しコマンドで置換されるべきでは
 			String rawCount = isNumMatcher.group(1);
 			String withoutRepeat = input.replaceFirst(rawCount, "").trim();
 			String originalDiceBot = isOriginalDicebot(String.format("%s%s", rollCommand, withoutRepeat));
@@ -235,23 +260,12 @@ public class BCDiceCLI {
 				} catch (IOException e) {
 					throw new IOException(String.format("ダイスボット表 [%s] が取得できませんでした", originalDiceBot), e);
 				}
-				try {
-					int times = Integer.parseInt(rawCount);
-					for(int i = 0; i < times; i++) {
-						DicerollResult rollResult = client.rollOriginalDiceBotTable(diceBot);
-						if(rollResult.isRolled()) {
-							result.add(rollResult);
-						}
-					}
-					return result;
-				} catch (IOException e) {
-					throw new IOException("ダイスを振るのに失敗しました。ダイスボット表の形式が不正かもしれません。確認してください", e);
-				}
+				int times = Integer.parseInt(rawCount);
+				return rollOriginalDiceBotMultiple(diceBot, times);
 			} else {
 				rawInput = String.format("%s repeat%s %s", rollCommand, rawCount, withoutRepeat).trim();
 			}
 		}
-
 		Matcher isTextMatcher = MULTIROLL_TEXT_PREFIX.matcher(input);
 		if(isTextMatcher.find()) {
 			String rawTargetList = isTextMatcher.group(1);
@@ -267,8 +281,8 @@ public class BCDiceCLI {
 			for(String target: targetList) {
 				DicerollResult tmpResult = roll(requiredCommand, channel);
 				result.add( new DicerollResult(
-								tmpResult.getText(),
-								String.format("%s: %s", target, tmpResult.getSystem()),
+						String.format("%s:%s", target, tmpResult.getText()),
+								tmpResult.getSystem(),
 								tmpResult.isSecret(),
 								tmpResult.isRolled(),
 								tmpResult.isError()
