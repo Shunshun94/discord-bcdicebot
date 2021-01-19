@@ -374,7 +374,7 @@ public class BCDiceCLI {
 					} else {
 						OriginalDiceBotTable originalDiceBot = originalDiceBotClient.getDiceBot(originalDicebot);
 						String helpMessage = originalDiceBot.getHelp();
-						resultList.add(helpMessage);
+						resultList.addAll(separateStringWithLengthLimitation(helpMessage, 1000));
 						return resultList;
 					}
 				} catch (IOException e) {
