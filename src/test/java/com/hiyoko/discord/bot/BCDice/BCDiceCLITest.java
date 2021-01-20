@@ -1,5 +1,6 @@
 package com.hiyoko.discord.bot.BCDice;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Field;
@@ -93,15 +94,18 @@ public class BCDiceCLITest extends TestCase {
 	}
 	
 	public void testMultiChannel() {
-		List<String> diceBotList = cli.inputs("bcdice list", "", "channel");
-		cli.inputs("bcdice set " + diceBotList.get(0) , "hiyoko", "no_id");
+		List<String> tmpDiceBotList = cli.inputs("bcdice list", "", "channel");
+		List<String> diceBotList = Arrays.asList(String.join("\n", tmpDiceBotList).split("\n"));
+		cli.inputs("bcdice set " + diceBotList.get(2) , "hiyoko", "ungeneral");
 		assertEquals(cli.inputs("bcdice status", "hiyoko", "general").get(0), cli.inputs("bcdice status", "hiyoko", "general").get(0));
-		assertEquals(cli.inputs("bcdice status", "hiyoko", "general").get(0), cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0));
-		assertFalse(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(0)));
-		cli.inputs("bcdice set " + diceBotList.get(1), "hiyoko", "ungeneral");
-		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(1)));
-		assertFalse(cli.inputs("bcdice status", "hiyoko", "general").get(0).contains(diceBotList.get(1)));
-		assertTrue(cli.inputs("bcdice status", "hiyoko", "dummydummy").get(0).contains(diceBotList.get(0)));
+
+		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(2)));
+		assertFalse(cli.inputs("bcdice status", "hiyoko", "general").get(0).contains(diceBotList.get(2)));
+		assertFalse(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(1)));
+		cli.inputs("bcdice set " + diceBotList.get(3), "hiyoko", "ungeneral");
+		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(3)));
+		assertFalse(cli.inputs("bcdice status", "hiyoko", "general").get(0).contains(diceBotList.get(3)));
+		assertTrue(cli.inputs("bcdice status", "hiyoko", "dummydummy").get(0).contains(diceBotList.get(1)));
 	}
 
 	public void testNormalizeCommand() throws IOException {
