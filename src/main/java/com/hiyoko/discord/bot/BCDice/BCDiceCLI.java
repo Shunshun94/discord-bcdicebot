@@ -21,7 +21,6 @@ import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
-import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBot;
 import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
@@ -206,12 +205,20 @@ public class BCDiceCLI {
 		logger.debug(String.format("ダイスボット表 [%s] を%s回 実行します", dbt.getName(), times));
 		List<DicerollResult> list = new ArrayList<DicerollResult>();
 		try {
-			for(int i = 0; i < times; i++) {
-				list.add(client.rollOriginalDiceBotTable(dbt));
+			if(dbt.isValid) {
+				for(int i = 0; i < times; i++) {
+					list.add(client.rollOriginalDiceBotTable(dbt));
+				}
+			} else {
+				for(int i = 0; i < times; i++) {
+					DicerollResult tmp = client.rollDice(dbt.getCommand());
+					String value = dbt.getResultAsInvalidTable(tmp.getText());
+					list.add(new DicerollResult(value, "DiceBot", false, true, false));
+				}
 			}
 			return list;
-		} catch (IOException e) {
-			throw new IOException("ダイスを振るのに失敗しました。ダイスボット表の形式が不正かもしれません。フォーマットないし表の長さを確認してください", e);
+		} catch(IOException e) {
+			throw new IOException(String.format("[ERROR] %s", e.getMessage()));
 		}
 	}
 

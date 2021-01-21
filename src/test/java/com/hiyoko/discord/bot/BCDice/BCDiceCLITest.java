@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.io.IOException;
 
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
-import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBot;
 
 import junit.framework.TestCase;
 
