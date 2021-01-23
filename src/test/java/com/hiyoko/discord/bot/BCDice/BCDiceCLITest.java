@@ -213,10 +213,21 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(cli.rolls(PREFIX + "2d6", "no_channel").size(), 1);
 		assertEquals(cli.rolls(PREFIX + "3 2d6", "no_channel").size(), 1);
 		assertEquals(cli.rolls(PREFIX + "[パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "サンプルダイスボット-夜食表", "no_channel").size(), 1);
 		assertEquals(cli.rolls(PREFIX + "3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + "x3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + "rep3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + "repeat3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + "20 サンプルダイスボット-夜食表", "no_channel").size(), 20);
+		// 全角スペース
+		assertEquals(cli.rolls(PREFIX + "　2d6", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + "　3　2d6", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + "　サンプルダイスボット-夜食表", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + "　[パンダ,うさぎ,コアラ]　2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　3　サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　x3　サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　rep3　サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　repeat3　サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　20　サンプルダイスボット-夜食表", "no_channel").size(), 20);
 	}
 }

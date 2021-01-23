@@ -237,6 +237,7 @@ public class BCDiceCLI {
 		if(! (rollCommand.isEmpty() || rawInput.trim().startsWith(rollCommand))) {
 			return result;
 		}
+		rawInput = rawInput.replaceAll("\\h", " ");
 		String input = rawInput.replaceFirst(rollCommand, "").trim();
 
 		Matcher isOfficialMultiRollMatcher = MULTIROLL_OFFICIAL_PREFIX.matcher(input);
