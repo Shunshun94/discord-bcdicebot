@@ -25,7 +25,6 @@ public class OriginalDiceBotTable {
 		this.name = name;
 		Matcher isDiceCommandMatcher = DICE_COMMAND_PATTERN.matcher(fileContents.get(0).trim());
 		boolean isFirstLineCommand = isDiceCommandMatcher.find();
-		logger.info(String.format("%s: %s", fileContents.get(0), isFirstLineCommand));
 		boolean tmpIsValid = confirmIsValid(fileContents, isFirstLineCommand);
 		if(tmpIsValid) {
 			if(isFirstLineCommand) {
