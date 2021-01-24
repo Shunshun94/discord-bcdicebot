@@ -88,7 +88,7 @@
 
 <h3>利用する</h3>
 
-<p>チャットにただただ <code>2d6</code> 等と打ち込めばダイスが振られます。他にどのようなコマンドが利用できるのかは <a href="https://docs.bcdice.org/"></a>BCDice コマンドリスト</a>をご参照ください。</p>
+<p>チャットにただただ <code>2d6</code> 等と打ち込めばダイスが振られます。他にどのようなコマンドが利用できるのかは <a href="https://docs.bcdice.org/">BCDice コマンドリスト</a>をご参照ください。</p>
 <p>各システム向けの機能を使いたい場合、システムを切り替えましょう。<br/><code>bcdice set [利用するシステムの名前]</code> とチャット上で発言してください。<br/>例えば <code>bcdice set SwordWorld2.5</code> 等です。</p>
 <p>どんなシステムが利用できるのかは <code>bcdice list</code> と発言すれば確認できます。</p>
 <p>各システムでどんな機能が利用できるのかを確認する際は <code>bcdice help [システムの名前]</code> と発言すれば表示できます。<br/>例えば <code>bcdice help SwordWorld2.0</code> 等です。</p>
@@ -128,8 +128,10 @@ BCDice-API サーバに送る必要のありそうな発言だけを送信する
 
 <h4>独自のダイスボット表</h4>
 <p>独自のダイスボット表を追加する場合は Discord にダイスボット表の情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/><code>bcdice admin [パスワード] addDiceBot [ダイスボット表名]</code><br/>
-追加した後ダイスボット表の名前がチャット上で発言されるとダイスボット表が振られます。この際にアップロードするダイスボット表のサンプルは <code>originalDiceBots</code> ディレクトリ内のファイル
-ないしは<a target="_blank" href="https://github.com/Shunshun94/discord-bcdicebot/blob/master/originalDiceBots/サンプルダイスボット-夜食表">discord-bcdicebot/originalDiceBots/サンプルダイスボット-夜食表</a>を参照してください。<br/>
+追加した後ダイスボット表の名前がチャット上で発言されるとダイスボット表が振られます。この際にアップロードするダイスボット表のサンプルは
+<a href="https://docs.bcdice.org/original_table.html">オリジナル表 · BCDiceコマンドガイド</a>
+ないしは<a href="https://github.com/Shunshun94/discord-bcdicebot/blob/master/originalDiceBots/サンプルダイスボット-夜食表">discord-bcdicebot/originalDiceBots/サンプルダイスボット-夜食表</a>を参照してください。<br/>
+両者でフォーマットが異なりますが、どちらも利用できます。<br/>
 ダイスボット表を削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [ダイスボット表名]</code><br/>
 ダイスボット表の一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code></p>
 
@@ -172,6 +174,14 @@ BCDice-API サーバに送る必要のありそうな発言だけを送信する
 <h3>質問・バグ報告はどこに</h3>
 <p><a href="https://twitter.com/Shunshun94">@Shunshun94</a> ないしは <a href="https://github.com/Shunshun94/discord-bcdicebot/issues">github の issues</a> に。</p>
 <p>どんな出力が出たのか、出力をコピペして頂けると調査が捗ります。</p>
+<h3>Version 2? Version 1 との差異として気を付けるべき点は何？</h3>
+<p>以下について変更が入っています。</p>
+<ul>
+	<li>古いオリジナルダイスボット表で利用できた help のフォーマットが利用できなくなります。help の際は表の内容を全部出力します</li>
+	<li>BCDice-API v2 の API が有効でないサーバでは利用できません</li>
+</ul>
+<h3>Version 1 を使いたいのだけれども</h3>
+<p><a href="https://drive.google.com/file/d/0BwmXeRuZhw9oUzBINlJUdEp2eGM/view?usp=sharing">こちら</a>からダウンロードいただけます。ただし今後更新はされません</p>
 <h3>なんで Java なの。Ruby とか○○とかじゃないの</h3>
 <p>一般ユーザの PC に Ruby や○○の実行環境が導入されているとは思えなかった</p>
 <h3>じゃあ単体実行できるバイナリでいいじゃん</h3>
