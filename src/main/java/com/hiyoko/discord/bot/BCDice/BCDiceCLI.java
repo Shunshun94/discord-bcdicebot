@@ -94,69 +94,11 @@ public class BCDiceCLI {
 	}
 
 	/**
-	 * 
-	 * @param diceClient Dice Client instance
-	 */
-	public BCDiceCLI(DiceClient diceClient) {
-		client = diceClient;
-		originalDiceBotClient = new OriginalDiceBotClient();
-		password = getPassword();
-		System.out.println("Admin Password: " + password);
-	}
-	
-	/**
-	 * 
-	 * @param diceClient Dice Client instance
-	 * @param system BCDice game system
-	 */
-	public BCDiceCLI(DiceClient diceClient, String system) {
-		client = diceClient;
-		client.setSystem(system);
-		originalDiceBotClient = new OriginalDiceBotClient();
-		password = getPassword();
-	}
-	
-	/**
 	 * @param url BCDice-API URL.
 	 */
-	public BCDiceCLI(String url) {
+	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam) {
 		client = DiceClientFactory.getDiceClient(url);
-		originalDiceBotClient = new OriginalDiceBotClient();
-		savedMessage = new HashMap<String, List<String>>();
-		password = getPassword();
-	}
-	
-	/**
-	 * @param url BCDice-API URL.
-	 * @param errorSensitive all errors throws Exception or not. If version is older, this should be false
-	 */
-	public BCDiceCLI(String url, boolean errorSenstive) {
-		client = DiceClientFactory.getDiceClient(url, errorSenstive);
-		originalDiceBotClient = new OriginalDiceBotClient();
-		savedMessage = new HashMap<String, List<String>>();
-		password = getPassword();
-	}
-
-	/**
-	 * 
-	 * @param urls
-	 * @param errorSenstive
-	 */
-	public BCDiceCLI(List<String> urls, boolean errorSenstive) {
-		client = DiceClientFactory.getDiceClient(urls, errorSenstive);
-		originalDiceBotClient = new OriginalDiceBotClient();
-		savedMessage = new HashMap<String, List<String>>();
-		password = getPassword();
-	}
-	
-	/**
-	 * @param url BCDice-API URL.
-	 * @param system BCDice game system
-	 */
-	public BCDiceCLI(String url, String system) {
-		client = DiceClientFactory.getDiceClient(url);
-		client.setSystem(system);
-		originalDiceBotClient = new OriginalDiceBotClient();
+		originalDiceBotClient = originalDiceBotClientParam;
 		savedMessage = new HashMap<String, List<String>>();
 		password = getPassword();
 	}

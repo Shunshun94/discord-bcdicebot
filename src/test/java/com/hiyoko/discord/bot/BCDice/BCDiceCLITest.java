@@ -6,6 +6,7 @@ import java.util.Map;
 import java.lang.reflect.Field;
 import java.io.IOException;
 
+import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 
 import junit.framework.TestCase;
@@ -24,7 +25,7 @@ public class BCDiceCLITest extends TestCase {
 		Map<String,String> sytemEnviroment = (Map<String, String>) theCaseInsensitiveEnvironment.get(null);
 	    sytemEnviroment.put("BCDICE_PASSWORD", PASSWORD);
 		
-		cli = new BCDiceCLI("mock");
+		cli = new BCDiceCLI("mock", new OriginalDiceBotClient("./testDiceBots"));
 	}
 	
 	public void testIsRoll() {

@@ -22,11 +22,24 @@ import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 
 public class OriginalDiceBotClient {
 	private final Client client;
-	private final String dicebotDirectoryPath = "./originalDiceBots";
+	private static final String DEFAULT_DICEBOT_DIRECTORY_PATH = "./originalDiceBots";
+	private final String dicebotDirectoryPath;
 	private final File dicebotDirectory;
 	private List<String> diceBotList;
 	private final Logger logger = LoggerFactory.getLogger(OriginalDiceBotClient.class);
+	
 	public OriginalDiceBotClient() {
+		dicebotDirectoryPath = DEFAULT_DICEBOT_DIRECTORY_PATH;
+		client = ClientBuilder.newBuilder().build();
+		dicebotDirectory = new File(dicebotDirectoryPath);
+		if( ! dicebotDirectory.exists() ) {
+			dicebotDirectory.mkdir();
+		}
+		diceBotList = getRawDiceBotList();
+	}
+	
+	public OriginalDiceBotClient(String path) {
+		dicebotDirectoryPath = path;
 		client = ClientBuilder.newBuilder().build();
 		dicebotDirectory = new File(dicebotDirectoryPath);
 		if( ! dicebotDirectory.exists() ) {
@@ -84,7 +97,7 @@ public class OriginalDiceBotClient {
 			throw new IOException(String.format("ダイスボット [%s] が見つかりませんでした", name));
 		}
 		try {
-			return new OriginalDiceBotTable(Files.readAllLines(FileSystems.getDefault().getPath("originalDiceBots", name)), name);
+			return new OriginalDiceBotTable(Files.readAllLines(FileSystems.getDefault().getPath(dicebotDirectoryPath, name)), name);
 		} catch (IOException e) {
 			throw new IOException(String.format("ダイスボット [%s] の読み込みに失敗しました", name));
 		}
