@@ -49,7 +49,7 @@ public class OriginalDiceBot {
 
 	public String getResultAsShow(String result) {
 		String rawResult = getResult(result);
-		return String.format(": (%s[%s]） → \n%s", command, result, rawResult);
+		return String.format("(%s[%s]） → \n%s", command, result, rawResult);
 	}
 
 	public String toString() {

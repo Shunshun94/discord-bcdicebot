@@ -39,7 +39,7 @@
 <h1>discord-bcdicebot</h1>
 <h2>概要</h2>
 <p>Discord で BCDice を使うための bot です。各サーバに対して、ユーザが導入して利用します。</p>
-<p><a href="https://drive.google.com/file/d/0BwmXeRuZhw9oUzBINlJUdEp2eGM/view?usp=sharing">DOWNLOAD</a></p>
+<p><a href="https://drive.google.com/file/d/1E7WE1cnk7YLtmhDEbuI3P6hQpCYzFUUb/view?usp=sharing">DOWNLOAD</a></p>
 <h2>必要なもの</h2>
 <p>このアプリは Discord のチャットに参加するユーザのうち、1人の環境で動かす必要があります。動かす人には以下の準備が求められます</p>
 <h3>Java 8 ないしそれ以降の実行環境</h3>
@@ -50,7 +50,7 @@
 
 <div class="comment">
 <p>BCDice-API サーバを自分で構築するのは一定の専門知識が必要です。
-独自のダイスボットを追加するのでなければ、<a href="https://github.com/bcdice/bcdice-api-servers/blob/master/servers.yaml" target="_blank">bcdice/bcdice-api-servers</a> に記載されている公開サーバを利用する方が良いでしょう。
+独自のダイスボットを追加するのでなければ、<a href="https://api-status.bcdice.org/" target="_blank">https://api-status.bcdice.org/</a> に記載されている公開サーバを利用する方が良いでしょう。
 各公開サーバには利用ルールがあるため、利用前に事前にご確認ください。</p>
 <p>また、中級者向けに Heroku を用いての自分用 BCDice-API サーバの設置手順も共有されています。<br/><a href="https://github.com/ysakasin/bcdice-api/blob/master/docs/heroku.md">https://github.com/ysakasin/bcdice-api/blob/master/docs/heroku.md</a></p>
 </div>
@@ -88,12 +88,11 @@
 
 <h3>利用する</h3>
 
-<p>チャットにただただ <code>2d6</code> 等と打ち込めばダイスが振られます。</p>
-<p>各システム向けの機能を使いたい場合、システムを切り替えましょう。<br/><code>bcdice set [利用するシステムの名前]</code> とチャット上で発言してください。<br/>例えば <code>bcdice set SwordWorld2.0</code> 等です。</p>
+<p>チャットにただただ <code>2d6</code> 等と打ち込めばダイスが振られます。他にどのようなコマンドが利用できるのかは <a href="https://docs.bcdice.org/">BCDice コマンドリスト</a>をご参照ください。</p>
+<p>各システム向けの機能を使いたい場合、システムを切り替えましょう。<br/><code>bcdice set [利用するシステムの名前]</code> とチャット上で発言してください。<br/>例えば <code>bcdice set SwordWorld2.5</code> 等です。</p>
 <p>どんなシステムが利用できるのかは <code>bcdice list</code> と発言すれば確認できます。</p>
 <p>各システムでどんな機能が利用できるのかを確認する際は <code>bcdice help [システムの名前]</code> と発言すれば表示できます。<br/>例えば <code>bcdice help SwordWorld2.0</code> 等です。</p>
-<p>ダイスを振る際にダイスコマンドの手前にダイスを振る回数を記入することでその回数分ダイスを振ることができます。例えば<code>3 2d6</code>とすれば3回 2d6 を振ることが可能です。<br/>
-また、数字ではなく<code>[</code>と<code>]</code>でカンマ区切りのリストを与えるとそのリストのそれぞれについてダイスを振ることができます。例えば<code>[こぶた,たぬき,きつね,ねこ] 2d6</code> とすることでこぶた、たぬき、きつね、ねこのそれぞれについて 2d6 を振ることが可能です。</p>
+<p>数字ではなく<code>[</code>と<code>]</code>でカンマ区切りのリストを与えるとそのリストのそれぞれについてダイスを振ることができます。例えば<code>[こぶた,たぬき,きつね,ねこ] 2d6</code> とすることでこぶた、たぬき、きつね、ねこのそれぞれについて 2d6 を振ることが可能です。</p>
 <p>管理者はオリジナルのダイスボット表を追加することもできます。詳細は管理コマンドをご確認ください。</p>
 
 <p>チャットに <code>bcdice help</code> と打てば何ができるのかが一覧されるので困ったときは実行してみてください。</p>
@@ -129,12 +128,12 @@ BCDice-API サーバに送る必要のありそうな発言だけを送信する
 
 <h4>独自のダイスボット表</h4>
 <p>独自のダイスボット表を追加する場合は Discord にダイスボット表の情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/><code>bcdice admin [パスワード] addDiceBot [ダイスボット表名]</code><br/>
-追加した後ダイスボット表の名前がチャット上で発言されるとダイスボット表が振られます。この際にアップロードするダイスボット表のサンプルは <code>originalDiceBots</code> ディレクトリ内のファイル
-ないしは<a target="_blank" href="https://github.com/Shunshun94/discord-bcdicebot/blob/master/originalDiceBots/サンプルダイスボット-夜食表">discord-bcdicebot/originalDiceBots/サンプルダイスボット-夜食表</a>や
-<a target="_blank" href="https://github.com/Shunshun94/discord-bcdicebot/blob/master/originalDiceBots/サンプルダイスボット-ラーメン表">discord-bcdicebot/originalDiceBots/サンプルダイスボット-ラーメン表</a>を参照してください。<br/>
+追加した後ダイスボット表の名前がチャット上で発言されるとダイスボット表が振られます。この際にアップロードするダイスボット表のサンプルは
+<a href="https://docs.bcdice.org/original_table.html">オリジナル表 · BCDiceコマンドガイド</a>
+ないしは<a href="https://github.com/Shunshun94/discord-bcdicebot/blob/master/originalDiceBots/サンプルダイスボット-夜食表">discord-bcdicebot/originalDiceBots/サンプルダイスボット-夜食表</a>を参照してください。<br/>
+両者でフォーマットが異なりますが、どちらも利用できます。<br/>
 ダイスボット表を削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [ダイスボット表名]</code><br/>
-ダイスボット表の一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code><br/>
-ダイスボットに記載したヘルプの情報は次のようにすると確認できます。<br/><code>bcdice help [ダイスボット表名]</code></p>
+ダイスボット表の一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code></p>
 
 <h2>連絡先</h2>
 <h3>バグ報告など</h3>
@@ -175,6 +174,14 @@ BCDice-API サーバに送る必要のありそうな発言だけを送信する
 <h3>質問・バグ報告はどこに</h3>
 <p><a href="https://twitter.com/Shunshun94">@Shunshun94</a> ないしは <a href="https://github.com/Shunshun94/discord-bcdicebot/issues">github の issues</a> に。</p>
 <p>どんな出力が出たのか、出力をコピペして頂けると調査が捗ります。</p>
+<h3>Version 2? Version 1 との差異として気を付けるべき点は何？</h3>
+<p>以下について変更が入っています。</p>
+<ul>
+	<li>古いオリジナルダイスボット表で利用できた help のフォーマットが利用できなくなります。help の際は表の内容を全部出力します</li>
+	<li>BCDice-API v2 の API が有効でないサーバでは利用できません</li>
+</ul>
+<h3>Version 1 を使いたいのだけれども</h3>
+<p><a href="https://drive.google.com/file/d/0BwmXeRuZhw9oUzBINlJUdEp2eGM/view?usp=sharing">こちら</a>からダウンロードいただけます。ただし今後更新はされません</p>
 <h3>なんで Java なの。Ruby とか○○とかじゃないの</h3>
 <p>一般ユーザの PC に Ruby や○○の実行環境が導入されているとは思えなかった</p>
 <h3>じゃあ単体実行できるバイナリでいいじゃん</h3>
@@ -207,6 +214,9 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v2.0.0</dt>
+	<dd>BCDice-API 2.0 に対応しました</dd>
+	<dd>コマンド中に全角スペースが含まれている場合、半角スペースとして扱うようにしました</dd>
 	<dt>v1.14.5</dt>
 	<dd>このファイルのタイポを修正頂きました（<a href="https://github.com/Shunshun94/discord-bcdicebot/pull/72">詳細</a>）。<a href="https://github.com/blhsrwznrghfzpr">yoshi さん</a>、ありがとうございます！</dd>
 	<dt>v1.14.4</dt>

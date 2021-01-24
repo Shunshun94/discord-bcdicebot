@@ -74,7 +74,7 @@ public class BCDiceClientTest extends TestCase {
 		List<String> list = new ArrayList<String>();
 		list.add(urlA);
 		list.add(urlB);
-		BCDiceClient client = (BCDiceClient) DiceClientFactory.getDiceClient(list, true);
+		BCDiceV2Client client = (BCDiceV2Client) DiceClientFactory.getDiceClient(list, true);
 
 		assertEquals(2, client.getDiceUrlList().size());
 		assertEquals(String.format("%s/", urlA), client.getDiceUrlList().get(client.getUrlCursor()));

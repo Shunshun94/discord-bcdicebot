@@ -15,12 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
-import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBot;
+import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
@@ -44,7 +45,7 @@ public class BCDiceCLI {
 	private static final String[] REMOVE_WHITESPACE_TARGETS = {"<", ">", "="};
 	private final Logger logger = LoggerFactory.getLogger(BCDiceCLI.class);
 	private static final Pattern GAMESYSTEM_ROOM_PAIR_REGEXP = Pattern.compile("^(\\d*):(.*)");
-	private static final Pattern RESULT_VALUE_REGEXP = Pattern.compile("(\\d+)$");
+	private static final Pattern MULTIROLL_OFFICIAL_PREFIX = Pattern.compile("^(x|rep|repeat)(\\d+)");
 	private static final Pattern MULTIROLL_NUM_PREFIX = Pattern.compile("^(\\d+) ");
 	private static final String MULTIROLL_TEXT_PREFIX_STR = "^\\[(.+)\\] ";
 	private static final Pattern MULTIROLL_TEXT_PREFIX = Pattern.compile(MULTIROLL_TEXT_PREFIX_STR);
@@ -93,69 +94,11 @@ public class BCDiceCLI {
 	}
 
 	/**
-	 * 
-	 * @param diceClient Dice Client instance
-	 */
-	public BCDiceCLI(DiceClient diceClient) {
-		client = diceClient;
-		originalDiceBotClient = new OriginalDiceBotClient();
-		password = getPassword();
-		System.out.println("Admin Password: " + password);
-	}
-	
-	/**
-	 * 
-	 * @param diceClient Dice Client instance
-	 * @param system BCDice game system
-	 */
-	public BCDiceCLI(DiceClient diceClient, String system) {
-		client = diceClient;
-		client.setSystem(system);
-		originalDiceBotClient = new OriginalDiceBotClient();
-		password = getPassword();
-	}
-	
-	/**
 	 * @param url BCDice-API URL.
 	 */
-	public BCDiceCLI(String url) {
+	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam) {
 		client = DiceClientFactory.getDiceClient(url);
-		originalDiceBotClient = new OriginalDiceBotClient();
-		savedMessage = new HashMap<String, List<String>>();
-		password = getPassword();
-	}
-	
-	/**
-	 * @param url BCDice-API URL.
-	 * @param errorSensitive all errors throws Exception or not. If version is older, this should be false
-	 */
-	public BCDiceCLI(String url, boolean errorSenstive) {
-		client = DiceClientFactory.getDiceClient(url, errorSenstive);
-		originalDiceBotClient = new OriginalDiceBotClient();
-		savedMessage = new HashMap<String, List<String>>();
-		password = getPassword();
-	}
-
-	/**
-	 * 
-	 * @param urls
-	 * @param errorSenstive
-	 */
-	public BCDiceCLI(List<String> urls, boolean errorSenstive) {
-		client = DiceClientFactory.getDiceClient(urls, errorSenstive);
-		originalDiceBotClient = new OriginalDiceBotClient();
-		savedMessage = new HashMap<String, List<String>>();
-		password = getPassword();
-	}
-	
-	/**
-	 * @param url BCDice-API URL.
-	 * @param system BCDice game system
-	 */
-	public BCDiceCLI(String url, String system) {
-		client = DiceClientFactory.getDiceClient(url);
-		client.setSystem(system);
-		originalDiceBotClient = new OriginalDiceBotClient();
+		originalDiceBotClient = originalDiceBotClientParam;
 		savedMessage = new HashMap<String, List<String>>();
 		password = getPassword();
 	}
@@ -199,28 +142,36 @@ public class BCDiceCLI {
 		}
 		return serachOriginalDicebot(rawInput.replaceFirst(rollCommand, "").trim());
 	}
+	
+	private List<DicerollResult> rollOriginalDiceBotMultiple(OriginalDiceBotTable dbt, int times) throws IOException {
+		logger.debug(String.format("ダイスボット表 [%s] を%s回 実行します", dbt.getName(), times));
+		List<DicerollResult> list = new ArrayList<DicerollResult>();
+		try {
+			if(dbt.isValid) {
+				for(int i = 0; i < times; i++) {
+					list.add(client.rollOriginalDiceBotTable(dbt));
+				}
+			} else {
+				for(int i = 0; i < times; i++) {
+					DicerollResult tmp = client.rollDice(dbt.getCommand());
+					String value = dbt.getResultAsInvalidTable(tmp.getText());
+					list.add(new DicerollResult(value, "DiceBot", false, true, false));
+				}
+			}
+			return list;
+		} catch(IOException e) {
+			throw new IOException(String.format("[ERROR] %s", e.getMessage()));
+		}
+	}
 
 	private DicerollResult rollOriginalDiceBot(String name) throws IOException {
-		OriginalDiceBot diceBot;
-		DicerollResult rawRollResult;
-		logger.debug(String.format("ダイスボット表 [%s] を実行します", name));
+		OriginalDiceBotTable diceBot = null;
 		try {
 			diceBot = originalDiceBotClient.getDiceBot(name);
 		} catch (IOException e) {
 			throw new IOException(String.format("ダイスボット表 [%s] が取得できませんでした", name), e);
 		}
-		try {
-			rawRollResult = client.rollDice(normalizeDiceCommand(diceBot.getCommand()));
-			Matcher matchResult = RESULT_VALUE_REGEXP.matcher(rawRollResult.getText());
-			if(matchResult.find()) {
-				String rollResult = diceBot.getResultAsShow(matchResult.group(1));
-				return new DicerollResult(rollResult, name, false, true);
-			} else {
-				return new DicerollResult("", "", false, false);
-			}
-		} catch (IOException e) {
-			throw new IOException("ダイスを振るのに失敗しました", e);
-		}
+		return rollOriginalDiceBotMultiple(diceBot, 1).get(0);
 	}
 
 	public List<DicerollResult> rolls(String rawInput, String channel) throws IOException {
@@ -228,33 +179,43 @@ public class BCDiceCLI {
 		if(! (rollCommand.isEmpty() || rawInput.trim().startsWith(rollCommand))) {
 			return result;
 		}
+		rawInput = rawInput.replaceAll("\\h", " ");
 		String input = rawInput.replaceFirst(rollCommand, "").trim();
-		Matcher isNumMatcher = MULTIROLL_NUM_PREFIX.matcher(input);
-		if(isNumMatcher.find()) {
-			String rawCount = isNumMatcher.group(1);
-			int times = Integer.parseInt(rawCount);
-			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(rawCount, "").trim());
-			if(times > 20) {
-				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand)) ) {
-					return result;
-				} else {
-					throw new IOException(String.format("1度にダイスを振れる回数は20回までです（%d回振ろうとしていました）", times));
+
+		Matcher isOfficialMultiRollMatcher = MULTIROLL_OFFICIAL_PREFIX.matcher(input);
+		if(isOfficialMultiRollMatcher.find()) {
+			String withoutRepeat = input.replaceFirst(isOfficialMultiRollMatcher.group(), "").trim();
+			String originalDiceBot = isOriginalDicebot(String.format("%s%s", rollCommand, withoutRepeat));
+			if(! originalDiceBot.isEmpty()) {
+				OriginalDiceBotTable diceBot = null;
+				try {
+					diceBot = originalDiceBotClient.getDiceBot(originalDiceBot);
+				} catch (IOException e) {
+					throw new IOException(String.format("ダイスボット表 [%s] が取得できませんでした", originalDiceBot), e);
 				}
+				int times = Integer.parseInt(isOfficialMultiRollMatcher.group(2));
+				return rollOriginalDiceBotMultiple(diceBot, times);
 			}
-			for(int i = 0; i < times; i++) {
-				DicerollResult tmpResult = roll(requiredCommand, channel);
-				logger.debug(tmpResult.toString());
-				result.add( new DicerollResult(
-								tmpResult.getText(),
-								String.format("%s: %s", i + 1, tmpResult.getSystem()),
-								tmpResult.isSecret(),
-								tmpResult.isRolled(),
-								tmpResult.isError()
-						));
-			}
-			return result;
 		}
 
+		Matcher isNumMatcher = MULTIROLL_NUM_PREFIX.matcher(input);
+		if(isNumMatcher.find()) { // いずれ消す。オフィシャルの繰り返しコマンドで置換されるべきでは
+			String rawCount = isNumMatcher.group(1);
+			String withoutRepeat = input.replaceFirst(rawCount, "").trim();
+			String originalDiceBot = isOriginalDicebot(String.format("%s%s", rollCommand, withoutRepeat));
+			if(! originalDiceBot.isEmpty()) {
+				OriginalDiceBotTable diceBot = null;
+				try {
+					diceBot = originalDiceBotClient.getDiceBot(originalDiceBot);
+				} catch (IOException e) {
+					throw new IOException(String.format("ダイスボット表 [%s] が取得できませんでした", originalDiceBot), e);
+				}
+				int times = Integer.parseInt(rawCount);
+				return rollOriginalDiceBotMultiple(diceBot, times);
+			} else {
+				rawInput = String.format("%s repeat%s %s", rollCommand, rawCount, withoutRepeat).trim();
+			}
+		}
 		Matcher isTextMatcher = MULTIROLL_TEXT_PREFIX.matcher(input);
 		if(isTextMatcher.find()) {
 			String rawTargetList = isTextMatcher.group(1);
@@ -270,8 +231,8 @@ public class BCDiceCLI {
 			for(String target: targetList) {
 				DicerollResult tmpResult = roll(requiredCommand, channel);
 				result.add( new DicerollResult(
-								tmpResult.getText(),
-								String.format("%s: %s", target, tmpResult.getSystem()),
+						String.format("%s:%s", target, tmpResult.getText()),
+								tmpResult.getSystem(),
 								tmpResult.isSecret(),
 								tmpResult.isRolled(),
 								tmpResult.isError()
@@ -316,6 +277,24 @@ public class BCDiceCLI {
 		return inputs(tmpInput, id, channel, new ArrayList<MessageAttachment>());
 	}
 
+	public List<String> separateStringWithLengthLimitation(List<String> raw, int limitLength) {
+		List<String> result = new ArrayList<String>();
+		StringBuilder sb = new StringBuilder("");
+		raw.forEach(line->{
+			sb.append(line + "\n");
+			if(sb.length() > limitLength) {
+				result.add(sb.toString());
+				sb.delete(0, sb.length());
+			}
+		});
+		result.add(sb.toString());
+		return result;
+	}
+
+	public List<String> separateStringWithLengthLimitation(String raw, int limitLength) {
+		return separateStringWithLengthLimitation(Arrays.asList(raw.split("\\n")), limitLength);
+	}
+
 	/**
 	 * 
 	 * @param tmpInput (not dice roll)
@@ -343,9 +322,9 @@ public class BCDiceCLI {
 						resultList.add("[" + systemName + "]\n" + info.getInfo());
 						return resultList;
 					} else {
-						OriginalDiceBot originalDiceBot = originalDiceBotClient.getDiceBot(originalDicebot);
+						OriginalDiceBotTable originalDiceBot = originalDiceBotClient.getDiceBot(originalDicebot);
 						String helpMessage = originalDiceBot.getHelp();
-						resultList.add(helpMessage);
+						resultList.addAll(separateStringWithLengthLimitation(helpMessage, 1000));
 						return resultList;
 					}
 				} catch (IOException e) {
@@ -369,16 +348,9 @@ public class BCDiceCLI {
 			}
 		}
 		if(command[1].equals("list")) {
-			StringBuilder sb = new StringBuilder("[DiceBot List]");
 			try {
-				client.getSystems().getSystemList().forEach(dice->{
-					sb.append("\n" + dice);
-					if(sb.length() > 1000) {
-						resultList.add(sb.toString());
-						sb.delete(0, sb.length());
-					}
-				});
-				resultList.add(sb.toString());
+				resultList.add("[DiceBot List]");
+				resultList.addAll(separateStringWithLengthLimitation(client.getSystems().getSystemList(), 1000));
 				return resultList;
 			} catch (IOException e) {
 				resultList.add(e.getMessage());
@@ -491,15 +463,8 @@ public class BCDiceCLI {
 		}
 		if(command[3].equals("export")) {
 			Map<String, String> roomList = client.getRoomsSystem();
-			StringBuilder sb = new StringBuilder("Room-System List\n");
-			roomList.forEach((room, system)->{
-				sb.append(room + ":" + system + "\n");
-				if(sb.length() > 1000) {
-					resultList.add(sb.toString());
-					sb.delete(0, sb.length());
-				}
-			});
-			resultList.add(sb.toString());
+			resultList.add("Room-System List\n");
+			resultList.addAll(separateStringWithLengthLimitation(roomList.entrySet().stream().map(p -> String.format("%s:%s\n", p.getKey(), p.getValue() )).collect(Collectors.toList()), 1000));
 			return resultList;
 		}
 		if(command[3].equals("import")) {
@@ -577,15 +542,7 @@ public class BCDiceCLI {
 		}
 		if(command[3].equals("listDiceBot")) {
 			List<String> dicebotList = originalDiceBotClient.getDiceBotList();
-			StringBuilder sb = new StringBuilder();
-			dicebotList.forEach((name)->{
-				sb.append(name + "\n");
-				if(sb.length() > 1000) {
-					resultList.add(sb.toString());
-					sb.delete(0, sb.length());
-				}
-			});
-			resultList.add(sb.toString());
+			resultList.addAll(separateStringWithLengthLimitation(dicebotList, 1000));
 			return resultList;
 		}
 

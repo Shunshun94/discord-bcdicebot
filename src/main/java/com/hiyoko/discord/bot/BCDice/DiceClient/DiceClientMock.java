@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
+import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.SystemList;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
@@ -17,7 +18,7 @@ public class DiceClientMock implements DiceClient {
 	private final String[] systemList = {"Hiyoko", "Hitsuji", "Koneko", "hitsuji & hiyoko"};
 	private final Map<String, String> system = new HashMap<String, String>();
 	private static final String DEFAULT_CHANNEL = "general";
-	private static final Pattern DICE_COMMAND_PATTERN = Pattern.compile("^S?\\d+d\\d+"); 
+	private static final Pattern DICE_COMMAND_PATTERN = Pattern.compile("^S?\\d+d\\d+|^[a-z]+"); 
 
 	public DiceClientMock() {
 		system.put(DEFAULT_CHANNEL, "Hiyoko");
@@ -44,6 +45,13 @@ public class DiceClientMock implements DiceClient {
 
 	@Override
 	public DicerollResult rollDice(String command, String system) throws IOException {
+		if(command.startsWith("repeat")) {
+			if(isDiceCommand(command.split("%20")[1])) {
+				return new DicerollResult("repeat", system, false, true);
+			} else {
+				return new DicerollResult("", system, false, false);
+			}
+		}
 		if(command.equals("1d4")) {
 			return new DicerollResult("(1D4) ＞ 2[2] ＞ 2", system, false, true);
 		}
@@ -127,5 +135,10 @@ public class DiceClientMock implements DiceClient {
 	@Override
 	public boolean removeDiceServer(String url) {
 		return true;
+	}
+
+	@Override
+	public DicerollResult rollOriginalDiceBotTable(OriginalDiceBotTable diceBot) throws IOException {
+		return new DicerollResult("なんか適当な結果", "架空のシステム", false, true);
 	}
 }
