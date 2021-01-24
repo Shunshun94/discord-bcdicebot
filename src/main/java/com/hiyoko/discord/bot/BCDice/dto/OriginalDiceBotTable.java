@@ -44,7 +44,7 @@ public class OriginalDiceBotTable {
 			if(isLastLineOldHelpMatcher.find()) {
 				this.body = "";
 			} else {
-				this.body = lastLine;
+				this.body = lastLine.replaceAll("\\\\n", "\n");
 			}
 			this.isValid = false;
 		}
