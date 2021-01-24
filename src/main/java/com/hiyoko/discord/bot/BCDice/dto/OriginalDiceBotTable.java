@@ -86,8 +86,7 @@ public class OriginalDiceBotTable {
 			String diceValue = rollResult.group(1);
 			String tableValue = this.invalidTableMap.get(diceValue);
 			if(tableValue != null) {
-				// tableValue
-				return String.format("%s(%s) ＞ %s", this.name, diceValue, tableValue);
+				return String.format("%s(%s) ＞ %s", this.name, diceValue, tableValue.replaceAll("\\\\n", "\n"));
 			}
 		}
 		throw new IOException(String.format("ダイスの結果が取得できませんでした (振った結果:%s / ダイスコマンド:%s)", result, command));
