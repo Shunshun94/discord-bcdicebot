@@ -1,11 +1,13 @@
 package com.hiyoko.discord.bot.BCDice;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Field;
 import java.io.IOException;
 
+import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
-import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBot;
 
 import junit.framework.TestCase;
 
@@ -23,7 +25,7 @@ public class BCDiceCLITest extends TestCase {
 		Map<String,String> sytemEnviroment = (Map<String, String>) theCaseInsensitiveEnvironment.get(null);
 	    sytemEnviroment.put("BCDICE_PASSWORD", PASSWORD);
 		
-		cli = new BCDiceCLI("mock");
+		cli = new BCDiceCLI("mock", new OriginalDiceBotClient("./testDiceBots"));
 	}
 	
 	public void testIsRoll() {
@@ -50,18 +52,18 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(cli.inputs("bcdice help", "", "channel").get(0) , BCDiceCLI.HELP);
 		assertEquals(cli.inputs("bcdice", "", "channel").get(0), BCDiceCLI.HELP);
 		assertEquals(cli.inputs("bcdice nonsense", "", "channel").get(0), BCDiceCLI.HELP);
-		String[] diceBotList = cli.inputs("bcdice list", "dummy", "dummy").get(0).split("\n");
+		List<String> diceBotList = cli.inputs("bcdice list", "dummy", "dummy");
 		assertTrue(cli.inputs("bcdice help nonsense", "", "channel").get(0).indexOf("is not found") > -1);
-		assertTrue(cli.inputs("bcdice help " + diceBotList[1], "", "channel").get(0).indexOf("is not found") == -1);
-		assertTrue(cli.inputs("bcdice help " + diceBotList[1] + "\ndayodayo", "", "channel").get(0).indexOf("is not found") == -1);
+		assertTrue(cli.inputs("bcdice help " + diceBotList.get(1), "", "channel").get(0).indexOf("is not found") == -1);
+		assertTrue(cli.inputs("bcdice help " + diceBotList.get(1) + "\ndayodayo", "", "channel").get(0).indexOf("is not found") == -1);
 	}
 	
 	public void testInputStringSet() {
-		String[] diceBotList = cli.inputs("bcdice list", "dummy", "dummy").get(0).split("\n");
+		List<String> diceBotList = cli.inputs("bcdice list", "dummy", "dummy");
 		assertTrue(cli.inputs("bcdice set", "", "channel").get(0).indexOf("ERROR") > -1);
-		assertTrue(cli.inputs("bcdice set " + diceBotList[1], "", "channel").get(0).indexOf("ERROR") == -1);
-		assertTrue(cli.inputs("bcdice set " + diceBotList[1] + " nonsense", "", "channel").get(0).indexOf("ERROR") == -1);
-		assertTrue(cli.inputs("bcdice set " + diceBotList[1] + "\nhiyohiyo", "", "channel").get(0).indexOf("ERROR") == -1);
+		assertTrue(cli.inputs("bcdice set " + diceBotList.get(1), "", "channel").get(0).indexOf("ERROR") == -1);
+		assertTrue(cli.inputs("bcdice set " + diceBotList.get(1) + " nonsense", "", "channel").get(0).indexOf("ERROR") == -1);
+		assertTrue(cli.inputs("bcdice set " + diceBotList.get(1) + "\nhiyohiyo", "", "channel").get(0).indexOf("ERROR") == -1);
 		assertTrue(cli.inputs("bcdice set Hiyoko", "", "hiyohitsu").get(0).contains("Hiyoko"));
 		assertTrue(cli.inputs("bcdice set hitsuji & hiyoko", "", "hiyohitsu").get(0).contains("hitsuji & hiyoko"));
 	}
@@ -92,15 +94,18 @@ public class BCDiceCLITest extends TestCase {
 	}
 	
 	public void testMultiChannel() {
-		String[] diceBotList = cli.inputs("bcdice list", "", "channel").get(0).split("\n");
-		cli.inputs("bcdice set " + diceBotList[1], "hiyoko", "no_id");
+		List<String> tmpDiceBotList = cli.inputs("bcdice list", "", "channel");
+		List<String> diceBotList = Arrays.asList(String.join("\n", tmpDiceBotList).split("\n"));
+		cli.inputs("bcdice set " + diceBotList.get(2) , "hiyoko", "ungeneral");
 		assertEquals(cli.inputs("bcdice status", "hiyoko", "general").get(0), cli.inputs("bcdice status", "hiyoko", "general").get(0));
-		assertEquals(cli.inputs("bcdice status", "hiyoko", "general").get(0), cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0));
-		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList[1]));
-		cli.inputs("bcdice set " + diceBotList[2], "hiyoko", "ungeneral");
-		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList[2]));
-		assertFalse(cli.inputs("bcdice status", "hiyoko", "general").get(0).contains(diceBotList[2]));
-		assertTrue(cli.inputs("bcdice status", "hiyoko", "dummydummy").get(0).contains(diceBotList[1]));
+
+		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(2)));
+		assertFalse(cli.inputs("bcdice status", "hiyoko", "general").get(0).contains(diceBotList.get(2)));
+		assertFalse(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(1)));
+		cli.inputs("bcdice set " + diceBotList.get(3), "hiyoko", "ungeneral");
+		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(3)));
+		assertFalse(cli.inputs("bcdice status", "hiyoko", "general").get(0).contains(diceBotList.get(3)));
+		assertTrue(cli.inputs("bcdice status", "hiyoko", "dummydummy").get(0).contains(diceBotList.get(1)));
 	}
 
 	public void testNormalizeCommand() throws IOException {
@@ -175,9 +180,6 @@ public class BCDiceCLITest extends TestCase {
 		assertTrue(cli.roll("あああああ", "channel").isRolled());
 		assertTrue(cli.roll(PREFIX + " あああああ", "channel").isRolled());
 
-		assertTrue(cli.inputs(PREFIX + "bcdice help サンプルダイスボット-夜食表", "", "channel").get(0).contains(OriginalDiceBot.NO_HELP_MESSAGE));
-		assertTrue(cli.inputs(PREFIX + "bcdice help サンプルダイスボット-ラーメン表", "", "channel").get(0).contains("Which ramen noodle you should eat"));
-
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll", "", "channel").get(0).contains("まずコマンドじゃないだろう"));
 	}
 
@@ -186,35 +188,47 @@ public class BCDiceCLITest extends TestCase {
 	}
 
 	public void testMultiroll() throws Exception {
-		assertEquals(cli.rolls("2d6", "no_channel").size(), 1);
-		assertEquals(cli.rolls("3 2d6", "no_channel").size(), 3);
-		assertEquals(cli.rolls("[パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
-		assertEquals(cli.rolls("3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
-		assertEquals(cli.rolls("20 サンプルダイスボット-夜食表", "no_channel").size(), 20);
-		assertEquals(cli.rolls("21 なにもない", "no_channel").size(), 0);
-		try {
-			assertEquals(cli.rolls("21 サンプルダイスボット-夜食表", "no_channel").size(), 20);
-			throw new Exception("Unexpected behavior [21 サンプルダイスボット-夜食表] must be rejected");
-		} catch(IOException e) {
-			// OK
-		}
+		assertEquals(1, cli.rolls("2d6", "no_channel").size());
+		assertEquals(1, cli.rolls("repeat3 2d6", "no_channel").size());
+		assertEquals(1, cli.rolls("3 2d6", "no_channel").size());
+		assertEquals(3, cli.rolls("[パンダ,うさぎ,コアラ] 2d6", "no_channel").size());
+		assertEquals(3, cli.rolls("3 サンプルダイスボット-夜食表", "no_channel").size());
+		assertEquals(3, cli.rolls("rep3 サンプルダイスボット-夜食表", "no_channel").size());
+		assertEquals(3, cli.rolls("repeat3 サンプルダイスボット-夜食表", "no_channel").size());
+		assertEquals(3, cli.rolls("x3 サンプルダイスボット-夜食表", "no_channel").size());
+		assertEquals(20, cli.rolls("20 サンプルダイスボット-夜食表", "no_channel").size());
+		assertEquals(0, cli.rolls("21 なにもない", "no_channel").size());
 
 		String PREFIX = "/hiyoko";
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll " + PREFIX, "", "channel").get(0).contains("で始まるコマンドのみサーバに送信します "));
 		assertEquals(cli.rolls(PREFIX + " 2d6", "no_channel").size(), 1);
-		assertEquals(cli.rolls(PREFIX + " 3 2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + " 3 2d6", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + " repeat3 2d6", "no_channel").size(), 1);
 		assertEquals(cli.rolls(PREFIX + " [パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + " 3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + " x3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + " repeat3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + " rep3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + " 20 サンプルダイスボット-夜食表", "no_channel").size(), 20);
 		// 間にスペースなし
 		assertEquals(cli.rolls(PREFIX + "2d6", "no_channel").size(), 1);
-		assertEquals(cli.rolls(PREFIX + "3 2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "3 2d6", "no_channel").size(), 1);
 		assertEquals(cli.rolls(PREFIX + "[パンダ,うさぎ,コアラ] 2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "サンプルダイスボット-夜食表", "no_channel").size(), 1);
 		assertEquals(cli.rolls(PREFIX + "3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "x3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "rep3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "repeat3 サンプルダイスボット-夜食表", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + "20 サンプルダイスボット-夜食表", "no_channel").size(), 20);
-
-		assertTrue(cli.rolls(PREFIX + "2 2d6", "no_channel").get(0).getText().contains("2D6"));
-		assertTrue(cli.rolls(PREFIX + "6 2d6", "no_channel").get(0).getText().contains("2D6"));
-		assertTrue(cli.rolls(PREFIX + "1 1d12", "no_channel").get(0).getText().contains("1d12"));
+		// 全角スペース
+		assertEquals(cli.rolls(PREFIX + "　2d6", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + "　3　2d6", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + "　サンプルダイスボット-夜食表", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + "　[パンダ,うさぎ,コアラ]　2d6", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　3　サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　x3　サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　rep3　サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　repeat3　サンプルダイスボット-夜食表", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　20　サンプルダイスボット-夜食表", "no_channel").size(), 20);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
+import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.SystemList;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
@@ -76,7 +77,15 @@ public interface DiceClient {
 	 * @throws IOException
 	 */
 	public DicerollResult rollDice(String command) throws IOException;
-	
+
+	/**
+	 * 
+	 * @param diceBot
+	 * @return Result of Original DiceBot Table
+	 * @throws IOException
+	 */
+	public DicerollResult rollOriginalDiceBotTable(OriginalDiceBotTable diceBot) throws IOException;
+
 	/**
 	 * change current system.
 	 * @param newSystem

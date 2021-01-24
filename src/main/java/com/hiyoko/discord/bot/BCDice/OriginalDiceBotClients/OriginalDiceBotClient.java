@@ -1,13 +1,13 @@
 package com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,15 +18,28 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBot;
+import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 
 public class OriginalDiceBotClient {
 	private final Client client;
-	private final String dicebotDirectoryPath = "./originalDiceBots";
+	private static final String DEFAULT_DICEBOT_DIRECTORY_PATH = "./originalDiceBots";
+	private final String dicebotDirectoryPath;
 	private final File dicebotDirectory;
 	private List<String> diceBotList;
 	private final Logger logger = LoggerFactory.getLogger(OriginalDiceBotClient.class);
+	
 	public OriginalDiceBotClient() {
+		dicebotDirectoryPath = DEFAULT_DICEBOT_DIRECTORY_PATH;
+		client = ClientBuilder.newBuilder().build();
+		dicebotDirectory = new File(dicebotDirectoryPath);
+		if( ! dicebotDirectory.exists() ) {
+			dicebotDirectory.mkdir();
+		}
+		diceBotList = getRawDiceBotList();
+	}
+	
+	public OriginalDiceBotClient(String path) {
+		dicebotDirectoryPath = path;
 		client = ClientBuilder.newBuilder().build();
 		dicebotDirectory = new File(dicebotDirectoryPath);
 		if( ! dicebotDirectory.exists() ) {
@@ -79,21 +92,12 @@ public class OriginalDiceBotClient {
 		}
 	}
 
-	public OriginalDiceBot getDiceBot(String name) throws IOException {
+	public OriginalDiceBotTable getDiceBot(String name) throws IOException {
 		if(! diceBotList.contains(name)) {
 			throw new IOException(String.format("ダイスボット [%s] が見つかりませんでした", name));
 		}
-		File file = new File(String.format("%s/%s", dicebotDirectoryPath, name));
-		try (
-				FileReader fr = new FileReader(file);
-				BufferedReader br = new BufferedReader(fr);
-				) {
-			List<String> lines = new ArrayList<String>();
-			String line;
-			while((line = br.readLine()) != null) {
-				lines.add(line.replaceAll("\\\\n", "\n"));
-			}
-			return new OriginalDiceBot(lines, name);
+		try {
+			return new OriginalDiceBotTable(Files.readAllLines(FileSystems.getDefault().getPath(dicebotDirectoryPath, name)), name);
 		} catch (IOException e) {
 			throw new IOException(String.format("ダイスボット [%s] の読み込みに失敗しました", name));
 		}

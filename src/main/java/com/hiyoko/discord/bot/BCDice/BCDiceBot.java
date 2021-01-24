@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.message.MessageAttachment;
@@ -84,23 +85,28 @@ public class BCDiceBot {
 				try {
 					List<DicerollResult> rollResults = bcDice.rolls(message, channel);
 					logger.debug("Dice command request for dice server is done");
+					List<String> sb = new ArrayList<String>();
 					for(DicerollResult rollResult : rollResults) {
 						if(rollResult.isError()) {
 							throw new IOException(rollResult.getText());
 						}
 						if( rollResult.isRolled() ) {
-							event.getChannel().sendMessage(String.format("＞%s\n%s", name, rollResult.toString()));
+							sb.add(rollResult.toString());
 						}
-						if( rollResult.isSecret() ) {
-							int index = Integer.parseInt(bcDice.inputs("bcdice save " + rollResult.getSystem() + rollResult.getText(), userId, "dummy").get(0));
-							try {
-								api.getUserById(userId).get().sendMessage(rollResult.getSystem() + rollResult.getText());
-								api.getUserById(userId).get().sendMessage("To recall this,\nbcdice load " + index);
-							} catch (InterruptedException e) {
-								throw new IOException(e.getMessage(), e);
-							} catch (ExecutionException e) {
-								throw new IOException(e.getMessage(), e);
-							}
+					}
+					bcDice.separateStringWithLengthLimitation(String.format("＞%s\n%s", name, sb.stream().collect(Collectors.joining("\n"))), 1000).forEach((post)->{
+						event.getChannel().sendMessage(post);
+					});
+					DicerollResult firstOne = rollResults.get(0); 
+					if( firstOne.isSecret() ) {
+						int index = Integer.parseInt(bcDice.inputs("bcdice save " + firstOne.getSystem() + firstOne.getText(), userId, "dummy").get(0));
+						try {
+							api.getUserById(userId).get().sendMessage(firstOne.getSystem() + firstOne.getText());
+							api.getUserById(userId).get().sendMessage("To recall this,\nbcdice load " + index);
+						} catch (InterruptedException e) {
+							throw new IOException(e.getMessage(), e);
+						} catch (ExecutionException e) {
+							throw new IOException(e.getMessage(), e);
 						}
 					}
 				} catch (IOException e) {
@@ -119,7 +125,7 @@ public class BCDiceBot {
 	public static void main(String[] args) {
 		if( args.length < 2 || args[0].equals("help") ||
 			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
-			System.out.println("Discord-BCDicebot Version 1.14.5");
+			System.out.println("Discord-BCDicebot Version 2.0.0");
 			System.out.println("This application requires two params");
 			System.out.println("  1. Discord Bot Token");
 			System.out.println("  2. BCDice-api server URL");
