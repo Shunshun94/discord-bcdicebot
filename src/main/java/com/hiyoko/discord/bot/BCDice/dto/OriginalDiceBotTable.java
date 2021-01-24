@@ -25,7 +25,6 @@ public class OriginalDiceBotTable {
 		this.name = name;
 		Matcher isDiceCommandMatcher = DICE_COMMAND_PATTERN.matcher(fileContents.get(0).trim());
 		boolean isFirstLineCommand = isDiceCommandMatcher.find();
-		logger.info(String.format("%s: %s", fileContents.get(0), isFirstLineCommand));
 		boolean tmpIsValid = confirmIsValid(fileContents, isFirstLineCommand);
 		if(tmpIsValid) {
 			if(isFirstLineCommand) {
@@ -45,7 +44,7 @@ public class OriginalDiceBotTable {
 			if(isLastLineOldHelpMatcher.find()) {
 				this.body = "";
 			} else {
-				this.body = lastLine;
+				this.body = lastLine.replaceAll("\\\\n", "\n");
 			}
 			this.isValid = false;
 		}
@@ -86,8 +85,7 @@ public class OriginalDiceBotTable {
 			String diceValue = rollResult.group(1);
 			String tableValue = this.invalidTableMap.get(diceValue);
 			if(tableValue != null) {
-				// tableValue
-				return String.format("%s(%s) ＞ %s", this.name, diceValue, tableValue);
+				return String.format("%s(%s) ＞ %s", this.name, diceValue, tableValue.replaceAll("\\\\n", "\n"));
 			}
 		}
 		throw new IOException(String.format("ダイスの結果が取得できませんでした (振った結果:%s / ダイスコマンド:%s)", result, command));
