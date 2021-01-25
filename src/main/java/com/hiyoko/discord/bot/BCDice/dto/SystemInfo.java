@@ -12,10 +12,10 @@ import com.eclipsesource.json.JsonValue;
 public class SystemInfo {
 	private final String name;
 	private final String gameType;
-	private final List<String> prefixs;
+	private final String prefixs;
 	private final String info;
 	
-	public SystemInfo(String name, String gameType, List<String> prefixs, String info) {
+	public SystemInfo(String name, String gameType, String prefixs, String info) {
 		this.name = name;
 		this.gameType = gameType;
 		this.prefixs = prefixs;
@@ -27,17 +27,10 @@ public class SystemInfo {
 		if(! result.getBoolean("ok", false)) {
 			throw new IOException("System not found");
 		}
-		JsonObject body = result.get("systeminfo").asObject();
-		name = body.getString("name", "");
-		gameType = body.getString("gameType", "");
-		info = body.getString("info", "");
-
-		JsonArray rawPrefixs = body.get("prefixs").asArray();
-		List<String> tmpPrefixs = new ArrayList<String>();
-		for (JsonValue prefix : rawPrefixs) {
-			tmpPrefixs.add(prefix.asString());
-		}
-		prefixs = tmpPrefixs;
+		name = result.getString("name", "");
+		gameType = result.getString("id", "");
+		info = result.getString("help_message", "");
+		prefixs = result.getString("command_pattern", "");
 	}
 	
 	public String getName() {
@@ -46,7 +39,7 @@ public class SystemInfo {
 	public String getGameType(){
 		return gameType;
 	}
-	public List<String> getPrefixs(){
+	public String getPrefixs(){
 		return prefixs;
 	}
 	public String getInfo(){
