@@ -1,13 +1,9 @@
 package com.hiyoko.discord.bot.BCDice.dto;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 public class SystemInfo {
 	private final String name;
