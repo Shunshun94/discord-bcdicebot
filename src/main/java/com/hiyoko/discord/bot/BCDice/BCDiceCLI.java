@@ -158,7 +158,16 @@ public class BCDiceCLI {
 					list.add(new DicerollResult(value, "DiceBot", false, true, false));
 				}
 			}
-			return list;
+			if(times == 1) {
+				return list;
+			} else {
+				List<DicerollResult> fixedResult = new ArrayList<DicerollResult>();
+				for(int i = 0; i < times; i++) {
+					DicerollResult targetResult = list.get(i);
+					fixedResult.add(new DicerollResult(String.format("#%s\n%s", i + 1, targetResult.getText()), targetResult.getSystem(), false, true, false));
+				}
+				return fixedResult;
+			}
 		} catch(IOException e) {
 			throw new IOException(String.format("[ERROR] %s", e.getMessage()));
 		}
@@ -231,7 +240,7 @@ public class BCDiceCLI {
 			for(String target: targetList) {
 				DicerollResult tmpResult = roll(requiredCommand, channel);
 				result.add( new DicerollResult(
-						String.format("%s:%s", target, tmpResult.getText()),
+						String.format("#%s\n%s", target, tmpResult.getText()),
 								tmpResult.getSystem(),
 								tmpResult.isSecret(),
 								tmpResult.isRolled(),
