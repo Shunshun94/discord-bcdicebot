@@ -464,7 +464,7 @@ public class BCDiceCLI {
 		if(command[3].equals("export")) {
 			Map<String, String> roomList = client.getRoomsSystem();
 			resultList.add("Room-System List\n");
-			resultList.addAll(separateStringWithLengthLimitation(roomList.entrySet().stream().map(p -> String.format("%s:%s\n", p.getKey(), p.getValue() )).collect(Collectors.toList()), 1000));
+			resultList.addAll(separateStringWithLengthLimitation(roomList.entrySet().stream().map(p -> String.format("%s:%s", p.getKey(), p.getValue() )).collect(Collectors.toList()), 1000));
 			return resultList;
 		}
 		if(command[3].equals("import")) {
@@ -477,7 +477,7 @@ public class BCDiceCLI {
 					resultList.add("Room" + matchResult.group(1) + " -> " + matchResult.group(2));
 				}
 			}
-			return resultList;
+			return separateStringWithLengthLimitation(resultList, 1000);
 		}
 
 		if(command[3].equals("suppressroll")) {
