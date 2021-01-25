@@ -95,7 +95,7 @@ public class BCDiceBot {
 								sb.add(rollResult.toString());
 							}
 						}
-						bcDice.separateStringWithLengthLimitation(String.format("＞%s\n%s", name, sb.stream().collect(Collectors.joining("\n"))), 1000).forEach((post)->{
+						bcDice.separateStringWithLengthLimitation(String.format("＞%s\n%s", name, sb.stream().collect(Collectors.joining("\n\n"))), 1000).forEach((post)->{
 							event.getChannel().sendMessage(post);
 						});
 						DicerollResult firstOne = rollResults.get(0); 
@@ -127,7 +127,7 @@ public class BCDiceBot {
 	public static void main(String[] args) {
 		if( args.length < 2 || args[0].equals("help") ||
 			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
-			System.out.println("Discord-BCDicebot Version 2.0.0");
+			System.out.println("Discord-BCDicebot Version 2.0.2");
 			System.out.println("This application requires two params");
 			System.out.println("  1. Discord Bot Token");
 			System.out.println("  2. BCDice-api server URL");

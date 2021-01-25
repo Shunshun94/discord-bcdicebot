@@ -37,8 +37,7 @@ public class DiceClientMock implements DiceClient {
 	@Override
 	public SystemInfo getSystemInfo(String gameType) throws IOException {
 		if(Arrays.asList(systemList).contains(gameType)) {
-			String[] prefix = {};
-			return new SystemInfo(gameType, gameType + "-game", Arrays.asList(prefix), gameType + " sample dice bot system.");			
+			return new SystemInfo(gameType, gameType + "-game", "", gameType + " sample dice bot system.");			
 		}
 		throw new IOException("System '" + gameType + "' is not found");
 	}
