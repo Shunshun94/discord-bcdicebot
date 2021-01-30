@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -613,7 +614,27 @@ public class BCDiceCLI {
 	}
 
 	public static void main(String[] args) {
-
+		BCDiceCLI cli = new BCDiceCLI(args[0].trim(), new OriginalDiceBotClient());
+		String line;
+		Scanner scanner = new Scanner(System.in);
+		while(scanner.hasNext()) {
+			line = scanner.nextLine().trim();
+			System.out.println(String.format("INPUT:%s", line));
+			if(cli.isRoll(line)) {
+				try {
+					List<DicerollResult> rollResults = cli.rolls(line, "cli");
+					rollResults.forEach(rollResult->{
+						if(rollResult.isRolled()) {
+							System.out.println(rollResult.getText());
+						}
+					});
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				cli.inputs(line, "dummy", "cli").forEach(str->System.out.println(str));
+			}
+		}
+		scanner.close();
 	}
-
 }
