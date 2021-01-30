@@ -79,6 +79,7 @@
 	<li>(必須ではない)<br/><strong>REM set BCDICE_API_SECONDARY=http://secondary.bcdice-api.yourdomain.co.jp/</strong>の "REM" を削除します
 <br/>その上で <code>http://secondary.bcdice-api.yourdomain.co.jp/</code> を予備の BCDice-API サーバの URL に書き換えます</li>
 	<li>(必須ではない)<br/><strong>REM set BCDICE_DEFAULT_SYSTEM=DiceBot</strong>の "REM" を削除し、<code>DiceBot</code>を利用するデフォルトのシステム名に書き換えます</li>
+	<li>(必須ではない)<br/><strong>REM set BCDICE_MENTION_MODE=1</strong>の "REM" を削除し、ダイスを振った時に振った人にメンションされるようにします</li>
 	<li>Windows を使っている方は メモ帳を閉じ、 start.bat をダブルクリックします<br/>Linux/macOS を使っている方は編集を保存・完了し start.sh を実行します</li>
 	<li>Bot が起動します。Discord の参加者一覧に Bot がオンラインの状態で存在すれば成功です</li>
 	<li>終了はキーボードの Ctrl + C を押してください</li>
@@ -174,6 +175,8 @@ BCDice-API サーバに送る必要のありそうな発言だけを送信する
 <h3>質問・バグ報告はどこに</h3>
 <p><a href="https://twitter.com/Shunshun94">@Shunshun94</a> ないしは <a href="https://github.com/Shunshun94/discord-bcdicebot/issues">github の issues</a> に。</p>
 <p>どんな出力が出たのか、出力をコピペして頂けると調査が捗ります。</p>
+<h3>ダイスを振った時にメンションしてほしいんだけど</h3>
+<p>環境変数 <code>BCDICE_MENTION_MODE</code> になんらかの値を入れた状態で bot を起動してください</p>
 <h3>Version 2? Version 1 との差異として気を付けるべき点は何？</h3>
 <p>以下について変更が入っています。</p>
 <ul>
@@ -214,6 +217,8 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v2.1.0</dt>
+	<dd>環境変数 <code>BCDICE_MENTION_MODE</code> に何らかの値が入っている場合、ダイスを振った際に振った人にメンションを付けて結果を表示するように変更</dd>
 	<dt>v2.0.2</dt>
 	<dd>bcdice help SYSTEM_NAME がうまく動かない問題を報告いただき、修正しました。h-mikisato さん、ありがとうございます！（<a href="https://github.com/Shunshun94/discord-bcdicebot/issues/79">詳細</a>）</dd>
 	<dd>システム設定のインポート・エクスポートの出力を修正しました</dd>
