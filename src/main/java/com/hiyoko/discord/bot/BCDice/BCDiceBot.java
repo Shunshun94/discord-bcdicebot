@@ -12,6 +12,8 @@ import org.javacord.api.entity.message.MessageAuthor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicator;
+import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicatorFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 
 /**
@@ -58,13 +60,14 @@ public class BCDiceBot {
 	 */
 	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive) {
 		BCDiceCLI bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive);
+		NameIndicator nameIndicator = NameIndicatorFactory.getNameIndicator();
 		new DiscordApiBuilder().setToken(token).login().thenAccept(api -> {
 
 			String myId = api.getYourself().getIdAsString();
 			api.addMessageCreateListener(event -> {
 				String channel = event.getChannel().getIdAsString();
 				MessageAuthor user = event.getMessageAuthor();
-				String name = user.getName();
+				String name = nameIndicator.getName(user);
 				String userId = user.getIdAsString();
 				String message = event.getMessage().getContent();
 				List<MessageAttachment> attachements = event.getMessage().getAttachments();
@@ -127,7 +130,7 @@ public class BCDiceBot {
 	public static void main(String[] args) {
 		if( args.length < 2 || args[0].equals("help") ||
 			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
-			System.out.println("Discord-BCDicebot Version 2.0.2");
+			System.out.println("Discord-BCDicebot Version 2.1.0");
 			System.out.println("This application requires two params");
 			System.out.println("  1. Discord Bot Token");
 			System.out.println("  2. BCDice-api server URL");
