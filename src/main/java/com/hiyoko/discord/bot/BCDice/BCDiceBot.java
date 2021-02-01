@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.message.MessageAttachment;
 import org.javacord.api.entity.message.MessageAuthor;
@@ -53,6 +54,10 @@ public class BCDiceBot {
 		}
 	}
 
+	private List<String> getRoomIds(DiscordApi api ) {
+		return api.getChannels().stream().map(channel->channel.getIdAsString()).collect(Collectors.toList());
+	}
+
 	/**
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
@@ -62,7 +67,6 @@ public class BCDiceBot {
 		BCDiceCLI bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive);
 		NameIndicator nameIndicator = NameIndicatorFactory.getNameIndicator();
 		new DiscordApiBuilder().setToken(token).login().thenAccept(api -> {
-
 			String myId = api.getYourself().getIdAsString();
 			api.addMessageCreateListener(event -> {
 				String channel = event.getChannel().getIdAsString();
