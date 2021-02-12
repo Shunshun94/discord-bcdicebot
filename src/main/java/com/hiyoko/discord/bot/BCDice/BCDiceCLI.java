@@ -63,6 +63,7 @@ public class BCDiceCLI {
 			+ "# BCDice-API サーバを一覧から削除する\n> bcdice admin PASSWORD removeServer URL\n"
 			+ "# 利用する BCDice-API サーバの一覧を出す\n> bcdice admin PASSWORD listServer\n"
 			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export\n"
+			+ "# 特定の部屋設定をエクスポートする\\n> bcdice admin PASSWORD export ROOM_ID1 ROOM_ID2 ROOM_ID3 ....\n"
 			+ "# 部屋設定をインポートする\n> bcdice admin PASSWORD import\n"
 			+ "# BCDice API サーバへの問い合わせを制限し、明らかに不必要なコマンドをサーバに送信しない（デフォルトの挙動）\n"
 			+ "> bcdice admin PASSWORD suppressroll\n"
@@ -474,8 +475,18 @@ public class BCDiceCLI {
 		if(command[3].equals("export")) {
 			Map<String, String> roomList = client.getRoomsSystem();
 			resultList.add("Room-System List\n");
-			resultList.addAll(separateStringWithLengthLimitation(roomList.entrySet().stream().map(p -> String.format("%s:%s", p.getKey(), p.getValue() )).collect(Collectors.toList()), 1000));
-			return resultList;
+			if(command.length == 4) {
+				resultList.addAll(separateStringWithLengthLimitation(roomList.entrySet().stream().map(p -> String.format("%s:%s", p.getKey(), p.getValue() )).collect(Collectors.toList()), 1000));
+				return resultList;
+			} else {
+				for(int i = 4; i < command.length; i++) {
+					String roomSystem = roomList.get(command[i]);
+					if(roomSystem != null) {
+						resultList.add(String.format("%s:%s", command[i], roomSystem));
+					}
+				}
+				return separateStringWithLengthLimitation(resultList, 1000);
+			}
 		}
 		if(command[3].equals("import")) {
 			String[] originalLines = tmpInput.split("\n");
