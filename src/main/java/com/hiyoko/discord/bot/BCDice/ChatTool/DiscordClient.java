@@ -67,10 +67,10 @@ public class DiscordClient implements ChatToolClient {
 		String env = System.getenv("BCDICE_PASSWORD");
 		if(env == null) {
 			String password = RandomStringUtils.randomAscii(16); 
-			System.out.println("Admin Password: " + password);
+			System.out.println("Discord Access Password: " + password);
 			return password;
 		} else {
-			System.out.println("Admin Password is written in environment variable BCDICE_PASSWORD");
+			System.out.println("Discord Access Password is written in environment variable BCDICE_PASSWORD");
 			return env;
 		}
 	}	
