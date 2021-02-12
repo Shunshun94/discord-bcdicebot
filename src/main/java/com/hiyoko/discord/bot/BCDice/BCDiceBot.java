@@ -13,6 +13,8 @@ import org.javacord.api.entity.message.MessageAuthor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClient;
+import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClientFactory;
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicator;
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicatorFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
@@ -54,10 +56,6 @@ public class BCDiceBot {
 		}
 	}
 
-	private List<String> getRoomIds(DiscordApi api ) {
-		return api.getChannels().stream().map(channel->channel.getIdAsString()).collect(Collectors.toList());
-	}
-
 	/**
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
@@ -68,6 +66,7 @@ public class BCDiceBot {
 		NameIndicator nameIndicator = NameIndicatorFactory.getNameIndicator();
 		new DiscordApiBuilder().setToken(token).login().thenAccept(api -> {
 			String myId = api.getYourself().getIdAsString();
+			ChatToolClient chatToolClient = ChatToolClientFactory.getChatToolClient(api);
 			api.addMessageCreateListener(event -> {
 				String channel = event.getChannel().getIdAsString();
 				MessageAuthor user = event.getMessageAuthor();
@@ -81,8 +80,14 @@ public class BCDiceBot {
 						event.getServer().get().getIdAsString(), channel, event.getMessage().getIdAsString()));
 				api.updateActivity("bcdice help とチャットに打ち込むとコマンドのヘルプを確認できます");
 				if( myId.equals(userId) ) { return; }
+				if(chatToolClient.isRequest( message )) {
+					List<String> result = chatToolClient.input(message);
+					if(! result.isEmpty()) {
+						bcDice.separateStringWithLengthLimitation(result, 1000).forEach(p->event.getChannel().sendMessage(p));
+						return;
+					}
+				}
 				if(! bcDice.isRoll( message )) {
-					logger.debug("bcdice command");
 					bcDice.inputs(message, userId, channel, attachements).forEach(msg->{
 						event.getChannel().sendMessage(msg);
 					});
