@@ -70,7 +70,10 @@
 
 <h3>アプリケーションを起動する</h3>
 <p>Bot を起動し、 Discord 上で BCDice を利用可能にします。サーバ1つにつき代表者1人がアプリを起動すれば大丈夫です</p>
+
+<h4>手元のサーバで起動する場合</h4>
 <ol>
+	<li><a href="https://drive.google.com/file/d/1E7WE1cnk7YLtmhDEbuI3P6hQpCYzFUUb/view?usp=sharing">DOWNLOAD</a> から Discord-Bcdicebot をダウンロードし、解凍します</li>
 	<li>Windows を使っている方は start.bat をメモ帳で開きます (ほとんどの方はこちら！)。<br/>Linux/macOS を使っている方は start.sh を適当なテキストエディタで開きます<br/>以下では start.bat を編集している前提で記載します</li>
 	<li><strong>DISCORD_BOT_TOKEN=</strong> の末尾に先の 4. でメモした Token を貼り付けます</li>
 	<li><strong>BCDICE_API_URL=</strong> の末尾に利用する BCDice-API サーバの URL を貼り付けます</li>
@@ -86,6 +89,27 @@
 </ol>
 
 <div class="comment">start.sh を編集する際は REM ではなく # を消すと上手くいきます</div>
+
+<h4>heroku を使う場合</h4>
+<p>PaaS サービス heroku を使って動かすことが可能です。</p>
+<ol>
+	<li>Git を導入します。Git： <a target="_blank" href="https://git-scm.com/">https://git-scm.com/</a></li>
+	<li>Heroku のアカウントを作成します。Heroku: <a target="_blank" href="https://www.heroku.com/home">https://www.heroku.com/home</a></li>
+	<li>Heroku CLI を導入します。インストールガイド： <a target="_blank" href="https://devcenter.heroku.com/articles/heroku-cli">https://devcenter.heroku.com/articles/heroku-cli</a></li>
+	<li>GitHub からソースコードを clone してきます。URL は <code>git@github.com:Shunshun94/discord-bcdicebot.git</code></li>
+	<li>clone してきたディレクトリ内で <code>heroku login</code> を実行し、ログインします</li>
+	<li>clone してきたディレクトリ内で <code>heroku create</code> を実行し、heroku 上に App を作成します</li>
+	<li>clone してきたディレクトリ内で <code>git push heroku master</code> を実行し、heroku 上にソースコードを push します</li>
+	<li>clone してきたディレクトリ内で以下を実行し、環境変数を設定します
+		<ul>
+			<li>先の 4. でメモした Token を登録します<br/><code>heroku config:set DISCORD_BOT_TOKEN=NDA0MgAIC0QK18lU0dxMt99F.HuWAIt.Nh9OTLbjxdMp3pcmw3Lsqd4aQlb</code> (トークンはダミーです)</li>
+			<li>利用する BCDice-API サーバの URL を登録します<br/><code>heroku config:set BCDICE_API_URL=http://xxxx.xxxxx.xxxxx.example.com/</code> (URL はダミーです)</li>
+			<li>管理用パスワードを設定します<br/><code>heroku config:set BCDICE_PASSWORD=MY_PASSWORD</code> (MY_PASSWORD を任意の文字列に書き換えてください)</li>
+		</ul>
+	</li>
+	<li>Heroku の Dashboard から worker を起動します。Heroku の Dashboard：<a target="_blank" href="https://dashboard.heroku.com/">https://dashboard.heroku.com/</a></li>
+</ol>
+<div class="comment"><a href="https://dinosaur-fossil.hatenablog.com/entry/2020/12/23/001818">https://dinosaur-fossil.hatenablog.com/entry/2020/12/23/001818</a> を参考に記載しています。</div>
 
 <h3>利用する</h3>
 
@@ -244,6 +268,9 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v2.2.0</dt>
+	<dd></dd>
+	<dd></dd>
 	<dt>v2.1.0</dt>
 	<dd>環境変数 <code>BCDICE_MENTION_MODE</code> に何らかの値が入っている場合、ダイスを振った際に振った人にメンションを付けて結果を表示するように変更</dd>
 	<dt>v2.0.2</dt>
