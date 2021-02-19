@@ -53,6 +53,8 @@ public class OriginalDiceBotClient {
 	}
 
 	private String getAttachedFile(URL url) throws IOException {
+		// https://weblabo.oscasierra.net/java-icu4j-1/
+		// https://ja.stackoverflow.com/questions/28892/java%E3%81%A7-utf8-%E4%BB%A5%E5%A4%96%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%80%E3%81%A8%E6%96%87%E5%AD%97%E5%8C%96%E3%81%91%E3%81%99%E3%82%8B
 		Response response = client.target(url.toString()).request().get();
 		String text = response.readEntity(String.class); 
 		charsetDetector.setText(text.getBytes());
