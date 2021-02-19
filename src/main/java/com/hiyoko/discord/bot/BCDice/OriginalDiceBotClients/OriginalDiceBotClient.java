@@ -2,8 +2,9 @@ package com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.FileSystems;
@@ -48,7 +49,7 @@ public class OriginalDiceBotClient {
 		diceBotList = getRawDiceBotList();
 	}
 
-	private String getAttachedFile(URL url) {
+	private String getAttachedFile(URL url) throws IOException {
 		Response response = client.target(url.toString()).request().get();
 		return response.readEntity(String.class);
 	}
@@ -59,9 +60,10 @@ public class OriginalDiceBotClient {
 	}
 
 	private void writeFile(String title, String body) throws IOException {
+		File newDiceBotFile = new File(String.format("%s/%s", dicebotDirectoryPath, title));
 		try (
-				FileWriter fw = new FileWriter(String.format("%s/%s", dicebotDirectoryPath, title), true);
-				PrintWriter pw = new PrintWriter(new BufferedWriter(fw));) {
+				OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(newDiceBotFile), "UTF-8");
+				PrintWriter pw = new PrintWriter(new BufferedWriter(osw));) {
 			pw.print(body);
 		} catch (IOException e) {
 			throw new IOException(String.format("ダイスボット [%s] の作成に失敗しました", title), e);
@@ -99,7 +101,7 @@ public class OriginalDiceBotClient {
 		try {
 			return new OriginalDiceBotTable(Files.readAllLines(FileSystems.getDefault().getPath(dicebotDirectoryPath, name)), name);
 		} catch (IOException e) {
-			throw new IOException(String.format("ダイスボット [%s] の読み込みに失敗しました", name));
+			throw new IOException(String.format("ダイスボット [%s] の読み込みに失敗しました", name), e);
 		}
 	}
 
