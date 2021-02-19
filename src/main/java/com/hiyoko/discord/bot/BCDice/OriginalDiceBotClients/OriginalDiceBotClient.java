@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 
 public class OriginalDiceBotClient {
 	private final Client client;
@@ -28,6 +30,7 @@ public class OriginalDiceBotClient {
 	private final File dicebotDirectory;
 	private List<String> diceBotList;
 	private final Logger logger = LoggerFactory.getLogger(OriginalDiceBotClient.class);
+	private final CharsetDetector charsetDetector = new CharsetDetector();
 	
 	public OriginalDiceBotClient() {
 		dicebotDirectoryPath = DEFAULT_DICEBOT_DIRECTORY_PATH;
@@ -51,7 +54,15 @@ public class OriginalDiceBotClient {
 
 	private String getAttachedFile(URL url) throws IOException {
 		Response response = client.target(url.toString()).request().get();
-		return response.readEntity(String.class);
+		String text = response.readEntity(String.class); 
+		charsetDetector.setText(text.getBytes());
+		CharsetMatch charsetMatch = charsetDetector.detect();
+		logger.info(String.format("%sぱーせんとの確率で%s", charsetMatch.getConfidence(), charsetMatch.getName()));
+		if(charsetMatch.getConfidence() > 70) {
+			return new String(text.getBytes(charsetMatch.getName()), "UTF-8");
+		} else {
+			return text;
+		} 
 	}
 
 	private boolean isExist(String targetName) {
