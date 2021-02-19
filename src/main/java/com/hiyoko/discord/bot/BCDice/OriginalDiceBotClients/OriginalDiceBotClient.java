@@ -51,8 +51,7 @@ public class OriginalDiceBotClient {
 
 	private String getAttachedFile(URL url) throws IOException {
 		Response response = client.target(url.toString()).request().get();
-		String text = response.readEntity(String.class);
-		return text;
+		return response.readEntity(String.class);
 	}
 
 	private boolean isExist(String targetName) {
