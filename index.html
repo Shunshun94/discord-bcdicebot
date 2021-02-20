@@ -28,10 +28,9 @@
 		}
 		
 		.comment {
-			margin:auto;
-			width: 60%;
-			background-color: #FFFFF0;
-			border: #FFFFD0 inset 2px;
+			font-color:gray;
+			background-color:#FFFFDD;
+			padding:8px;
 		}
 	</style>
 </head>
@@ -173,6 +172,7 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 <br/><br/>
 ダイスボット表を削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [ダイスボット表名]</code><br/>
 ダイスボット表の一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code></p>
+<div class="comment">上述の通り、heroku に設置した場合に独自のダイスボット表の名前を正しく取得できないことがあります</div>
 
 <h4>Bot が登録されている Discord サーバの情報を取得する</h4>
 <p>Bot が登録されているサーバの一覧を取得するには次のようにします。<br/><code>bcdicediscord [パスワード] listServers</code></p>
@@ -290,6 +290,7 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 	<dt>v2.2.0</dt>
 	<dd>Heroku 上で動かすための設定ファイル Procfile を追加しました。ファイルを共有してくださった yoshi さん、ありがとうございます！（<a href="https://github.com/Shunshun94/discord-bcdicebot/pull/83">詳細</a>）</dd>
 	<dd>Bot が登録されているサーバの情報を取得できるようにしました</dd>
+	<dd>オリジナルダイスボット表に関する問題をいくらか修正しました</dd>
 	<dt>v2.1.0</dt>
 	<dd>環境変数 <code>BCDICE_MENTION_MODE</code> に何らかの値が入っている場合、ダイスを振った際に振った人にメンションを付けて結果を表示するように変更</dd>
 	<dt>v2.0.2</dt>
