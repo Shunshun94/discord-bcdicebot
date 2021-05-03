@@ -18,14 +18,8 @@ public class BCDiceCLITest extends TestCase {
 
 	public BCDiceCLITest(String name) throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
 		super(name);
-	    Class<?> clazz = Class.forName("java.lang.ProcessEnvironment");
-	    Field theCaseInsensitiveEnvironment = clazz.getDeclaredField("theCaseInsensitiveEnvironment");
-	    theCaseInsensitiveEnvironment.setAccessible(true);
-	    @SuppressWarnings("unchecked")
-		Map<String,String> sytemEnviroment = (Map<String, String>) theCaseInsensitiveEnvironment.get(null);
-	    sytemEnviroment.put("BCDICE_PASSWORD", PASSWORD);
-		
-		cli = new BCDiceCLI("mock", new OriginalDiceBotClient("./testDiceBots"));
+
+		cli = new BCDiceCLI("mock", new OriginalDiceBotClient("./testDiceBots"), PASSWORD);
 	}
 	
 	public void testIsRoll() {
