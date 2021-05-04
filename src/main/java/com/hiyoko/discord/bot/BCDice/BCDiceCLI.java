@@ -1,6 +1,5 @@
 package com.hiyoko.discord.bot.BCDice;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.javacord.api.entity.message.MessageAttachment;
 import org.slf4j.LoggerFactory;
 

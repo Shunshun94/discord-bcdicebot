@@ -2,8 +2,6 @@ package com.hiyoko.discord.bot.BCDice;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.lang.reflect.Field;
 import java.io.IOException;
 
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
