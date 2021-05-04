@@ -88,7 +88,7 @@ public class BCDiceBot {
 				}
 				if(! bcDice.isRoll( message )) {
 					bcDice.inputs(message, userId, channel, attachements).forEach(msg->{
-						event.getChannel().sendMessage(msg);
+						event.getChannel().sendMessage(chatToolClient.formatMessage(msg));
 					});
 					return;
 				}
