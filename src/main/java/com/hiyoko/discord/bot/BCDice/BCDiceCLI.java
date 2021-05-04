@@ -1,6 +1,5 @@
 package com.hiyoko.discord.bot.BCDice;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.javacord.api.entity.message.MessageAttachment;
 import org.slf4j.LoggerFactory;
 
@@ -83,34 +82,22 @@ public class BCDiceCLI {
 			+ "# ダイスボット表の一覧を表示する\n"
 			+ "> bcdice admin PASSWORD listDiceBot";
 
-	private String getPassword() {
-		String env = System.getenv("BCDICE_PASSWORD");
-		if(env == null) {
-			String password = RandomStringUtils.randomAscii(16); 
-			System.out.println("Admin Password: " + password);
-			return password;
-		} else {
-			System.out.println("Admin Password is written in environment variable BCDICE_PASSWORD");
-			return env;
-		}
-	}
-
 	/**
 	 * @param url BCDice-API URL.
 	 */
-	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam) {
+	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam, String password) {
 		client = DiceClientFactory.getDiceClient(url);
 		originalDiceBotClient = originalDiceBotClientParam;
 		savedMessage = new HashMap<String, List<String>>();
-		password = getPassword();
+		this.password = password;
 	}
 
-	public BCDiceCLI(List<String> urls, String system, boolean errorSensitive) {
+	public BCDiceCLI(List<String> urls, String system, boolean errorSensitive, String password) {
 		client = DiceClientFactory.getDiceClient(urls, errorSensitive);
 		client.setSystem(system);
 		originalDiceBotClient = new OriginalDiceBotClient();
 		savedMessage = new HashMap<String, List<String>>();
-		password = getPassword();
+		this.password = password;
 	}
 
 	/**
@@ -625,7 +612,9 @@ public class BCDiceCLI {
 	}
 
 	public static void main(String[] args) {
-		BCDiceCLI cli = new BCDiceCLI(args[0].trim(), new OriginalDiceBotClient());
+		String password = AdminPasswordGenerator.getPassword();
+		BCDiceCLI cli = new BCDiceCLI(args[0].trim(), new OriginalDiceBotClient(), password);
+
 		String line;
 		Scanner scanner = new Scanner(System.in);
 		while(scanner.hasNext()) {

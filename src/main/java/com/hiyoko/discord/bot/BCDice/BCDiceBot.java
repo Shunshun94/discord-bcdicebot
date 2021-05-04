@@ -30,8 +30,8 @@ public class BCDiceBot {
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
 	 */
-	public BCDiceBot(String token, String bcDiceUrl) {
-		new BCDiceBot(token, bcDiceUrl, true);
+	public BCDiceBot(String token, String bcDiceUrl, String password) {
+		new BCDiceBot(token, bcDiceUrl, true, password);
 	}
 
 	private List<String> getUrlList(String bcDiceUrl) {
@@ -60,8 +60,8 @@ public class BCDiceBot {
 	 * @param bcDiceUrl BCDice-API URL
 	 * @param errorSensitive
 	 */
-	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive) {
-		BCDiceCLI bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive);
+	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive, String password) {
+		BCDiceCLI bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive, password);
 		NameIndicator nameIndicator = NameIndicatorFactory.getNameIndicator();
 		new DiscordApiBuilder().setToken(token).login().thenAccept(api -> {
 			String myId = api.getYourself().getIdAsString();
@@ -138,7 +138,7 @@ public class BCDiceBot {
 	public static void main(String[] args) {
 		if( args.length < 2 || args[0].equals("help") ||
 			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
-			System.out.println("Discord-BCDicebot Version 2.2.0");
+			System.out.println("Discord-BCDicebot Version 2.2.2");
 			System.out.println("This application requires two params");
 			System.out.println("  1. Discord Bot Token");
 			System.out.println("  2. BCDice-api server URL");
@@ -148,10 +148,16 @@ public class BCDiceBot {
 			System.out.println("  1. Discord の bot token");
 			System.out.println("  2. BCDice-api の URL");
 			System.out.println("  3. (必要ならば) エラーハンドルフラグ。BCDice-API でエラー発生時にエラーメッセージを出力するなら0 しないなら1");
-		} else if(args.length == 2) {
-			new BCDiceBot(args[0].trim(), args[1].trim());
+
+			return;
+		}
+
+		String password = AdminPasswordGenerator.getPassword();
+
+		if(args.length == 2) {
+			new BCDiceBot(args[0].trim(), args[1].trim(), password);
 		} else {
-			new BCDiceBot(args[0].trim(), args[1].trim(), args[2].trim().equals("0"));
+			new BCDiceBot(args[0].trim(), args[1].trim(), args[2].trim().equals("0"), password);
 		}
 	}
 }
