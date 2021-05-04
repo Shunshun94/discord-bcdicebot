@@ -47,6 +47,11 @@ public class DiscordClient implements ChatToolClient {
 		return result;
 	}
 
+	public String formatMessage(String input) {
+		String result = input.replaceAll("\\*\\*", "\\\\*\\\\*");
+		return result;
+	}
+
 	private List<String> getRoomIds() {
 		return api.getChannels().stream().filter(channel->{
 			return channel.getType().isTextChannelType();
@@ -73,5 +78,5 @@ public class DiscordClient implements ChatToolClient {
 			System.out.println("Discord Access Password is written in environment variable BCDICE_PASSWORD");
 			return env;
 		}
-	}	
+	}
 }
