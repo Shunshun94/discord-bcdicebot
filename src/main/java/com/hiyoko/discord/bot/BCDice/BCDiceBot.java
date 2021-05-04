@@ -107,7 +107,7 @@ public class BCDiceBot {
 							}
 						}
 						bcDice.separateStringWithLengthLimitation(String.format("＞%s\n%s", name, sb.stream().collect(Collectors.joining("\n\n"))), 1000).forEach((post)->{
-							event.getChannel().sendMessage(post);
+							event.getChannel().sendMessage(chatToolClient.formatMessage(post));
 						});
 						DicerollResult firstOne = rollResults.get(0); 
 						if( firstOne.isSecret() ) {

@@ -48,7 +48,10 @@ public class DiscordClient implements ChatToolClient {
 	}
 
 	public String formatMessage(String input) {
-		
+		System.out.println(input);
+		String result = input.replaceAll("\\*\\*", "\\\\*\\\\*");
+		System.out.println(result);
+		return result;
 	}
 
 	private List<String> getRoomIds() {
