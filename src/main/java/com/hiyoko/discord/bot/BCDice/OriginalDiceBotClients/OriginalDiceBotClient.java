@@ -111,6 +111,7 @@ public class OriginalDiceBotClient {
 		for(File target : list) {
 			fileList.add(target.getName());
 		}
+		fileList.sort((a, b)-> b.length() - a.length());
 		return fileList;
 	}
 

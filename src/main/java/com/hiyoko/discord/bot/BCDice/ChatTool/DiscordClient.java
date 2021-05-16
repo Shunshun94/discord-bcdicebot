@@ -18,6 +18,11 @@ public class DiscordClient implements ChatToolClient {
 			+ "# サーバを一覧する\n"
 			+ "> bcdicediscord PASSWORD listServers";
 
+	public DiscordClient(DiscordApi api, String password) {
+		this.api = api;
+		this.password = password;
+	}
+
 	public DiscordClient(DiscordApi api) {
 		this.api = api;
 		this.password = getPassword();
@@ -47,6 +52,11 @@ public class DiscordClient implements ChatToolClient {
 		return result;
 	}
 
+	public String formatMessage(String input) {
+		String result = input.replaceAll("\\*\\*", "\\\\*\\\\*");
+		return result;
+	}
+
 	private List<String> getRoomIds() {
 		return api.getChannels().stream().filter(channel->{
 			return channel.getType().isTextChannelType();
@@ -56,7 +66,10 @@ public class DiscordClient implements ChatToolClient {
 	private List<String> getRooms() {
 		return api.getChannels().stream().filter(channel->{
 			return channel.getType().isTextChannelType();
-		}).map(channel->String.format("%s\t%s\t%s", channel.getIdAsString(), channel.asServerChannel().get().getName() , channel.asServerChannel().get().getServer().getName())).collect(Collectors.toList());
+		}).map(channel->String.format("%s\t%s\t%s",
+				channel.getIdAsString(),
+				channel.asServerTextChannel().get().getName(),
+				channel.asServerTextChannel().get().getServer().getName())).collect(Collectors.toList());
 	}
 
 	private List<String> getServerList() {
@@ -73,5 +86,5 @@ public class DiscordClient implements ChatToolClient {
 			System.out.println("Discord Access Password is written in environment variable BCDICE_PASSWORD");
 			return env;
 		}
-	}	
+	}
 }

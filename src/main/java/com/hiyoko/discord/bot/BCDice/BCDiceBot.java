@@ -88,7 +88,7 @@ public class BCDiceBot {
 				}
 				if(! bcDice.isRoll( message )) {
 					bcDice.inputs(message, userId, channel, attachements).forEach(msg->{
-						event.getChannel().sendMessage(msg);
+						event.getChannel().sendMessage(chatToolClient.formatMessage(msg));
 					});
 					return;
 				}
@@ -107,7 +107,7 @@ public class BCDiceBot {
 							}
 						}
 						bcDice.separateStringWithLengthLimitation(String.format("＞%s\n%s", name, sb.stream().collect(Collectors.joining("\n\n"))), 1000).forEach((post)->{
-							event.getChannel().sendMessage(post);
+							event.getChannel().sendMessage(chatToolClient.formatMessage(post));
 						});
 						DicerollResult firstOne = rollResults.get(0); 
 						if( firstOne.isSecret() ) {
@@ -138,7 +138,7 @@ public class BCDiceBot {
 	public static void main(String[] args) {
 		if( args.length < 2 || args[0].equals("help") ||
 			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
-			System.out.println("Discord-BCDicebot Version 2.2.2");
+			System.out.println("Discord-BCDicebot Version 2.2.3");
 			System.out.println("This application requires two params");
 			System.out.println("  1. Discord Bot Token");
 			System.out.println("  2. BCDice-api server URL");
