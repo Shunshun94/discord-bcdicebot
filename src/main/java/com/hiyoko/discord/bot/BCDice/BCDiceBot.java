@@ -131,6 +131,15 @@ public class BCDiceBot {
 		});
 	}
 
+	private static String getVersion() {
+		String version = BCDiceBot.class.getPackage().getImplementationVersion();
+		if(version == null) {
+			return "See pom.xml file";
+		} else {
+			return version;
+		}
+	}
+
 	/**
 	 * First called method.
 	 * @param args command line parameters. 1st should be Discord bot token. 2nd should be the URL of BCDice-API.
@@ -138,7 +147,7 @@ public class BCDiceBot {
 	public static void main(String[] args) {
 		if( args.length < 2 || args[0].equals("help") ||
 			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
-			System.out.println("Discord-BCDicebot Version 2.2.3");
+			System.out.println(String.format("Discord-BCDicebot Version %s", getVersion()));
 			System.out.println("This application requires two params");
 			System.out.println("  1. Discord Bot Token");
 			System.out.println("  2. BCDice-api server URL");
