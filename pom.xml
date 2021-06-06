@@ -50,14 +50,6 @@
 			<artifactId>jersey-client</artifactId>
 			<version>3.0.2</version>
 		</dependency>
-
-
-		<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-client -->
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-client</artifactId>
-			<version>4.6.0.Final</version>
-		</dependency>
 		<dependency>
 			<groupId>com.eclipsesource.minimal-json</groupId>
 			<artifactId>minimal-json</artifactId>
