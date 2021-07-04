@@ -12,17 +12,16 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.Response;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+
 public class OriginalDiceBotClient {
-	private final Client client;
+	private final OkHttpClient client;;
 	private static final String DEFAULT_DICEBOT_DIRECTORY_PATH = "./originalDiceBots";
 	private final String dicebotDirectoryPath;
 	private final File dicebotDirectory;
@@ -31,7 +30,7 @@ public class OriginalDiceBotClient {
 	
 	public OriginalDiceBotClient() {
 		dicebotDirectoryPath = DEFAULT_DICEBOT_DIRECTORY_PATH;
-		client = ClientBuilder.newBuilder().build();
+		client = new OkHttpClient();
 		dicebotDirectory = new File(dicebotDirectoryPath);
 		if( ! dicebotDirectory.exists() ) {
 			dicebotDirectory.mkdir();
@@ -41,7 +40,7 @@ public class OriginalDiceBotClient {
 	
 	public OriginalDiceBotClient(String path) {
 		dicebotDirectoryPath = path;
-		client = ClientBuilder.newBuilder().build();
+		client = new OkHttpClient();
 		dicebotDirectory = new File(dicebotDirectoryPath);
 		if( ! dicebotDirectory.exists() ) {
 			dicebotDirectory.mkdir();
@@ -50,8 +49,8 @@ public class OriginalDiceBotClient {
 	}
 
 	private String getAttachedFile(URL url) throws IOException {
-		Response response = client.target(url.toString()).request().get();
-		return response.readEntity(String.class);
+		Request request = new Request.Builder().url(url.toString()).build();
+		return client.newCall(request).execute().body().string();
 	}
 
 	private boolean isExist(String targetName) {

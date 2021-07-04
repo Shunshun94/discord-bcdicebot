@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 public class BCDiceClientTest extends TestCase {
 	public void testIsDiceCommand() {
-		BCDiceClient client = new BCDiceClient("");
+		BCDiceV2Client client = new BCDiceV2Client("");
 		try (BufferedReader br = Files.newBufferedReader(Paths.get("src/test/resources/shouldRolled.txt"))) {
 			String line;
 			while( (line = br.readLine()) != null ) {
@@ -31,7 +31,7 @@ public class BCDiceClientTest extends TestCase {
 		String urlA = "http://hiyo-hitsu.sakura.ne.jp/returnCode.cgi?statusCode=500&path=";
 		String urlB = "http://hiyo-hitsu.sakura.ne.jp/returnCode.cgi?statusCode=500&a=b&path=";
 		String urlC = "http://hiyo-hitsu.sakura.ne.jp/returnCode.cgi?statusCode=200&ok=true&result=8&secret=false&path=";
-		BCDiceClient client = new BCDiceClient(urlA);
+		BCDiceV2Client client = new BCDiceV2Client(urlA);
 		assertEquals(String.format("%s/", urlA), client.getDiceUrlList().get(client.getUrlCursor()));
 		client.setDiceServer(urlB);
 		assertEquals(2, client.getDiceUrlList().size());

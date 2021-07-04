@@ -6,9 +6,12 @@ import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.SystemList;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.Response;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -26,18 +29,18 @@ import java.util.regex.Pattern;
 public class BCDiceV2Client implements DiceClient {
 	private int urlCursor = 0;
 	private List<String> urls = new ArrayList<String>();
-	private final Client client;
+	private final OkHttpClient client;
 	private final Map<String, String> system;
 	private final boolean errorSensitive;
 	private static final String DEFAULT_CHANNEL = "general";
 	private static final Pattern DICE_COMMAND_PATTERN = Pattern.compile("^[\\w\\+\\-#\\$@<>=\\.\\[\\]\\(\\)]+");
-
+	
 	/**
 	 * @param bcDiceUrl BCDice-API server URL
 	 */
 	public BCDiceV2Client(String bcDiceUrl) {
+		client = new OkHttpClient();
 		urls.add(bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/");
-		client = ClientBuilder.newBuilder().build();
 		system = new HashMap<String, String>();
 		system.put(DEFAULT_CHANNEL, "DiceBot");
 		errorSensitive = true;
@@ -45,7 +48,7 @@ public class BCDiceV2Client implements DiceClient {
 
 	public BCDiceV2Client(String bcDiceUrl, boolean es) {
 		urls.add(bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/");
-		client = ClientBuilder.newBuilder().build();
+		client = new OkHttpClient();
 		system = new HashMap<String, String>();
 		system.put(DEFAULT_CHANNEL, "DiceBot");
 		errorSensitive = es;
@@ -56,7 +59,7 @@ public class BCDiceV2Client implements DiceClient {
 			// stream と collect だとあとから追加ができなくなるのでこれで追加
 			urls.add(bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/");
 		}
-		client = ClientBuilder.newBuilder().build();
+		client = new OkHttpClient();
 		system = new HashMap<String, String>();
 		system.put(DEFAULT_CHANNEL, "DiceBot");
 		errorSensitive = es;
@@ -64,13 +67,33 @@ public class BCDiceV2Client implements DiceClient {
 
 	private String postUrl(String path, int rtl) throws IOException {
 		String targetUrl = urls.get(urlCursor) + path;
-		Response response = null;
-		try {
-			response = client.target(targetUrl).request().post(null);
-		} catch (Exception e) {
-			if (response != null) {
-				response.close();
+		Request request = new Request.Builder().url(targetUrl).post( new FormBody.Builder().build() ).build();
+		try (Response response = client.newCall(request).execute();) {
+			ResponseBody result = response.body();
+			int responseCode = response.code(); 
+			if (responseCode == DiceClientConsts.REQUEST_URI_TOO_LONG ) {
+				throw new IOException("Too long command is requested. Make the command shorter");
 			}
+			if (!(responseCode == DiceClientConsts.OK || responseCode == DiceClientConsts.BAD_REQUEST)) {
+				response.close();
+				if (errorSensitive) {
+					String msg = String.format("[%s] %s", responseCode, targetUrl);
+					if (msg.startsWith("[5") && (urls.size() != 1) && (rtl > 0)) { // 5XX Error であれば かつ 予備 URL があれば
+						urlCursor++;
+						if (urls.size() <= urlCursor) {
+							urlCursor = 0;
+						}
+						System.err.println(String.format("Failed to request to %s, %s, app will try %s with dice server %s",
+								targetUrl, responseCode, rtl, urls.get(urlCursor)));
+						return postUrl(path, rtl - 1);
+					}
+					throw new IOException(msg);
+				} else {
+					return "{\"ok\":false,\"reason\":\"error handling dummy data\"}";
+				}
+			}
+			return result.string();
+		} catch (Exception e) {
 			if (rtl == 0) {
 				throw new IOException(e.getMessage() + "(" + targetUrl + ")", e);
 			} else {
@@ -91,42 +114,35 @@ public class BCDiceV2Client implements DiceClient {
 				return postUrl(path, rtl - 1);
 			}
 		}
-		if (response.getStatus() == Response.Status.REQUEST_URI_TOO_LONG.getStatusCode()) {
-			throw new IOException("Too long command is requested. Make the command shorter");
-		}
-		if (!(response.getStatus() == Response.Status.OK.getStatusCode() || response.getStatus() == 400)) {
-			response.close();
-			if (errorSensitive) {
-				String msg = String.format("[%s] %s", response.getStatus(), targetUrl);
-				if (msg.startsWith("[5") && (urls.size() != 1) && (rtl > 0)) { // 5XX Error であれば かつ 予備 URL があれば
-					urlCursor++;
-					if (urls.size() <= urlCursor) {
-						urlCursor = 0;
-					}
-					System.err.println(String.format("Failed to request to %s, %s, app will try %s with dice server %s",
-							targetUrl, response.getStatus(), rtl, urls.get(urlCursor)));
-					return postUrl(path, rtl - 1);
-				}
-				throw new IOException(msg);
-			} else {
-				return "{\"ok\":false,\"reason\":\"error handling dummy data\"}";
-			}
-		}
-		String result = response.readEntity(String.class);
-		response.close();
-		return result;
-
 	}
 
 	private String getUrl(String path, int rtl) throws IOException {
-		Response response = null;
+		
 		String targetUrl = urls.get(urlCursor) + path;
-		try {
-			response = client.target(targetUrl).request().get();
-		} catch (Exception e) {
-			if (response != null) {
+		Request request = new Request.Builder().url(targetUrl).build();
+		try (Response response = client.newCall(request).execute();) {
+			ResponseBody result = response.body();
+			int responseCode = response.code(); 
+			if (!(responseCode == DiceClientConsts.OK || responseCode == DiceClientConsts.BAD_REQUEST)) {
 				response.close();
+				if (errorSensitive) {
+					String msg = String.format("[%s] %s", responseCode, targetUrl);
+					if (msg.startsWith("[5") && (urls.size() != 1) && (rtl > 0)) { // 5XX Error であれば かつ 予備 URL があれば
+						urlCursor++;
+						if (urls.size() <= urlCursor) {
+							urlCursor = 0;
+						}
+						System.err.println(String.format("Failed to request to %s, %s, app will try %s with dice server %s",
+								targetUrl, responseCode, rtl, urls.get(urlCursor)));
+						return getUrl(path, rtl - 1);
+					}
+					throw new IOException(msg);
+				} else {
+					return "{\"ok\":false,\"reason\":\"error handling dummy data\"}";
+				}
 			}
+			return result.string();
+		} catch (Exception e) {
 			if (rtl == 0) {
 				throw new IOException(e.getMessage() + "(" + targetUrl + ")", e);
 			} else {
@@ -147,28 +163,6 @@ public class BCDiceV2Client implements DiceClient {
 				return getUrl(path, rtl - 1);
 			}
 		}
-
-		if (!(response.getStatus() == Response.Status.OK.getStatusCode() || response.getStatus() == 400)) {
-			response.close();
-			if (errorSensitive) {
-				String msg = String.format("[%s] %s", response.getStatus(), targetUrl);
-				if (msg.startsWith("[5") && (urls.size() != 1) && (rtl > 0)) { // 5XX Error であれば かつ 予備 URL があれば
-					urlCursor++;
-					if (urls.size() <= urlCursor) {
-						urlCursor = 0;
-					}
-					System.err.println(String.format("Failed to request to %s, %s, app will try %s with dice server %s",
-							targetUrl, response.getStatus(), rtl, urls.get(urlCursor)));
-					return getUrl(path, rtl - 1);
-				}
-				throw new IOException(msg);
-			} else {
-				return "{\"ok\":false,\"reason\":\"error handling dummy data\"}";
-			}
-		}
-		String result = response.readEntity(String.class);
-		response.close();
-		return result;
 	}
 
 	/**
