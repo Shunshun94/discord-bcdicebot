@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClient;
 import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClientFactory;
+import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatter;
+import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatterFactory;
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicator;
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicatorFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
@@ -63,6 +65,7 @@ public class BCDiceBot {
 	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive, String password) {
 		BCDiceCLI bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive, password);
 		NameIndicator nameIndicator = NameIndicatorFactory.getNameIndicator();
+		DiceResultFormatter diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
 		new DiscordApiBuilder().setToken(token).login().thenAccept(api -> {
 			String myId = api.getYourself().getIdAsString();
 			ChatToolClient chatToolClient = ChatToolClientFactory.getChatToolClient(api);
@@ -103,7 +106,7 @@ public class BCDiceBot {
 								throw new IOException(rollResult.getText());
 							}
 							if( rollResult.isRolled() ) {
-								sb.add(rollResult.toString());
+								sb.add(diceResultFormatter.getText(rollResult));
 							}
 						}
 						bcDice.separateStringWithLengthLimitation(String.format("＞%s\n%s", name, sb.stream().collect(Collectors.joining("\n\n"))), 1000).forEach((post)->{
