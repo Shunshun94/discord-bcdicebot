@@ -32,6 +32,10 @@
 			background-color:#FFFFDD;
 			padding:8px;
 		}
+		
+		.needToEdit {
+			color:green;
+		}
 	</style>
 </head>
 <body>
@@ -54,43 +58,104 @@
 <p>また、中級者向けに Heroku を用いての自分用 BCDice-API サーバの設置手順も共有されています。<br/><a href="https://github.com/ysakasin/bcdice-api/blob/master/docs/heroku.md">https://github.com/ysakasin/bcdice-api/blob/master/docs/heroku.md</a></p>
 </div>
 
-<h2>使い方</h2>
-<h3>ダイスボットを登録する</h3>
+<h2>サーバに導入する手順</h2>
+
+<div class="comment">
+<p>以下の内容を画像付きで分かりやすくまとめた記事を<a href="https://twitter.com/aimsssssot">えいむさん</a>が書いてくださいました。<br/>
+<a href="https://aimsot.net/discord_dicebot/">https://aimsot.net/discord_dicebot/</a></p>
+</div>
+
+<h3>概要</h3>
+<ol>
+	<li>Discord の<a href="https://discordapp.com/developers/applications/me">開発者ページ</a>からダイスボットを作成しサーバに導入する</li>
+	<li><a href="https://drive.google.com/file/d/1E7WE1cnk7YLtmhDEbuI3P6hQpCYzFUUb/view?usp=sharing">DOWNLOAD</a> から Discord-Bcdicebot をダウンロードし、start.bat ないし start.sh に Bot の Token 情報と BCDice-API の情報を記入する</li>
+	<li>start.bat ないし start.sh を実行する</li>
+</ol>
+
+<h3>詳細1. ダイスボットを登録し、サーバに導入する</h3>
 <p>Discord に新規の Bot を作成します。サーバ1つにつき代表者1人がいれれば大丈夫です</p>
 <ol>
-	<li><a href="https://discordapp.com/developers/applications/me">開発者ページ</a> にアクセスし、New APP をクリックします</li>
-	<li>最低限 APP NAME と APP ICON を入力し、 Create App をクリックします</li>
-	<li>Create Bot User というボタンをクリックし、このダイスボット用のユーザを作成します</li>
-	<li>Bot の Username の下に "Token:click to reveal" というのがあるのでクリックし、出てくるランダムな文字列をメモします<br/><strong>この文字列は他の人に教えないこと</strong>。
-	<br/>この文字列は <code>NDA0MgAIC0QK18lU0dxMt99F.HuWAIt.Nh9OTLbjxdMp3pcmw3Lsqd4aQlb</code> のような形式の値となります（この値はダミーです）。</li>
-	<li>画面上部の APP DETAILS のところに書かれた Client ID の数字をメモします</li>
-	<li>次の URL にアクセスします<br/><strong>https://discordapp.com/oauth2/authorize?client_id=<span style="color:green;">[Client Id の数字]</span>&amp;scope=bot&amp;permissions=0</strong></li>
+	<li><a href="https://discordapp.com/developers/applications/me">開発者ページ</a> にアクセスし、画面右上の New Application をクリックします</li>
+	<li>名前とアイコンを設定し、Discord Application を作成します</li>
+	<li>名前とアイコンの下にある APPLICATION ID の数字をメモします</li>
+	<li>画面左側のメニューから Bot を選択し、Add Bot と書かれたボタンをクリックし、このダイスボット用のユーザを作成します</li>
+	<li>Bot の Username の下に "Token:click to reveal" というのがあるのでクリックし、出てくるランダムな文字列をメモします。<strong>この文字列は他の人に教えないこと</strong>。
+	<br/><span style="display:block;" class="comment">この文字列は <code>NDA0MgAIC0QK18lU0dxMt99F.HuWAIt.Nh9OTLbjxdMp3pcmw3Lsqd4aQlb</code> のような形式の値となります（この値はダミーです）。<br/>
+	General Information 記載の <code>d70963bg6e4df564f3648c87c514f15bef8ce3b38af1156800bcc3395c062f80</code> のような値ではありません。</span></li>
+	<li>次の URL にアクセスします<br/><strong>https://discordapp.com/oauth2/authorize?client_id=<span class="needToEdit">[Client Id の数字]</span>&amp;scope=bot&amp;permissions=0</strong></li>
+	<li>アクセスした画面から Bot を導入できるので、入れたいサーバに Bot を導入します</li>
 </ol>
 
-<h3>アプリケーションを起動する</h3>
-<p>Bot を起動し、 Discord 上で BCDice を利用可能にします。サーバ1つにつき代表者1人がアプリを起動すれば大丈夫です</p>
+<h3>詳細2. start.bat または start.sh を編集する</h3>
+<p><a href="https://drive.google.com/file/d/1E7WE1cnk7YLtmhDEbuI3P6hQpCYzFUUb/view?usp=sharing">DOWNLOAD</a> から Discord-Bcdicebot をダウンロードし、解凍します。<br/>
+その上で同梱されている start.bat を以下のように編集します（Linux/macOS を使っている方は以下を参考に start.sh を編集してください）。</p>
+<pre>@echo off
+cd /d %~dp0
 
-<h4>手元のサーバで起動する場合</h4>
-<ol>
-	<li><a href="https://drive.google.com/file/d/1E7WE1cnk7YLtmhDEbuI3P6hQpCYzFUUb/view?usp=sharing">DOWNLOAD</a> から Discord-Bcdicebot をダウンロードし、解凍します</li>
-	<li>Windows を使っている方は start.bat をメモ帳で開きます (ほとんどの方はこちら！)。<br/>Linux/macOS を使っている方は start.sh を適当なテキストエディタで開きます<br/>以下では start.bat を編集している前提で記載します</li>
-	<li><strong>DISCORD_BOT_TOKEN=</strong> の末尾に先の 4. でメモした Token を貼り付けます</li>
-	<li><strong>BCDICE_API_URL=</strong> の末尾に利用する BCDice-API サーバの URL を貼り付けます</li>
-	<li>管理用パスワードを決め、<strong>PleaseChangeMeIfYouUseThis</strong>を決めた管理用パスワードに書き換えます</li>
-	<li><strong>REM set BCDICE_PASSWORD=PleaseChangeMeIfYouUseThis</strong>の "REM" を削除します</li>
-	<li>(必須ではない)<br/><strong>REM set BCDICE_API_SECONDARY=http://secondary.bcdice-api.yourdomain.co.jp/</strong>の "REM" を削除します
-<br/>その上で <code>http://secondary.bcdice-api.yourdomain.co.jp/</code> を予備の BCDice-API サーバの URL に書き換えます</li>
-	<li>(必須ではない)<br/><strong>REM set BCDICE_DEFAULT_SYSTEM=DiceBot</strong>の "REM" を削除し、<code>DiceBot</code>を利用するデフォルトのシステム名に書き換えます</li>
-	<li>(必須ではない)<br/><strong>REM set BCDICE_MENTION_MODE=1</strong>の "REM" を削除し、ダイスを振った時に振った人にメンションされるようにします</li>
-	<li>Windows を使っている方は メモ帳を閉じ、 start.bat をダブルクリックします<br/>Linux/macOS を使っている方は編集を保存・完了し start.sh を実行します</li>
-	<li>Bot が起動します。Discord の参加者一覧に Bot がオンラインの状態で存在すれば成功です</li>
-	<li>終了はキーボードの Ctrl + C を押してください</li>
-</ol>
+set DISCORD_BOT_TOKEN=<strong class="needToEdit">詳細1.の5で得たランダムな文字列</strong>
+set BCDICE_API_URL=<strong class="needToEdit">BCDice-APIサーバのURL</strong>
+set IGNORE_ERROR=
+set BCDICE_PASSWORD=<strong class="needToEdit">管理用のパスワード。ここに入れた文字列がパスワードとして設定される</strong>
+set BCDICE_API_SECONDARY=<strong class="needToEdit">予備のBCDice-APIサーバのURL</strong>
+REM set BCDICE_DEFAULT_SYSTEM=DiceBot
+REM set BCDICE_MENTION_MODE=1
+REM set BCDICE_RESULT_DISPLAY_FORMAT=V1
 
-<div class="comment">start.sh を編集する際は REM ではなく # を消すと上手くいきます</div>
+java -jar discord-bcdicebot.jar %DISCORD_BOT_TOKEN% %BCDICE_API_URL% %IGNORE_ERROR%
+pause</pre>
 
-<h4>heroku を使う場合</h4>
-<p>PaaS サービス heroku を使って動かすことが可能です。</p>
+<div class="comment"><code>BCDICE_PASSWORD</code> と <code>BCDICE_API_SECONDARY</code> の行の先頭には
+編集を始めた時点では REM という文字列があるのでこれは削除してください。
+<br/>なお、start.sh を編集する際は REM ではなく # を消すと上手くいきます</div>
+
+<p><code>BCDICE_API_URL</code> と <code>BCDICE_API_SECONDARY</code> の右に入力する値は<a href="https://api-status.bcdice.org/" target="_blank">https://api-status.bcdice.org/</a> に記載されている公開サーバを利用する方が良いでしょう。
+各公開サーバには利用ルールがあるため、利用前に事前にご確認ください。</p>
+
+<div class="comment">
+<p>各パラメータは以下のような意味を持ちます。</p>
+<table border="1">
+	<tr>
+		<th>DISCORD_BOT_TOKEN</th>
+		<td>必須です。Discord の Bot アカウントに接続するための情報です</td>
+	</tr>
+	<tr>
+		<th>BCDICE_API_URL</th>
+		<td>必須です。ダイスを振るための BCDice-API サーバの URL です</td>
+	</tr>
+	<tr>
+		<th>IGNORE_ERROR</th>
+		<td>ダイスを振るコマンド以外を入力した場合に BCDice-API サーバが 500 エラーを返す場合にそれを無視するか否かを設定します。これの値を1にすることでエラーを無視するようになります</td>
+	</tr>
+	<tr>
+		<th>BCDICE_PASSWORD</th>
+		<td>管理用パスワードです。入力しなかった場合、起動のたびにランダムな値がパスワードとして設定されます</td>
+	</tr>
+	<tr>
+		<th>BCDICE_API_SECONDARY</th>
+		<td>BCDICE_API_URL で設定した BCDice-API サーバが何らかの都合で使えない場合に利用される代替のサーバの URL です</td>
+	</tr>
+	<tr>
+		<th>BCDICE_DEFAULT_SYSTEM</th>
+		<td>部屋ごとにシステムを設定していない場合に使われるシステムです。設定しない場合は DiceBot が使われます</td>
+	</tr>
+	<tr>
+		<th>BCDICE_MENTION_MODE</th>
+		<td>ダイスを振った際の結果に振った人へのメンションするか否かを設定します。これの値を1にすることでメンションするようになります</td>
+	</tr>
+	<tr>
+		<th>BCDICE_RESULT_DISPLAY_FORMAT</th>
+		<td>ダイスを振った結果の表示を設定します。これの値を V1 にすることで旧表示に戻し、ダイスの結果にシステム名も記載されます</td>
+	</tr>
+</table>
+</div>
+
+<h3>詳細3. start.bat または start.sh を実行する</h3>
+<p>先に編集した start.bat をダブルクリックすることでダイスボットが起動します。黒い背景に白い文字が出ているウィンドウが表示され、そこにダイスボットの実行ログが表示されます。</p>
+<p>ダイスボットを終了する時は表示されているウィンドウを消すか、キーボードの Ctrl+C を押してください。</p>
+
+<h2>heroku を使う場合</h2>
+<p>PaaS サービス heroku を使って動かすことも可能です。少なくとも2021年8月時点ではクレジットカード情報を登録することで無料の範囲内でダイスボットを常動させる事が可能です。</p>
+<p>ただし、Git と Heroku を使える必要があり、Heroku については英語で書かれたウェブサイト上での操作が必要となります。</p>
 <ol>
 	<li>Git を導入します。Git： <a target="_blank" href="https://git-scm.com/">https://git-scm.com/</a></li>
 	<li>Heroku のアカウントを作成します。Heroku: <a target="_blank" href="https://www.heroku.com/home">https://www.heroku.com/home</a></li>
@@ -113,21 +178,20 @@
 			<li>ダイスを振った時に振った人にメンションを飛ばすようにします。<br/><code>heroku config:set BCDICE_MENTION_MODE=1</code></li>
 		</ul>
 	</li>
-	<li>Heroku の Dashboard から worker を起動します。Heroku の Dashboard：<a target="_blank" href="https://dashboard.heroku.com/">https://dashboard.heroku.com/</a></li>
+	<li>Heroku の Dashboard から worker を起動します。<br/>Heroku の Dashboard：<a target="_blank" href="https://dashboard.heroku.com/">https://dashboard.heroku.com/</a></li>
 </ol>
 <div class="comment"><a href="https://dinosaur-fossil.hatenablog.com/entry/2020/12/23/001818">https://dinosaur-fossil.hatenablog.com/entry/2020/12/23/001818</a> を参考に記載しています。<br/>
 また、既知の問題として追加したダイスボット表の名前に ascii 文字以外が含まれる場合にダイスボット表の名前を正しく読み込めない問題が存在します。
 この方法で設置する場合はダイスボット表を半角英数字・記号で命名してください。</div>
 
-<h3>利用する</h3>
+<h2>利用する</h2>
 
+<h3>ダイスを振る</h3>
 <p>チャットにただただ <code>2d6</code> 等と打ち込めばダイスが振られます。他にどのようなコマンドが利用できるのかは <a href="https://docs.bcdice.org/">BCDice コマンドリスト</a>をご参照ください。</p>
 <p>各システム向けの機能を使いたい場合、システムを切り替えましょう。<br/><code>bcdice set [利用するシステムの名前]</code> とチャット上で発言してください。<br/>例えば <code>bcdice set SwordWorld2.5</code> 等です。</p>
 <p>どんなシステムが利用できるのかは <code>bcdice list</code> と発言すれば確認できます。</p>
 <p>各システムでどんな機能が利用できるのかを確認する際は <code>bcdice help [システムの名前]</code> と発言すれば表示できます。<br/>例えば <code>bcdice help SwordWorld2.0</code> 等です。</p>
 <p>数字ではなく<code>[</code>と<code>]</code>でカンマ区切りのリストを与えるとそのリストのそれぞれについてダイスを振ることができます。例えば<code>[こぶた,たぬき,きつね,ねこ] 2d6</code> とすることでこぶた、たぬき、きつね、ねこのそれぞれについて 2d6 を振ることが可能です。</p>
-<p>管理者はオリジナルのダイスボット表を追加することもできます。詳細は管理コマンドをご確認ください。</p>
-
 <p>チャットに <code>bcdice help</code> と打てば何ができるのかが一覧されるので困ったときは実行してみてください。</p>
 
 <h3>管理コマンドを使う</h3>
@@ -160,6 +224,7 @@ BCDice-API サーバに送る必要のありそうな発言だけを送信する
 とすれば発言の先頭に <code>/diceroll</code> があるものだけを BCDice-API サーバに送信します。</p>
 
 <h4>独自のダイスボット表</h4>
+<p>管理者はオリジナルのダイスボット表を追加することもできます。</p>
 <p>独自のダイスボット表を追加する場合は Discord にダイスボット表の情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/>
 <code>bcdice admin [パスワード] addDiceBot [ダイスボット表名]</code><br/>
 追加した後ダイスボット表の名前がチャット上で発言されるとダイスボット表が振られます。
