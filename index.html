@@ -61,7 +61,8 @@
 <h2>サーバに導入する手順</h2>
 
 <div class="comment">
-<p>以下の内容を画像付きで分かりやすくまとめた記事を<a href="https://twitter.com/aimsssssot">えいむさん</a>が書いてくださいました。<br/>
+<p>導入手順を画像付きで分かりやすくまとめた記事を<a href="https://twitter.com/aimsssssot">えいむさん</a>が書いてくださっています。<br/>
+必要に応じてこちらも読むことをおすすめします。<br/>
 <a href="https://aimsot.net/discord_dicebot/">https://aimsot.net/discord_dicebot/</a></p>
 </div>
 
@@ -73,7 +74,7 @@
 </ol>
 
 <h3>詳細1. ダイスボットを登録し、サーバに導入する</h3>
-<p>Discord に新規の Bot を作成します。サーバ1つにつき代表者1人がいれれば大丈夫です</p>
+<p>Discord に新規の Bot を作成します。サーバに導入するため、サーバ管理者がこれを実行することになるでしょう。</p>
 <ol>
 	<li><a href="https://discordapp.com/developers/applications/me">開発者ページ</a> にアクセスし、画面右上の New Application をクリックします</li>
 	<li>名前とアイコンを設定し、Discord Application を作成します</li>
@@ -153,8 +154,9 @@ pause</pre>
 <p>先に編集した start.bat をダブルクリックすることでダイスボットが起動します。黒い背景に白い文字が出ているウィンドウが表示され、そこにダイスボットの実行ログが表示されます。</p>
 <p>ダイスボットを終了する時は表示されているウィンドウを消すか、キーボードの Ctrl+C を押してください。</p>
 
-<h2>heroku を使う場合</h2>
-<p>PaaS サービス heroku を使って動かすことも可能です。少なくとも2021年8月時点ではクレジットカード情報を登録することで無料の範囲内でダイスボットを常動させる事が可能です。</p>
+<h2>heroku を使って動かす手順</h2>
+<p>PaaS サービス heroku を使って discord-bcdicebot を動かすことも可能です。<br/>
+少なくとも2021年8月時点ではクレジットカード情報を登録することで無料の範囲内でダイスボットを常動させる事が可能です。</p>
 <p>ただし、Git と Heroku を使える必要があり、Heroku については英語で書かれたウェブサイト上での操作が必要となります。</p>
 <ol>
 	<li>Git を導入します。Git： <a target="_blank" href="https://git-scm.com/">https://git-scm.com/</a></li>
@@ -176,6 +178,7 @@ pause</pre>
 			<li>予備の BCDice-API サーバを登録します。<br/><code>heroku config:set BCDICE_API_SECONDARY=http://xxxx.xxxxx.xxxxx.example.com/</code> (URL はダミーです)</li>
 			<li>どのシステムのダイスボットを使うのか設定していない部屋で利用するダイスボットを設定します。<br/><code>heroku config:set BCDICE_DEFAULT_SYSTEM=DiceBot</code> (DiceBot は任意のシステムに書き換えてください)</li>
 			<li>ダイスを振った時に振った人にメンションを飛ばすようにします。<br/><code>heroku config:set BCDICE_MENTION_MODE=1</code></li>
+			<li>ダイスを振った時の結果にシステム名を添えるようにします。<br/><code>heroku config:set BCDICE_RESULT_DISPLAY_FORMAT=V1</code></li>
 		</ul>
 	</li>
 	<li>Heroku の Dashboard から worker を起動します。<br/>Heroku の Dashboard：<a target="_blank" href="https://dashboard.heroku.com/">https://dashboard.heroku.com/</a></li>
@@ -186,15 +189,55 @@ pause</pre>
 
 <h2>利用する</h2>
 
+<div class="comment">
+	<p>利用手順を画像付きで分かりやすくまとめた記事を<a href="https://twitter.com/aimsssssot">えいむさん</a>が書いてくださっています。<br/>
+	必要に応じてこちらも読むことをおすすめします。<br/>
+	<a href="https://aimsot.net/discord_dicebot02/">https://aimsot.net/discord_dicebot02/</a></p>
+</div>
+
 <h3>ダイスを振る</h3>
-<p>チャットにただただ <code>2d6</code> 等と打ち込めばダイスが振られます。他にどのようなコマンドが利用できるのかは <a href="https://docs.bcdice.org/">BCDice コマンドリスト</a>をご参照ください。</p>
-<p>各システム向けの機能を使いたい場合、システムを切り替えましょう。<br/><code>bcdice set [利用するシステムの名前]</code> とチャット上で発言してください。<br/>例えば <code>bcdice set SwordWorld2.5</code> 等です。</p>
-<p>どんなシステムが利用できるのかは <code>bcdice list</code> と発言すれば確認できます。</p>
-<p>各システムでどんな機能が利用できるのかを確認する際は <code>bcdice help [システムの名前]</code> と発言すれば表示できます。<br/>例えば <code>bcdice help SwordWorld2.0</code> 等です。</p>
-<p>数字ではなく<code>[</code>と<code>]</code>でカンマ区切りのリストを与えるとそのリストのそれぞれについてダイスを振ることができます。例えば<code>[こぶた,たぬき,きつね,ねこ] 2d6</code> とすることでこぶた、たぬき、きつね、ねこのそれぞれについて 2d6 を振ることが可能です。</p>
-<p>チャットに <code>bcdice help</code> と打てば何ができるのかが一覧されるので困ったときは実行してみてください。</p>
+<p>チャットにただただ BCDice のコマンドを書き込めばダイスが振られます。<br/>
+例えば <code>2d6</code> 等と書き込めばサイコロを2つ振った合計値が得られます。<br/>
+どのようなコマンドが利用できるのかは <a href="https://docs.bcdice.org/">BCDice コマンドリスト</a>をご参照ください。</p>
+<p>BCDice にはない独自の振り方として、<code>[</code>と<code>]</code>でカンマ区切りのリストを与えるとそのリストのそれぞれについてダイスを振ることができます。<br/>
+例えば<code>[こぶた,たぬき,きつね,ねこ] 2d6</code> とすることでこぶた、たぬき、きつね、ねこのそれぞれについて 2d6 を振ることが可能です。</p>
+
+<h3>設定を変更する</h3>
+<p>以下のような設定をアプリの機能で実施可能です。</p>
+<table border="1">
+	<tr>
+		<td><code>bcdice list</code></td>
+		<td>利用できるダイスボットのシステムを一覧します</td>
+		<td>-</td>
+	</tr>
+	<tr>
+		<td><code>bcdice set [利用するシステムの名前]</code></td>
+		<td>そのテキストチャットで利用するダイスボットのシステムを指定します。この設定はテキストチャンネル毎に保持されます。利用できるシステムは<code>bcdice list</code>でご確認ください</td>
+		<td><code>bcdice set SwordWorld2.5</code><br/>ダイスボットの設定をソードワールド2.5にする</td>
+	</tr>
+	<tr>
+		<td><code>bcdice help [利用するシステムの名前]</code></td>
+		<td>そのダイスボットのシステムのコマンドに関するヘルプを表示します。利用できるシステムは<code>bcdice list</code>でご確認ください</td>
+		<td><code>bcdice help SwordWorld2.5</code><br/>ソードワールド2.5のダイスボットで何をできるのか確認する</td>
+	</tr>
+	<tr>
+		<td><code>bcdice status</code></td>
+		<td>現在利用しているダイスサーバと、このコマンドが</td>
+		<td><code></code></td>
+	</tr>
+	<tr>
+		<td><code>bcdice help</code></td>
+		<td>discord-bcdicebot 自体のヘルプを呼び出す</td>
+		<td><code></code></td>
+	</tr>
+</table>
+<p>例えば CoC 7版のダイスボットを使いたい時は使いたいテキストチャンネルで<code>bcdice set Cthulhu7th</code>と入力し、ダイスボットのシステムを CoC 7版のものに設定します。<br/>
+その上で<code>CC<=25 【目星】</code>等と書き込めば CoC 7版の判定ができます。</p>
 
 <h3>管理コマンドを使う</h3>
+
+
+
 <p>チャットに <code>bcdice admin [パスワード] help</code> と打てば管理者として利用できるコマンドの一覧が出力されます</p>
 
 <h4>ダイスサーバの変更および管理</h4>
