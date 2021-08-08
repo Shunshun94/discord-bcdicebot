@@ -26,9 +26,12 @@
 			margin-bottom:4px;
 			padding-left:20px;
 		}
-		
+
+		td {
+			padding:4px;
+		}
+
 		.comment {
-			font-color:gray;
 			background-color:#FFFFDD;
 			padding:8px;
 		}
@@ -222,70 +225,134 @@ pause</pre>
 	</tr>
 	<tr>
 		<td><code>bcdice status</code></td>
-		<td>現在利用しているダイスサーバと、このコマンドが</td>
-		<td><code></code></td>
+		<td>現在利用しているダイスサーバと、このコマンドが打たれたテキストチャンネルで利用されているダイスボットのシステムを出力します</td>
+		<td>-</td>
 	</tr>
 	<tr>
 		<td><code>bcdice help</code></td>
-		<td>discord-bcdicebot 自体のヘルプを呼び出す</td>
-		<td><code></code></td>
+		<td>discord-bcdicebot 自体のヘルプを呼び出します</td>
+		<td>-</td>
 	</tr>
 </table>
 <p>例えば CoC 7版のダイスボットを使いたい時は使いたいテキストチャンネルで<code>bcdice set Cthulhu7th</code>と入力し、ダイスボットのシステムを CoC 7版のものに設定します。<br/>
 その上で<code>CC<=25 【目星】</code>等と書き込めば CoC 7版の判定ができます。</p>
 
 <h3>管理コマンドを使う</h3>
+<p>パスワードは <code>start.bat</code> ないし <code>start.sh</code> で設定した <code>BCDICE_PASSWORD</code> の値を用いてください。</p>
+<table border="1">
+	<tr>
+		<td><code>bcdice admin [パスワード] listServer</code></td>
+		<td>discord-bcdicebot が参照する BCDice-API サーバの一覧を表示します。1個以上のサーバの URL が出力されます。
+もし、その時点で利用している BCDice-API サーバが利用できなかった場合、一覧に表示された別のサーバを discord-bcdicebot は利用します</td>
+		<td><code>bcdice admin myPassw0rd listServer</code><hr/>出力例<pre>
+https://bcdice.onlinesession.app/
+https://bcdice.trpg.net/</pre></td>
+	</tr>
+	<tr>
+		<td><code>bcdice admin [パスワード] setServer [BCDice-APIサーバのURL]</code></td>
+		<td>discord-bcdicebot が利用する BCDice-API サーバを変更します。
+discord-bcdicebot が参照する BCDice-API サーバの一覧に変更後のサーバがなかった場合、変更後のサーバを一覧に追加します</td>
+		<td><code>bcdice admin myPassw0rd setServer https://bcdice.onlinesession.app</code></td>
+	</tr>
+	<tr>
+		<td><code>bcdice admin [パスワード] removeServer [BCDice-APIサーバのURL]</code></td>
+		<td>discord-bcdicebot が参照する BCDice-API サーバの一覧からサーバを削除します。
+現在使っているサーバを削除した場合、一覧に存在する別のサーバを利用するように設定は変更されます</td>
+		<td><code>bcdice admin myPassw0rd removeServer https://bcdice.onlinesession.app</code></td>
+	</tr>
+
+	<tr>
+		<td><code>bcdice admin [パスワード] export</code></td>
+		<td>全テキストチャンネルについてどのダイスボットのシステムを利用しているのか出力します</td>
+		<td><code>bcdice admin myPassw0rd export</code><hr/>出力例<pre>
+Room-System List
+655334231928733699:SwordWorld2.5
+768400929514061826:SwordWorld2.0
+665445513117564962:SwordWorld2.5
+643025877055176707:DoubleCross
+general:DiceBot
+		</pre></td>
+	</tr>
+	<tr>
+		<td><code>bcdice admin [パスワード] import</code></td>
+		<td>複数のテキストチャンネルについてどのダイスボットのシステムを利用するのかを設定します。export の出力結果をそのまま使うことができます。
+discord-bcdicebot を再起動した際は全テキストチャンネルのダイスボットのシステムの設定がリセットされるため、import と組み合わせることで原状復帰を容易にできます。
+		</td>
+		<td><pre>bcdice admin myPassw0rd import
+655334231928733699:SwordWorld2.5
+768400929514061826:SwordWorld2.0
+665445513117564962:SwordWorld2.5
+643025877055176707:DoubleCross</pre></td>
+	</tr>
+	<tr>
+		<td><code>bcdice admin [パスワード] suppressroll on</code></td>
+		<td>テキストチャットに入力された発言のうち、先頭が半角英数字のコマンドのみダイスコマンドであると判断して BCDice-API サーバに送信するように設定します。これがデフォルトの挙動です</td>
+		<td><code>bcdice admin myPassw0rd suppressroll on</code></td>
+	</tr>
+	<tr>
+		<td><code>bcdice admin [パスワード] suppressroll [on・disable 以外の任意の文字列]</code></td>
+		<td>テキストチャットに入力された発言のうち、先頭が指定した任意の文字列以外ののみダイスコマンドであると判断して BCDice-API サーバに送信するように設定します</td>
+		<td><code>bcdice admin myPassw0rd suppressroll /r</code></td>
+	</tr>
+	<tr>
+		<td><code>bcdice admin [パスワード] listDiceBot</code></td>
+		<td>後述するオリジナルダイスボット表を一覧します</td>
+		<td><code>bcdice admin myPassw0rd listDiceBot</code></td>
+	</tr>
+	<tr>
+		<td><code>bcdice admin [パスワード] addDiceBot [追加するオリジナルダイスボット表の名前]</code></td>
+		<td>オリジナルダイスボット表を追加します。詳細は後述します</td>
+		<td><code>bcdice admin myPassw0rd addDiceBot 言語表</code></td>
+	</tr>
+	<tr>
+		<td><code>bcdice admin [パスワード] removeDiceBot [削除するオリジナルダイスボット表の名前]</code></td>
+		<td>オリジナルダイスボット表を削除します</td>
+		<td><code>bcdice admin myPassw0rd removeDiceBot 言語表</code></td>
+	</tr>
+	<tr>
+		<td><code>bcdice admin</code></td>
+		<td>bcdice admin コマンドの discord-bcdicebot 自体のヘルプを呼び出します</td>
+		<td>-</td>
+	</tr>
+	<tr>
+		<td><code>bcdicediscord [パスワード] listServers</code></td>
+		<td>Bot が登録されているサーバの一覧を出力します</td>
+		<td>-</td>
+	</tr>
+	<tr>
+		<td><code>bcdicediscord [パスワード] listRooms</code></td>
+		<td>Bot が登録されているサーバに存在するテキストチャンネルの一覧を取得します</td>
+		<td>-</td>
+	</tr>
+	<tr>
+		<td><code>bcdicediscord [パスワード] listRoomIds</code></td>
+		<td>Bot が登録されているサーバに存在するテキストチャンネルの ID の一覧を取得します</td>
+		<td>-</td>
+	</tr>
+</table>
+
+<h4>Bot が登録されている Discord サーバの情報を取得する</h4>
+<p>Bot が登録されているサーバの一覧を取得するには次のようにします。<br/><code>bcdicediscord [パスワード] listServers</code></p>
+<p>Bot が登録されているサーバに存在する部屋の一覧を取得するには次のようにします。情報は<br/><code>bcdicediscord [パスワード] listRooms</code></p>
+<p>Bot が登録されているサーバに存在する部屋の ID 一覧を取得するには次のようにします。<br/><code>bcdicediscord [パスワード] listRoomIds</code></p>
 
 
 
-<p>チャットに <code>bcdice admin [パスワード] help</code> と打てば管理者として利用できるコマンドの一覧が出力されます</p>
-
-<h4>ダイスサーバの変更および管理</h4>
-<p>接続する BCDice-API サーバを変更する場合は <code>bcdice admin [パスワード] setServer [BCDice-APIサーバのURL]</code><br/>
-ただし、このコマンドを実行した場合、変更前の BCDice-API サーバは bot によって忘れられるのではなく、予備のサーバとして bot の内部に保持されます。<br/>
-もし、BCDice-API サーバへのアクセスになんらかの問題があった場合、 bot は内部に保持された別の BCDice-API サーバを代わりに使おうとします。</p>
-<p>bot が保持する予備のサーバから特定の BCDice-API サーバを削除したい場合は<code>bcdice admin [パスワード] removeServer [BCDice-APIサーバのURL]</code></p>
-<p>bot が保持する予備のサーバから特定の BCDice-API サーバを一覧したい場合は<code>bcdice admin [パスワード] listServer [BCDice-APIサーバのURL]</code></p>
-
-<h4>部屋ごとの設定のエクスポート・インポート</h4>
-<p>各部屋ごとに設定されたシステムの一覧を取得する場合は <code>bcdice admin [パスワード] export</code><br/>以下のような結果が得られます</p>
-<pre>
-331084010098917376:SwordWorld2.0
-551310555730673666:DoubleCross
-541477835299356673:Cthulhu
-</pre>
-<p>複数の部屋に対してシステムを設定する場合は以下のようにします。<br/>アプリを再起動した際は全部屋のシステムの設定がリセットされますので、import と組み合わせると原状復帰が容易です</p><pre>bcdice admin [パスワード] import
-331084010098917376:SwordWorld2.0
-551310555730673666:DoubleCross
-541477835299356673:Cthulhu</pre>
-
-<h4>ダイスコマンドに接頭語を設定する</h4>
-<p>チャットに送信されたメッセージを全て BCDice-API サーバに送信したい場合は次のようにします。<br/><code>bcdice admin [パスワード] suppressroll disable</code><br/>
-BCDice-API サーバに送る必要のありそうな発言だけを送信するようにする場合は次のようにします。こちらがデフォルト設定です。<br/><code>bcdice admin [パスワード] suppressroll on</code><br/>
-また、先頭に <code>/r</code> 等が無いと BCDice-API サーバにコマンドを送信しないようにすることもできます。<br/><code>bcdice admin [パスワード] suppressroll /r</code><br/>
-このコマンドワードは <code>/</code> で始まる物であれば任意のものを設定できます。<br/><code>bcdice admin [パスワード] suppressroll /diceroll</code><br/>
-とすれば発言の先頭に <code>/diceroll</code> があるものだけを BCDice-API サーバに送信します。</p>
-
-<h4>独自のダイスボット表</h4>
-<p>管理者はオリジナルのダイスボット表を追加することもできます。</p>
-<p>独自のダイスボット表を追加する場合は Discord にダイスボット表の情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/>
-<code>bcdice admin [パスワード] addDiceBot [ダイスボット表名]</code><br/>
-追加した後ダイスボット表の名前がチャット上で発言されるとダイスボット表が振られます。
-この際にアップロードするダイスボット表のサンプルは
+<h4>オリジナルダイスボット表の管理</h4>
+<p>管理者はオリジナルダイスボット表を追加することもできます。</p>
+<p>オリジナルダイスボット表を追加する場合は Discord にオリジナルダイスボット表の情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/>
+<code>bcdice admin [パスワード] addDiceBot [オリジナルダイスボット表名]</code><br/>
+追加した後オリジナルダイスボット表の名前がチャット上で発言されるとオリジナルダイスボット表が振られます。
+この際にアップロードするオリジナルダイスボット表のサンプルは
 <a href="https://docs.bcdice.org/original_table.html">オリジナル表 · BCDiceコマンドガイド</a>
 ないしは<a href="https://github.com/Shunshun94/discord-bcdicebot/blob/master/originalDiceBots/サンプルダイスボット-夜食表">discord-bcdicebot/originalDiceBots/サンプルダイスボット-夜食表</a>を参照してください。<br/>
 両者でフォーマットが異なりますが、どちらも利用できます。<br/>
 また、追加するダイスボット表は UTF-8 で作成されている必要があります。
 Windows 付属のメモ帳であれば名前を付けて保存する際に保存ボタンの左に「文字コード」を選択できる箇所があります。ここで <code>UTF-8</code> を選択した上で保存してください。
 <br/><br/>
-ダイスボット表を削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [ダイスボット表名]</code><br/>
-ダイスボット表の一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code></p>
+オリジナルダイスボット表を削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [オリジナルダイスボット表名]</code><br/>
+オリジナルダイスボット表の一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code></p>
 <div class="comment">上述の通り、heroku に設置した場合に独自のダイスボット表の名前を正しく取得できないことがあります</div>
-
-<h4>Bot が登録されている Discord サーバの情報を取得する</h4>
-<p>Bot が登録されているサーバの一覧を取得するには次のようにします。<br/><code>bcdicediscord [パスワード] listServers</code></p>
-<p>Bot が登録されているサーバに存在する部屋の一覧を取得するには次のようにします。情報は<br/><code>bcdicediscord [パスワード] listRooms</code></p>
-<p>Bot が登録されているサーバに存在する部屋の ID 一覧を取得するには次のようにします。<br/><code>bcdicediscord [パスワード] listRoomIds</code></p>
 
 <h2>連絡先</h2>
 <h3>バグ報告など</h3>
