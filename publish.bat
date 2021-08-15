@@ -5,6 +5,7 @@ del /Q discord-bcdicebot
 mkdir discord-bcdicebot
 copy target\discord-bcdicebot-jar-with-dependencies.jar discord-bcdicebot
 copy start.bat discord-bcdicebot
+copy validate.bat discord-bcdicebot
 copy start.sh discord-bcdicebot
 copy index.html discord-bcdicebot
 
