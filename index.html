@@ -385,9 +385,9 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 <li>(Apache License, Version 2.0) Apache Log4j Core (org.apache.logging.log4j:log4j-core:2.14.0 - https://logging.apache.org/log4j/2.x/log4j-core/)</li>
 <li>(Bouncy Castle Licence) Bouncy Castle Provider (org.bouncycastle:bcprov-jdk15on:1.59 - http://www.bouncycastle.org/java.html)</li>
 <li>(New BSD License) Hamcrest Core (org.hamcrest:hamcrest-core:1.3 - https://github.com/hamcrest/JavaHamcrest/hamcrest-core)</li>
-<li>(Apache License, Version 2.0) Javacord (org.javacord:javacord:3.3.0 - https://www.javacord.org)</li>
-<li>(Apache License, Version 2.0) Javacord (api) (org.javacord:javacord-api:3.3.0 - https://www.javacord.org)</li>
-<li>(Apache License, Version 2.0) Javacord (core) (org.javacord:javacord-core:3.3.0 - https://www.javacord.org)</li>
+<li>(Apache License, Version 2.0) Javacord (org.javacord:javacord:3.3.2 - https://www.javacord.org)</li>
+<li>(Apache License, Version 2.0) Javacord (api) (org.javacord:javacord-api:3.3.2 - https://www.javacord.org)</li>
+<li>(Apache License, Version 2.0) Javacord (core) (org.javacord:javacord-core:3.3.2 - https://www.javacord.org)</li>
 <li>(The Apache Software License, Version 2.0) IntelliJ IDEA Annotations (org.jetbrains:annotations:13.0 - http://www.jetbrains.org)</li>
 <li>(The Apache License, Version 2.0) org.jetbrains.kotlin:kotlin-stdlib (org.jetbrains.kotlin:kotlin-stdlib:1.4.10 - https://kotlinlang.org/)</li>
 <li>(The Apache License, Version 2.0) org.jetbrains.kotlin:kotlin-stdlib-common (org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 - https://kotlinlang.org/)</li>
@@ -462,6 +462,11 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2>更新履歴</h2>
 <dl>
+	<dt>v2.4.0</dt>
+	<dd>DiscordでDiceBot(BCDice)を使う方法へのリンクを追加しました。書いてくださった<a href="https://twitter.com/aimsssssot">えいむさん</a>、ありがとうございます！</dd>
+	<dd>導入手順を全体的に修正しました</dd>
+	<dd>validate.bat を追加しました</dd>
+	<dd>環境変数 <code>BCDICE_RESULT_DISPLAY_FORMAT</code> の値が <code>V1</code> の場合、ダイスを振った際にシステム名を付けて結果を表示するように変更</dd>
 	<dt>v2.3.0</dt>
 	<dd>いくつかのライブラリについて更新</dd>
 	<dd><code>2 NotDiceRoll</code>のようなフォーマットの発言を行った際に警告メッセージが暴発する問題に対処</dd>
