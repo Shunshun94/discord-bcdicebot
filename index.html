@@ -186,7 +186,7 @@ pause</pre>
 	</tr>
 	<tr>
 		<td><code>bcdice set [利用するシステムの名前]</code></td>
-		<td>そのテキストチャットで利用するダイスボットのシステムを指定します。この設定はテキストチャンネル毎に保持されます。利用できるシステムは<code>bcdice list</code>でご確認ください</td>
+		<td>そのテキストチャンネルで利用するダイスボットのシステムを指定します。この設定はテキストチャンネル毎に保持されます。利用できるシステムは<code>bcdice list</code>でご確認ください</td>
 		<td><code>bcdice set SwordWorld2.5</code><br/>ダイスボットの設定をソードワールド2.5にする</td>
 	</tr>
 	<tr>
@@ -257,12 +257,12 @@ discord-bcdicebot を再起動した際は全テキストチャンネルのダ�
 	</tr>
 	<tr>
 		<td><code>bcdice admin [パスワード] suppressroll on</code></td>
-		<td>テキストチャットに入力された発言のうち、先頭が半角英数字のコマンドのみダイスコマンドであると判断して BCDice-API サーバに送信するように設定します。これがデフォルトの挙動です</td>
+		<td>テキストチャンネルに入力された発言のうち、先頭が半角英数字のコマンドのみダイスコマンドであると判断して BCDice-API サーバに送信するように設定します。これがデフォルトの挙動です</td>
 		<td><code>bcdice admin myPassw0rd suppressroll on</code></td>
 	</tr>
 	<tr>
 		<td><code>bcdice admin [パスワード] suppressroll [on・disable 以外の任意の文字列]</code></td>
-		<td>テキストチャットに入力された発言のうち、先頭が指定した任意の文字列以外ののみダイスコマンドであると判断して BCDice-API サーバに送信するように設定します</td>
+		<td>テキストチャンネルに入力された発言のうち、先頭が指定した任意の文字列以外ののみダイスコマンドであると判断して BCDice-API サーバに送信するように設定します</td>
 		<td><code>bcdice admin myPassw0rd suppressroll /r</code></td>
 	</tr>
 	<tr>
