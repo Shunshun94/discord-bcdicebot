@@ -8,6 +8,7 @@ REM set BCDICE_PASSWORD=PleaseChangeMeIfYouUseThis
 REM set BCDICE_API_SECONDARY=http://secondary.bcdice-api.yourdomain.co.jp/
 REM set BCDICE_DEFAULT_SYSTEM=DiceBot
 REM set BCDICE_MENTION_MODE=1
+REM set BCDICE_RESULT_DISPLAY_FORMAT=V1
 
 java -jar discord-bcdicebot.jar %DISCORD_BOT_TOKEN% %BCDICE_API_URL% %IGNORE_ERROR%
 pause
