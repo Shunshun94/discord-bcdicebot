@@ -161,39 +161,6 @@ pause</pre>
 <p>Windows 環境の方は同梱してある validate.bat をダブルクリックすることで何が問題なのか確認するツールが動作します。
 それでもわからない場合は validate.bat の結果を後述の "質問・バグ報告はどこに" 記載の連絡先に送ってください。</p>
 
-<h2>heroku を使って動かす手順</h2>
-<p>PaaS サービス heroku を使って discord-bcdicebot を動かすことも可能です。<br/>
-少なくとも2021年8月時点ではクレジットカード情報を登録することで無料の範囲内でダイスボットを常動させる事が可能です。</p>
-<p>ただし、Git と Heroku を使える必要があり、Heroku については英語で書かれたウェブサイト上での操作が必要となります。</p>
-<ol>
-	<li>Git を導入します。Git： <a target="_blank" href="https://git-scm.com/">https://git-scm.com/</a></li>
-	<li>Heroku のアカウントを作成します。Heroku: <a target="_blank" href="https://www.heroku.com/home">https://www.heroku.com/home</a></li>
-	<li>Heroku CLI を導入します。インストールガイド： <a target="_blank" href="https://devcenter.heroku.com/articles/heroku-cli">https://devcenter.heroku.com/articles/heroku-cli</a></li>
-	<li>GitHub からソースコードを clone してきます。URL は <code>git@github.com:Shunshun94/discord-bcdicebot.git</code></li>
-	<li>clone してきたディレクトリ内で <code>heroku login</code> を実行し、ログインします</li>
-	<li>clone してきたディレクトリ内で <code>heroku create</code> を実行し、heroku 上に App を作成します</li>
-	<li>clone してきたディレクトリ内で <code>git push heroku master</code> を実行し、heroku 上にソースコードを push します</li>
-	<li>clone してきたディレクトリ内で以下を実行し、環境変数を設定します
-		<ul>
-			<li>先の 4. でメモした Token を登録します<br/><code>heroku config:set DISCORD_BOT_TOKEN=NDA0MgAIC0QK18lU0dxMt99F.HuWAIt.Nh9OTLbjxdMp3pcmw3Lsqd4aQlb</code> (トークンはダミーです)</li>
-			<li>利用する BCDice-API サーバの URL を登録します<br/><code>heroku config:set BCDICE_API_URL=http://xxxx.xxxxx.xxxxx.example.com/</code> (URL はダミーです)</li>
-			<li>管理用パスワードを設定します<br/><code>heroku config:set BCDICE_PASSWORD=MY_PASSWORD</code> (MY_PASSWORD を任意の文字列に書き換えてください)</li>
-		</ul>
-	</li>
-	<li>(必須ではない) 以下の環境変数を設定します。
-		<ul>
-			<li>予備の BCDice-API サーバを登録します。<br/><code>heroku config:set BCDICE_API_SECONDARY=http://xxxx.xxxxx.xxxxx.example.com/</code> (URL はダミーです)</li>
-			<li>どのシステムのダイスボットを使うのか設定していない部屋で利用するダイスボットを設定します。<br/><code>heroku config:set BCDICE_DEFAULT_SYSTEM=DiceBot</code> (DiceBot は任意のシステムに書き換えてください)</li>
-			<li>ダイスを振った時に振った人にメンションを飛ばすようにします。<br/><code>heroku config:set BCDICE_MENTION_MODE=1</code></li>
-			<li>ダイスを振った時の結果にシステム名を添えるようにします。<br/><code>heroku config:set BCDICE_RESULT_DISPLAY_FORMAT=V1</code></li>
-		</ul>
-	</li>
-	<li>Heroku の Dashboard から worker を起動します。<br/>Heroku の Dashboard：<a target="_blank" href="https://dashboard.heroku.com/">https://dashboard.heroku.com/</a></li>
-</ol>
-<div class="comment"><a href="https://dinosaur-fossil.hatenablog.com/entry/2020/12/23/001818">https://dinosaur-fossil.hatenablog.com/entry/2020/12/23/001818</a> を参考に記載しています。<br/>
-また、既知の問題として追加したダイスボット表の名前に ascii 文字以外が含まれる場合にダイスボット表の名前を正しく読み込めない問題が存在します。
-この方法で設置する場合はダイスボット表を半角英数字・記号で命名してください。</div>
-
 <h2>利用する</h2>
 
 <div class="comment">
@@ -340,8 +307,6 @@ discord-bcdicebot を再起動した際は全テキストチャンネルのダ�
 <p>Bot が登録されているサーバに存在する部屋の一覧を取得するには次のようにします。情報は<br/><code>bcdicediscord [パスワード] listRooms</code></p>
 <p>Bot が登録されているサーバに存在する部屋の ID 一覧を取得するには次のようにします。<br/><code>bcdicediscord [パスワード] listRoomIds</code></p>
 
-
-
 <h4>オリジナルダイスボット表の管理</h4>
 <p>管理者はオリジナルダイスボット表を追加することもできます。</p>
 <p>オリジナルダイスボット表を追加する場合は Discord にオリジナルダイスボット表の情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/>
@@ -357,6 +322,39 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 オリジナルダイスボット表を削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [オリジナルダイスボット表名]</code><br/>
 オリジナルダイスボット表の一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code></p>
 <div class="comment">上述の通り、heroku に設置した場合に独自のダイスボット表の名前を正しく取得できないことがあります</div>
+
+<h2>中級者以上向け：heroku を使って動かす手順</h2>
+<p>PaaS サービス heroku を使って discord-bcdicebot を動かすことも可能です。<br/>
+少なくとも2021年8月時点ではクレジットカード情報を登録することで無料の範囲内でダイスボットを常動させる事が可能です。</p>
+<p>ただし、Git と Heroku を使える必要があり、Heroku については英語で書かれたウェブサイト上での操作が必要となります。</p>
+<ol>
+	<li>Git を導入します。Git： <a target="_blank" href="https://git-scm.com/">https://git-scm.com/</a></li>
+	<li>Heroku のアカウントを作成します。Heroku: <a target="_blank" href="https://www.heroku.com/home">https://www.heroku.com/home</a></li>
+	<li>Heroku CLI を導入します。インストールガイド： <a target="_blank" href="https://devcenter.heroku.com/articles/heroku-cli">https://devcenter.heroku.com/articles/heroku-cli</a></li>
+	<li>GitHub からソースコードを clone してきます。URL は <code>git@github.com:Shunshun94/discord-bcdicebot.git</code></li>
+	<li>clone してきたディレクトリ内で <code>heroku login</code> を実行し、ログインします</li>
+	<li>clone してきたディレクトリ内で <code>heroku create</code> を実行し、heroku 上に App を作成します</li>
+	<li>clone してきたディレクトリ内で <code>git push heroku master</code> を実行し、heroku 上にソースコードを push します</li>
+	<li>clone してきたディレクトリ内で以下を実行し、環境変数を設定します
+		<ul>
+			<li>先の 4. でメモした Token を登録します<br/><code>heroku config:set DISCORD_BOT_TOKEN=NDA0MgAIC0QK18lU0dxMt99F.HuWAIt.Nh9OTLbjxdMp3pcmw3Lsqd4aQlb</code> (トークンはダミーです)</li>
+			<li>利用する BCDice-API サーバの URL を登録します<br/><code>heroku config:set BCDICE_API_URL=http://xxxx.xxxxx.xxxxx.example.com/</code> (URL はダミーです)</li>
+			<li>管理用パスワードを設定します<br/><code>heroku config:set BCDICE_PASSWORD=MY_PASSWORD</code> (MY_PASSWORD を任意の文字列に書き換えてください)</li>
+		</ul>
+	</li>
+	<li>(必須ではない) 以下の環境変数を設定します。
+		<ul>
+			<li>予備の BCDice-API サーバを登録します。<br/><code>heroku config:set BCDICE_API_SECONDARY=http://xxxx.xxxxx.xxxxx.example.com/</code> (URL はダミーです)</li>
+			<li>どのシステムのダイスボットを使うのか設定していない部屋で利用するダイスボットを設定します。<br/><code>heroku config:set BCDICE_DEFAULT_SYSTEM=DiceBot</code> (DiceBot は任意のシステムに書き換えてください)</li>
+			<li>ダイスを振った時に振った人にメンションを飛ばすようにします。<br/><code>heroku config:set BCDICE_MENTION_MODE=1</code></li>
+			<li>ダイスを振った時の結果にシステム名を添えるようにします。<br/><code>heroku config:set BCDICE_RESULT_DISPLAY_FORMAT=V1</code></li>
+		</ul>
+	</li>
+	<li>Heroku の Dashboard から worker を起動します。<br/>Heroku の Dashboard：<a target="_blank" href="https://dashboard.heroku.com/">https://dashboard.heroku.com/</a></li>
+</ol>
+<div class="comment"><a href="https://dinosaur-fossil.hatenablog.com/entry/2020/12/23/001818">https://dinosaur-fossil.hatenablog.com/entry/2020/12/23/001818</a> を参考に記載しています。<br/>
+また、既知の問題として追加したダイスボット表の名前に ascii 文字以外が含まれる場合にダイスボット表の名前を正しく読み込めない問題が存在します。
+この方法で設置する場合はダイスボット表を半角英数字・記号で命名してください。</div>
 
 <h2>連絡先</h2>
 <h3>バグ報告など</h3>
@@ -449,6 +447,14 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 <p>発表前の動作確認に付き合ってくださった<a href="https://twitter.com/_casi_note">かし＊</a>さんと<a href="https://twitter.com/Lillin">離凛</a>さん。
 色々な想定漏れについて指摘していただき、公開前にアプリが大幅に改善されました。</p>
 
+<p>PR や問題の指摘等をくださった<a href="https://twitter.com/ysakasin">酒田　シンジさん</a>、<a href="https://github.com/C0ela">シーラさん</a>、
+<a href="https://github.com/c-ardinal">cardinalさん</a>、<a href="https://twitter.com/ochaochaocha3">おちゃさん</a>、
+<a href="https://github.com/blhsrwznrghfzpr">yoshi さん</a>、<a href="https://twitter.com/Twit_Hiyori">水篠 日和さん</a>。（順番は時期順）
+頂いた PR やご指摘等に基づいて色々と修正や追加機能、利用しやすくするための措置をとれました。</p>
+
+<p>DiscordでDiceBot(BCDice)を使う方法<a href="https://aimsot.net/discord_dicebot/">その1</a>・<a href="https://aimsot.net/discord_dicebot02/">その2</a>を書いてくださった
+<a href="https://twitter.com/aimsssssot">えいむさん</a>。画像つきのかなりわかりやすいガイドを書いて頂き、導入して頂きやすくなりました。</p>
+
 <h3>関連アプリの紹介</h3>
 <p><a href="https://twitter.com/Nanasu7">Nanasu</a> さんが作ってくださった<a href="https://bitbucket.org/Nanasu/bcdiscord-for-browser">BCDiscord for Browser</a>　のコマンドは本アプリの物を参考にしてくださいました。
 ブラウザのみで動くため、大変に便利です。</p>
@@ -533,7 +539,7 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 	<dd>一部のエラーを無視する機能を追加しました。詳しくは上述の <q>ダイスを振るコマンド以外を入力すると <strong>[ERROR][500] ～</strong> って出る。設定は合っているはずなのに</q> を参照してください</dd>
 	<dd>設定用コマンドを一部修正しました</dd>
 	<dt>v1.5(2018/03/24)</dt>
-	<dd>ダイスコマンドに関するバグを修正しました (<a href="https://github.com/Shunshun94/discord-bcdicebot/pull/10">詳細</a>)。問題の指摘と修正手法の共有をしてくださった<a href="https://github.com/c-ardinal">cardinal</a> さん、ありがとうございます！</dd>
+	<dd>ダイスコマンドに関するバグを修正しました (<a href="https://github.com/Shunshun94/discord-bcdicebot/pull/10">詳細</a>)。問題の指摘と修正手法の共有をしてくださった<a href="https://github.com/c-ardinal">cardinal さん</a>、ありがとうございます！</dd>
 	<dt>v1.4(2017/10/07)</dt>
 	<dd>利用しているライブラリ起因の問題に対してライブラリをバージョンアップして対応しました。問題の指摘をくださった<a href="https://github.com/C0ela">シーラさん</a>、ありがとうございます！</dd>
 	<dd>アプリ終了後に待機するように start.bat を変更しました。ログの収集が容易になりました</dd>
