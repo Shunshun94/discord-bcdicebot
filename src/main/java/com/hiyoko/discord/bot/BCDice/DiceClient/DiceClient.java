@@ -124,8 +124,9 @@ public interface DiceClient {
 	 * 
 	 * @param command
 	 * @return
+	 * @throws IOException 
 	 */
-	public boolean isDiceCommand(String command);
+	public boolean isDiceCommand(String command) throws IOException;
 
 	/**
 	 * 
@@ -133,4 +134,8 @@ public interface DiceClient {
 	 * @return
 	 */
 	public String toString(String channel);
+
+	public boolean isDiceCommand(String command, String system) throws IOException;
+	
+	public List<String> updateDiceBotsPrefixes();
 }

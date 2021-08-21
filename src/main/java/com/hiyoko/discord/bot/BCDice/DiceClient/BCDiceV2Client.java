@@ -33,28 +33,31 @@ public class BCDiceV2Client implements DiceClient {
 	private final Map<String, String> system;
 	private final boolean errorSensitive;
 	private static final String DEFAULT_CHANNEL = "general";
-	private static final Pattern DICE_COMMAND_PATTERN = Pattern.compile("^[\\w\\+\\-#\\$@<>=\\.\\[\\]\\(\\)]+");
-	
+	private final Map<String, Pattern> DICE_COMMANDS_PATTERN = new HashMap<String, Pattern>();
+
 	/**
 	 * @param bcDiceUrl BCDice-API server URL
+	 * @throws IOException 
 	 */
-	public BCDiceV2Client(String bcDiceUrl) {
+	public BCDiceV2Client(String bcDiceUrl) throws IOException {
 		client = new OkHttpClient();
 		urls.add(bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/");
 		system = new HashMap<String, String>();
 		system.put(DEFAULT_CHANNEL, "DiceBot");
+		updateDicePattern("DiceBot");
 		errorSensitive = true;
 	}
 
-	public BCDiceV2Client(String bcDiceUrl, boolean es) {
+	public BCDiceV2Client(String bcDiceUrl, boolean es) throws IOException {
 		urls.add(bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/");
 		client = new OkHttpClient();
 		system = new HashMap<String, String>();
 		system.put(DEFAULT_CHANNEL, "DiceBot");
+		updateDicePattern("DiceBot");
 		errorSensitive = es;
 	}
 
-	public BCDiceV2Client(List<String> bcDiceUrls, boolean es) {
+	public BCDiceV2Client(List<String> bcDiceUrls, boolean es) throws IOException {
 		for (String bcDiceUrl : bcDiceUrls) {
 			// stream と collect だとあとから追加ができなくなるのでこれで追加
 			urls.add(bcDiceUrl.endsWith("/") ? bcDiceUrl : bcDiceUrl + "/");
@@ -62,6 +65,7 @@ public class BCDiceV2Client implements DiceClient {
 		client = new OkHttpClient();
 		system = new HashMap<String, String>();
 		system.put(DEFAULT_CHANNEL, "DiceBot");
+		updateDicePattern("DiceBot");
 		errorSensitive = es;
 	}
 
@@ -265,15 +269,27 @@ public class BCDiceV2Client implements DiceClient {
 		return system;
 	}
 
+	private boolean updateDicePattern(String system) throws IOException {
+		SystemInfo gs = getSystemInfo(system);
+		DICE_COMMANDS_PATTERN.put(system, Pattern.compile(gs.getPrefixs(), Pattern.CASE_INSENSITIVE));
+		return true;
+	}
+
 	@Override
-	public boolean isDiceCommand(String command) {
-		if (command.startsWith("choice[")) {
-			return true;
+	public boolean isDiceCommand(String command, String system) throws IOException {
+		if( ! DICE_COMMANDS_PATTERN.containsKey(system) ) {
+			try {
+				updateDicePattern(system);
+			} catch (IOException e) {
+				throw new IOException(String.format("対応していないシステム ( `%s` ) を使っているようです。スペルが間違っている、または未対応のシステムかもしれません。対応しているシステムを `bcdice set システム名` で設定してください。ダイスボットの一覧を参照するには `bcdice list` をご利用ください", system), e);
+			}
 		}
-		if (command.startsWith("http")) {
-			return false;
-		}
-		return DICE_COMMAND_PATTERN.matcher(command).find();
+		return DICE_COMMANDS_PATTERN.get(system).matcher(command).find();
+	}
+
+	@Override
+	public boolean isDiceCommand(String command) throws IOException {
+		return isDiceCommand(command, "DiceBot"); 
 	}
 
 	public int getUrlCursor() {
@@ -304,5 +320,25 @@ public class BCDiceV2Client implements DiceClient {
 			urlCursor = 0;
 		}
 		return flag;
+	}
+
+	@Override
+	public List<String> updateDiceBotsPrefixes() {
+		List<String> result = new ArrayList<String>();
+		List<String> shouldDeleteList = new ArrayList<String>();
+		DICE_COMMANDS_PATTERN.forEach((key, prefix)->{
+			try {
+				updateDicePattern(key);
+				result.add(String.format("Prefix of %s is updated", key));
+			} catch (IOException e) {
+				result.add(e.getMessage());
+				shouldDeleteList.add(key);
+			}
+		});
+		for(String key : shouldDeleteList) {
+			DICE_COMMANDS_PATTERN.remove(key);
+		}
+		result.add(String.format("%s systems are loaded", DICE_COMMANDS_PATTERN.size()));
+		return result;
 	}
 }

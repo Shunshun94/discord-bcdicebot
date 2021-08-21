@@ -14,7 +14,7 @@ public class BCDiceCLITest extends TestCase {
 	private BCDiceCLI cli;
 	private String PASSWORD = "mypassword";
 
-	public BCDiceCLITest(String name) throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
+	public BCDiceCLITest(String name) throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException{
 		super(name);
 
 		cli = new BCDiceCLI("mock", new OriginalDiceBotClient("./testDiceBots"), PASSWORD);
