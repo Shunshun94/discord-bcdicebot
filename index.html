@@ -256,12 +256,17 @@ discord-bcdicebot を再起動した際は全テキストチャンネルのダ�
 643025877055176707:DoubleCross</pre></td>
 	</tr>
 	<tr>
-		<td><code>bcdice admin [パスワード] suppressroll on</code></td>
-		<td>テキストチャンネルに入力された発言のうち、先頭が半角英数字のコマンドのみダイスコマンドであると判断して BCDice-API サーバに送信するように設定します。これがデフォルトの挙動です</td>
-		<td><code>bcdice admin myPassw0rd suppressroll on</code></td>
+		<td><code>bcdice admin [パスワード] updateDiceRollPreFix</code></td>
+		<td>テキストチャンネルに入力された発言がダイスコマンドであるか否かのチェックを行うための情報を更新します。BCDice-API サーバが更新された直後などに使用することで最新のダイスコマンドを利用可能にすることができます</td>
+		<td><code>bcdice admin myPassw0rd updateDiceRollPreFix</code></td>
 	</tr>
 	<tr>
-		<td><code>bcdice admin [パスワード] suppressroll [on・disable 以外の任意の文字列]</code></td>
+		<td><code>bcdice admin [パスワード] suppressroll</code></td>
+		<td>テキストチャンネルに入力された発言のうち、ダイスコマンドであると思われるものを判断して BCDice-API サーバに送信するように設定します。これがデフォルトの挙動です</td>
+		<td><code>bcdice admin myPassw0rd suppressroll</code></td>
+	</tr>
+	<tr>
+		<td><code>bcdice admin [パスワード] suppressroll [/ で始まる文字列]</code></td>
 		<td>テキストチャンネルに入力された発言のうち、先頭が指定した任意の文字列以外ののみダイスコマンドであると判断して BCDice-API サーバに送信するように設定します</td>
 		<td><code>bcdice admin myPassw0rd suppressroll /r</code></td>
 	</tr>
