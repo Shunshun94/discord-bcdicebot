@@ -66,10 +66,12 @@ public class BCDiceCLI {
 			+ "# 部屋設定をインポートする\n> bcdice admin PASSWORD import\n\n"
 			+ "# BCDice API サーバへのコマンド送信に接頭詞を求めない（デフォルトの挙動）\n"
 			+ "> bcdice admin PASSWORD suppressroll\n"
-			+ "> bcdice admin PASSWORD suppressroll on # どちらでも可能\n\n"
+			+ "> bcdice admin PASSWORD suppressroll on # こっちは近い将来廃止予定\n\n"
 			+ "# コマンドの先頭に何らかのコマンドがある場合のみBCDice API サーバへコマンドを送信する\n"
 			+ "> bcdice admin PASSWORD suppressroll /diceroll # /diceroll 2d6 等としないとダイスを振れない\n"
 			+ "> bcdice admin PASSWORD suppressroll /r # /r 2d6 等としないとダイスを振れない\n\n"
+			+ "# BCDice API サーバへの問い合わせの制限を外す （近い将来廃止予定 ～バージョン 1.11 と同じ挙動）\n"
+			+ "> bcdice admin PASSWORD suppressroll disable\n\n"
 			+ "# ダイスボット表を追加する\n"
 			+ "# ダイスボット表のファイルを Discord にアップロードし、アップロードする際のコメントを以下のようにする\n"
 			+ "# ダイスボット表名をチャットに書き込むと誰でもダイスボット表を振れる\n"
@@ -108,7 +110,7 @@ public class BCDiceCLI {
 	}
 
 	private boolean isShouldRoll(String input, String system) throws IOException {
-		if(! isSuppressed) { return true; }
+		if(! isSuppressed) { return true; } //TODO 2021/08/22 近々廃止する
 		if( rollCommand.isEmpty() ) {
 			return client.isDiceCommand(input, system);
 		} else {
@@ -196,7 +198,7 @@ public class BCDiceCLI {
 		}
 
 		Matcher isNumMatcher = MULTIROLL_NUM_PREFIX.matcher(input);
-		if(isNumMatcher.find()) { // いずれ消す。オフィシャルの繰り返しコマンドで置換されるべきでは
+		if(isNumMatcher.find()) { //TODO いずれ消す。オフィシャルの繰り返しコマンドで置換されるべきでは
 			String rawCount = isNumMatcher.group(1);
 			String withoutRepeat = input.replaceFirst(rawCount, "").trim();
 			String originalDiceBot = isOriginalDicebot(String.format("%s%s", rollCommand, withoutRepeat));
