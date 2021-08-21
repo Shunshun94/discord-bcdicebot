@@ -15,7 +15,7 @@ public class BCDiceClientTest extends TestCase {
 		try (BufferedReader br = Files.newBufferedReader(Paths.get("src/test/resources/shouldRolled.txt"))) {
 			String line;
 			while( (line = br.readLine()) != null ) {
-				if( ! line.isEmpty() ) {
+				if( (! line.isEmpty()) && (! line.startsWith(":")) ) {
 					if(! client.isDiceCommand(line)) {
 						throw new RuntimeException(String.format("%s should be rolled but not rolled.", line));
 					}
