@@ -140,4 +140,9 @@ public class DiceClientMock implements DiceClient {
 	public DicerollResult rollOriginalDiceBotTable(OriginalDiceBotTable diceBot) throws IOException {
 		return new DicerollResult("なんか適当な結果", "架空のシステム", false, true);
 	}
+
+	@Override
+	public boolean isDiceCommand(String command, String system) {
+		return isDiceCommand(command);
+	}
 }

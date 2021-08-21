@@ -31,8 +31,9 @@ public class BCDiceBot {
 	 * Constructor.
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
+	 * @throws IOException 
 	 */
-	public BCDiceBot(String token, String bcDiceUrl, String password) {
+	public BCDiceBot(String token, String bcDiceUrl, String password) throws IOException {
 		new BCDiceBot(token, bcDiceUrl, true, password);
 	}
 
@@ -61,8 +62,9 @@ public class BCDiceBot {
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
 	 * @param errorSensitive
+	 * @throws IOException 
 	 */
-	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive, String password) {
+	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive, String password) throws IOException {
 		BCDiceCLI bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive, password);
 		NameIndicator nameIndicator = NameIndicatorFactory.getNameIndicator();
 		DiceResultFormatter diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
@@ -146,8 +148,9 @@ public class BCDiceBot {
 	/**
 	 * First called method.
 	 * @param args command line parameters. 1st should be Discord bot token. 2nd should be the URL of BCDice-API.
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		if( args.length < 2 || args[0].equals("help") ||
 			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
 			System.out.println(String.format("Discord-BCDicebot Version %s", getVersion()));

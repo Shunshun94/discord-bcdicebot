@@ -57,7 +57,7 @@ public class DicerollResult {
 
 				if(text.equals(UNSUPPORTED_DICEBOT)) {
 					this.isError = true;
-					this.text = String.format("対応していないシステム ( `%s` ) を使っているようです。スペルが間違っている、または未対応のシステムかもしれません。対応しているシステムを `bcdice set システム名` で設定してください。ダイスボットの一覧を参照するには `bcdice list` をご利用ください", usedSystem) ;
+					this.text = String.format("対応していないシステム ( `%s` ) を使っているようです。スペルが間違っている、または未対応のシステムかもしれません。対応しているシステムを `bcdice set システム名` で設定してください。ダイスボットの一覧を参照するには `bcdice list` をご利用ください", usedSystem);
 				} else {
 					this.isError = false;
 					this.text = "";

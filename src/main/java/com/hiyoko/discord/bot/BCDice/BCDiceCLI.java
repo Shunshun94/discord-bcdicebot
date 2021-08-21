@@ -82,15 +82,16 @@ public class BCDiceCLI {
 
 	/**
 	 * @param url BCDice-API URL.
+	 * @throws IOException 
 	 */
-	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam, String password) {
+	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam, String password) throws IOException {
 		client = DiceClientFactory.getDiceClient(url);
 		originalDiceBotClient = originalDiceBotClientParam;
 		savedMessage = new HashMap<String, List<String>>();
 		this.password = password;
 	}
 
-	public BCDiceCLI(List<String> urls, String system, boolean errorSensitive, String password) {
+	public BCDiceCLI(List<String> urls, String system, boolean errorSensitive, String password) throws IOException {
 		client = DiceClientFactory.getDiceClient(urls, errorSensitive);
 		client.setSystem(system);
 		originalDiceBotClient = new OriginalDiceBotClient();
@@ -106,10 +107,10 @@ public class BCDiceCLI {
 		return ! (input.toLowerCase().startsWith("bcdice ") || input.toLowerCase().equals("bcdice"));
 	}
 
-	private boolean isShouldRoll(String input) {
+	private boolean isShouldRoll(String input, String system) throws IOException {
 		if(! isSuppressed) { return true; }
 		if( rollCommand.isEmpty() ) {
-			return client.isDiceCommand(input);
+			return client.isDiceCommand(input, system);
 		} else {
 			return input.startsWith(rollCommand);
 		}
@@ -218,7 +219,8 @@ public class BCDiceCLI {
 			String[] targetList = rawTargetList.split(",");
 			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(MULTIROLL_TEXT_PREFIX_STR, "").trim());
 			if(targetList.length > 20) {
-				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand)) ) {
+				String system = client.getSystem(channel);
+				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand, system)) ) {
 					return result;
 				} else {
 					throw new IOException(String.format("1度にダイスを振れる回数は20回までです（%d回振ろうとしていました）", targetList.length));
@@ -254,7 +256,8 @@ public class BCDiceCLI {
 		if(! originalDiceBot.isEmpty()) {
 			return rollOriginalDiceBot(originalDiceBot);
 		}
-		if(isShouldRoll(rawInput)) {
+		String system = client.getSystem(channel);
+		if(isShouldRoll(rawInput, system)) {
 			String input = rawInput.replaceFirst(rollCommand, "").trim();
 			logger.debug(String.format("bot send command to server: %s", input));
 			return client.rollDiceWithChannel(normalizeDiceCommand(input), channel);
@@ -609,7 +612,7 @@ public class BCDiceCLI {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		String password = AdminPasswordGenerator.getPassword();
 		BCDiceCLI cli = new BCDiceCLI(args[0].trim(), new OriginalDiceBotClient(), password);
 

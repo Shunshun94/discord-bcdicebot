@@ -16,7 +16,7 @@ const OUTPUT = 'output';
 const SYSTEM = 'game_system';
 
 const getValue = (l)=>{
-	return l.split(' ')[2].slice(1, -1);
+	return l.split(' ').splice(2).join(' ').slice(1, -1);
 };
 
 const fileReader = new FileReader();
@@ -39,7 +39,12 @@ fileReader.onload = (e) => {
 				gameSystem = getValue(line);
 			}
 			if(line.startsWith(INPUT)) {
-				tests.push(getValue(line));
+				const val = getValue(line);
+				if(! tests.includes(val)) {
+					if(getValue(lines[i + 1])) {
+						tests.push(val);
+					}
+				}
 			}
 		}
 		$('#result').val(`${$('#result').val()}\n:${gameSystem}\n${tests.join('\n')}`.trim());
