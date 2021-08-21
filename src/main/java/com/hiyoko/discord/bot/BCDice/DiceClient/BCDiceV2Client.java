@@ -321,4 +321,24 @@ public class BCDiceV2Client implements DiceClient {
 		}
 		return flag;
 	}
+
+	@Override
+	public List<String> updateDiceBotsPrefixes() {
+		List<String> result = new ArrayList<String>();
+		List<String> shouldDeleteList = new ArrayList<String>();
+		DICE_COMMANDS_PATTERN.forEach((key, prefix)->{
+			try {
+				updateDicePattern(key);
+				result.add(String.format("Prefix of %s is updated", key));
+			} catch (IOException e) {
+				result.add(e.getMessage());
+				shouldDeleteList.add(key);
+			}
+		});
+		for(String key : shouldDeleteList) {
+			DICE_COMMANDS_PATTERN.remove(key);
+		}
+		result.add(String.format("%s systems are loaded", DICE_COMMANDS_PATTERN.size()));
+		return result;
+	}
 }

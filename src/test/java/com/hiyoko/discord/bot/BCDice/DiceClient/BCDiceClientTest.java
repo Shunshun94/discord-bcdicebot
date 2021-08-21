@@ -18,7 +18,7 @@ public class BCDiceClientTest extends TestCase {
 			return "https://bcdice.onlinesession.app";
 		}
 	}
-	
+
 	public void testIsDiceCommand() throws IOException {
 		String url = getDiceServerUrl();
 		BCDiceV2Client client = new BCDiceV2Client(url);
@@ -103,5 +103,19 @@ public class BCDiceClientTest extends TestCase {
 		client.setDiceServer(urlB);
 		assertEquals(String.format("%s/", urlB), client.getDiceUrlList().get(client.getUrlCursor()));
 		assertEquals(2, client.getDiceUrlList().size());
+	}
+
+	public void testUpdateDiceBotsPrefixes() throws IOException {
+		String url = getDiceServerUrl();
+		BCDiceV2Client client = new BCDiceV2Client(url);
+		assertEquals(2, client.updateDiceBotsPrefixes().size());
+		client.isDiceCommand("2d6", "SwordWorld2.5");
+		assertEquals(3, client.updateDiceBotsPrefixes().size());
+
+		String dummyUrl = "http://hiyo-hitsu.sakura.ne.jp/returnCode.cgi?statusCode=500&path=";
+		client.setDiceServer(dummyUrl);
+		client.removeDiceServer(url);
+		assertEquals(3, client.updateDiceBotsPrefixes().size());
+		assertEquals(1, client.updateDiceBotsPrefixes().size());
 	}
 }

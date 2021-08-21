@@ -145,4 +145,9 @@ public class DiceClientMock implements DiceClient {
 	public boolean isDiceCommand(String command, String system) {
 		return isDiceCommand(command);
 	}
+
+	@Override
+	public List<String> updateDiceBotsPrefixes() {
+		return new ArrayList<String>();
+	}
 }

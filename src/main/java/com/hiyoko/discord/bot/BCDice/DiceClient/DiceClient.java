@@ -135,5 +135,7 @@ public interface DiceClient {
 	 */
 	public String toString(String channel);
 
-	boolean isDiceCommand(String command, String system) throws IOException;
+	public boolean isDiceCommand(String command, String system) throws IOException;
+	
+	public List<String> updateDiceBotsPrefixes();
 }

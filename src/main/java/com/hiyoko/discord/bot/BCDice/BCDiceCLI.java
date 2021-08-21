@@ -64,6 +64,8 @@ public class BCDiceCLI {
 			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export\n\n"
 			+ "# 特定の部屋設定をエクスポートする\n> bcdice admin PASSWORD export ROOM_ID1 ROOM_ID2 ROOM_ID3 ....\n\n"
 			+ "# 部屋設定をインポートする\n> bcdice admin PASSWORD import\n\n"
+			+ "# ダイスが振られる条件について BCDice API サーバの情報に基づいて更新する\n"
+			+ "> bcdice admin PASSWORD updateDiceRollPreFix"
 			+ "# BCDice API サーバへのコマンド送信に接頭詞を求めない（デフォルトの挙動）\n"
 			+ "> bcdice admin PASSWORD suppressroll\n"
 			+ "> bcdice admin PASSWORD suppressroll on # こっちは近い将来廃止予定\n\n"
@@ -490,7 +492,9 @@ public class BCDiceCLI {
 			}
 			return separateStringWithLengthLimitation(resultList, 1000);
 		}
-
+		if(command[3].equals("updateDiceRollPreFix")) {
+			return client.updateDiceBotsPrefixes();
+		}
 		if(command[3].equals("suppressroll")) {
 			if(command.length > 4) {
 				if(command[4].equals("disable")) {
