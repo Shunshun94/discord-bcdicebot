@@ -83,7 +83,9 @@ public class BCDiceCLI {
 			+ "# ダイスボット表を削除する\n"
 			+ "> bcdice admin PASSWORD removeDiceBot ダイスボット表名\n\n"
 			+ "# ダイスボット表の一覧を表示する\n"
-			+ "> bcdice admin PASSWORD listDiceBot";
+			+ "> bcdice admin PASSWORD listDiceBot\n\n"
+			+ "# 72時間以上前のシークレットダイスの情報を削除する\n"
+			+ "> bcdice admin PASSWORD refreshSecretDice";
 
 	/**
 	 * @param url BCDice-API URL.
@@ -560,6 +562,9 @@ public class BCDiceCLI {
 			resultList.addAll(separateStringWithLengthLimitation(dicebotList, 1000));
 			return resultList;
 		}
+		if(command[3].equals("refreshSecretDice")) {
+			return separateStringWithLengthLimitation(refreshSecretMessages(), 1000);
+		}
 
 		resultList.add(HELP_ADMIN);
 		return resultList;
@@ -591,6 +596,23 @@ public class BCDiceCLI {
 		}
 		msgList.put(key, secretMessage);
 		return String.valueOf(key);
+	}
+
+	public String refreshSecretMessages() {
+		StringBuilder sb = new StringBuilder();
+		int i = 0;
+		for(String userId : savedMessage.keySet()) {
+			Map<String, SecretMessage> userMessageMap = savedMessage.get(userId);
+			for(String messageId : userMessageMap.keySet()) {
+				if( userMessageMap.get(messageId).isDeprecated() ) {
+					userMessageMap.remove(messageId);
+					sb.append(String.format("削除: User %s / Id %s\n", userId, messageId));
+					i++;
+				}
+			}
+		}
+		sb.append(String.format("%s件のシークレットダイスの結果を削除しました", i));
+		return sb.toString();
 	}
 
 	/**

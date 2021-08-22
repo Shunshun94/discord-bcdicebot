@@ -70,7 +70,7 @@ public class BCDiceCLITest extends TestCase {
 					cli.saveMessage("hiyoko", list[3]),
 					cli.saveMessage("hiyoko", "")
 			};
-			
+
 			assertEquals(list[0], cli.inputs(String.format("bcdice load %s", indexes[0]), "hiyoko", "channel").get(0));
 			assertEquals(list[1], cli.inputs(String.format("bcdice load %s", indexes[1]), "hiyoko", "channel").get(0));
 			assertEquals(list[2], cli.inputs(String.format("bcdice load %s", indexes[2]), "hiyoko", "channel").get(0));
@@ -82,11 +82,11 @@ public class BCDiceCLITest extends TestCase {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	public void testInputStringString() {
 		assertEquals(cli.inputs("bcdice status", "", "channel").get(0), cli.inputs("bcdice status", "koneko", "channel").get(0));
 	}
-	
+
 	public void testMultiChannel() {
 		List<String> tmpDiceBotList = cli.inputs("bcdice list", "", "channel");
 		List<String> diceBotList = Arrays.asList(String.join("\n", tmpDiceBotList).split("\n"));
