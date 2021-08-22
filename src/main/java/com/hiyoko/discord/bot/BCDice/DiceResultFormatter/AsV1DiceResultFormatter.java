@@ -9,7 +9,7 @@ public class AsV1DiceResultFormatter implements DiceResultFormatter {
 
 	@Override
 	public String getText(DicerollResult dicerollResult) {
-		String rawText = dicerollResult.toString();
+		String rawText = dicerollResult.getText();
 		if(! rawText.startsWith("#")) {
 			return String.format("%s: %s", dicerollResult.getSystem(), rawText);
 		}

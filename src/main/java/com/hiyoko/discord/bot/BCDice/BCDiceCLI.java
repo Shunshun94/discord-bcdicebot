@@ -22,6 +22,7 @@ import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
+import com.hiyoko.discord.bot.BCDice.dto.SecretMessage;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
@@ -37,7 +38,7 @@ import org.slf4j.Logger;
 public class BCDiceCLI {
 	private DiceClient client;
 	
-	private Map<String, List<String>> savedMessage;
+	private Map<String, Map<String, SecretMessage>> savedMessage;
 	private String password;
 	private String rollCommand = "";
 	private boolean isSuppressed = true;
@@ -82,7 +83,9 @@ public class BCDiceCLI {
 			+ "# ダイスボット表を削除する\n"
 			+ "> bcdice admin PASSWORD removeDiceBot ダイスボット表名\n\n"
 			+ "# ダイスボット表の一覧を表示する\n"
-			+ "> bcdice admin PASSWORD listDiceBot";
+			+ "> bcdice admin PASSWORD listDiceBot\n\n"
+			+ "# 72時間以上前のシークレットダイスの情報を削除する\n"
+			+ "> bcdice admin PASSWORD refreshSecretDice";
 
 	/**
 	 * @param url BCDice-API URL.
@@ -91,7 +94,7 @@ public class BCDiceCLI {
 	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam, String password) throws IOException {
 		client = DiceClientFactory.getDiceClient(url);
 		originalDiceBotClient = originalDiceBotClientParam;
-		savedMessage = new HashMap<String, List<String>>();
+		savedMessage = new HashMap<String, Map<String, SecretMessage>>();
 		this.password = password;
 	}
 
@@ -99,7 +102,7 @@ public class BCDiceCLI {
 		client = DiceClientFactory.getDiceClient(urls, errorSensitive);
 		client.setSystem(system);
 		originalDiceBotClient = new OriginalDiceBotClient();
-		savedMessage = new HashMap<String, List<String>>();
+		savedMessage = new HashMap<String, Map<String, SecretMessage>>();
 		this.password = password;
 	}
 
@@ -364,8 +367,7 @@ public class BCDiceCLI {
 		if(command[1].equals("load")) {
 			if(command.length == 3) {
 				try {
-					resultList.add(getMessage(id, new Integer(command[2])));
-					return resultList;
+					return getMessage(id, command[2]);
 				} catch(Exception e) {
 					resultList.add("Not found (index = " + command[2] + ")");
 					return resultList;
@@ -560,6 +562,9 @@ public class BCDiceCLI {
 			resultList.addAll(separateStringWithLengthLimitation(dicebotList, 1000));
 			return resultList;
 		}
+		if(command[3].equals("refreshSecretDice")) {
+			return separateStringWithLengthLimitation(refreshSecretMessages(), 1000);
+		}
 
 		resultList.add(HELP_ADMIN);
 		return resultList;
@@ -571,14 +576,43 @@ public class BCDiceCLI {
 	 * @param message stacked message
 	 * @return The stacked message index
 	 */
-	private int saveMessage(String id, String message) {
-		List<String> msgList = savedMessage.get(id);
+	public String saveMessage(String id, String message) {
+		List<String> currentMessage = new ArrayList<String>();
+		currentMessage.add(message);
+		return saveMessage(id, currentMessage);
+	}
+
+	public String saveMessage(String id, List<String> messages) {
+		Map<String, SecretMessage> msgList = savedMessage.get(id);
 		if(msgList == null) {
-			msgList = new ArrayList<String>();
+			msgList = new HashMap<String, SecretMessage>();
 			savedMessage.put(id, msgList);
 		}
-		msgList.add(message);
-		return msgList.size();
+		
+		SecretMessage secretMessage = new SecretMessage(messages);
+		String key = String.valueOf(secretMessage.getLimit());
+		while(msgList.containsKey(key)) {
+			key = key + '0';
+		}
+		msgList.put(key, secretMessage);
+		return String.valueOf(key);
+	}
+
+	public String refreshSecretMessages() {
+		StringBuilder sb = new StringBuilder();
+		int i = 0;
+		for(String userId : savedMessage.keySet()) {
+			Map<String, SecretMessage> userMessageMap = savedMessage.get(userId);
+			for(String messageId : userMessageMap.keySet()) {
+				if( userMessageMap.get(messageId).isDeprecated() ) {
+					userMessageMap.remove(messageId);
+					sb.append(String.format("削除: User %s / Id %s\n", userId, messageId));
+					i++;
+				}
+			}
+		}
+		sb.append(String.format("%s件のシークレットダイスの結果を削除しました", i));
+		return sb.toString();
 	}
 
 	/**
@@ -588,10 +622,10 @@ public class BCDiceCLI {
 	 * @return the stacked message
 	 * @throws IOException When failed to get message
 	 */
-	private String getMessage(String id, int index) throws IOException {
+	private List<String> getMessage(String id, String index) throws IOException {
 		try {
-			List<String> list = savedMessage.get(id);
-			return list.get(index - 1);
+			Map<String, SecretMessage> list = savedMessage.get(id);
+			return list.get(index).getMessages();
 		} catch (Exception e) {
 			throw new IOException(e.getMessage(), e);
 		}
