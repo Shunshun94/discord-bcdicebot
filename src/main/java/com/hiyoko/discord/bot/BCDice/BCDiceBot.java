@@ -119,14 +119,14 @@ public class BCDiceBot {
 						List<String> resultMessage = bcDice.separateStringWithLengthLimitation(String.format("＞%s\n%s", name, sb.stream().collect(Collectors.joining("\n\n"))), 1000); 
 						DicerollResult firstOne = rollResults.get(0); 
 						if( firstOne.isSecret() ) {
+							String index = bcDice.saveMessage(userId, resultMessage);
 							event.getChannel().sendMessage(chatToolClient.formatMessage(String.format("＞%s\n%s",
 									name,
 									diceResultFormatter.getText(new DicerollResult(
-										"[Secret Dice]",
+										String.format("[Secret Dice] Key: %s", index),
 										firstOne.getSystem(),
 										true, true
 									)))));
-							int index = bcDice.saveMessage(userId, resultMessage);
 							try {
 								for(String post : resultMessage) {
 									api.getUserById(userId).get().sendMessage(chatToolClient.formatMessage(post));

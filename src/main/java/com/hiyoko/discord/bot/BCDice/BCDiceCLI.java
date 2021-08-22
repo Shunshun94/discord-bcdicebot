@@ -22,6 +22,7 @@ import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
+import com.hiyoko.discord.bot.BCDice.dto.SecretMessage;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
@@ -37,7 +38,7 @@ import org.slf4j.Logger;
 public class BCDiceCLI {
 	private DiceClient client;
 	
-	private Map<String, List<List<String>>> savedMessage;
+	private Map<String, Map<String, SecretMessage>> savedMessage;
 	private String password;
 	private String rollCommand = "";
 	private boolean isSuppressed = true;
@@ -91,7 +92,7 @@ public class BCDiceCLI {
 	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam, String password) throws IOException {
 		client = DiceClientFactory.getDiceClient(url);
 		originalDiceBotClient = originalDiceBotClientParam;
-		savedMessage = new HashMap<String, List<List<String>>>();
+		savedMessage = new HashMap<String, Map<String, SecretMessage>>();
 		this.password = password;
 	}
 
@@ -99,7 +100,7 @@ public class BCDiceCLI {
 		client = DiceClientFactory.getDiceClient(urls, errorSensitive);
 		client.setSystem(system);
 		originalDiceBotClient = new OriginalDiceBotClient();
-		savedMessage = new HashMap<String, List<List<String>>>();
+		savedMessage = new HashMap<String, Map<String, SecretMessage>>();
 		this.password = password;
 	}
 
@@ -364,7 +365,7 @@ public class BCDiceCLI {
 		if(command[1].equals("load")) {
 			if(command.length == 3) {
 				try {
-					return getMessage(id, new Integer(command[2]));
+					return getMessage(id, command[2]);
 				} catch(Exception e) {
 					resultList.add("Not found (index = " + command[2] + ")");
 					return resultList;
@@ -570,20 +571,26 @@ public class BCDiceCLI {
 	 * @param message stacked message
 	 * @return The stacked message index
 	 */
-	private int saveMessage(String id, String message) {
+	public String saveMessage(String id, String message) {
 		List<String> currentMessage = new ArrayList<String>();
 		currentMessage.add(message);
 		return saveMessage(id, currentMessage);
 	}
 
-	public int saveMessage(String id, List<String> messages) {
-		List<List<String>> msgList = savedMessage.get(id);
+	public String saveMessage(String id, List<String> messages) {
+		Map<String, SecretMessage> msgList = savedMessage.get(id);
 		if(msgList == null) {
-			msgList = new ArrayList<List<String>>();
+			msgList = new HashMap<String, SecretMessage>();
 			savedMessage.put(id, msgList);
 		}
-		msgList.add(messages);
-		return msgList.size();
+		
+		SecretMessage secretMessage = new SecretMessage(messages);
+		String key = String.valueOf(secretMessage.getLimit());
+		while(msgList.containsKey(key)) {
+			key = key + '0';
+		}
+		msgList.put(key, secretMessage);
+		return String.valueOf(key);
 	}
 
 	/**
@@ -593,10 +600,10 @@ public class BCDiceCLI {
 	 * @return the stacked message
 	 * @throws IOException When failed to get message
 	 */
-	private List<String> getMessage(String id, int index) throws IOException {
+	private List<String> getMessage(String id, String index) throws IOException {
 		try {
-			List<List<String>> list = savedMessage.get(id);
-			return list.get(index - 1);
+			Map<String, SecretMessage> list = savedMessage.get(id);
+			return list.get(index).getMessages();
 		} catch (Exception e) {
 			throw new IOException(e.getMessage(), e);
 		}
