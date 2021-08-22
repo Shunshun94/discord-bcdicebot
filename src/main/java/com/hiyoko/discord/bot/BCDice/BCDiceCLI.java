@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 public class BCDiceCLI {
 	private DiceClient client;
 	
-	private Map<String, List<String>> savedMessage;
+	private Map<String, List<List<String>>> savedMessage;
 	private String password;
 	private String rollCommand = "";
 	private boolean isSuppressed = true;
@@ -91,7 +91,7 @@ public class BCDiceCLI {
 	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam, String password) throws IOException {
 		client = DiceClientFactory.getDiceClient(url);
 		originalDiceBotClient = originalDiceBotClientParam;
-		savedMessage = new HashMap<String, List<String>>();
+		savedMessage = new HashMap<String, List<List<String>>>();
 		this.password = password;
 	}
 
@@ -99,7 +99,7 @@ public class BCDiceCLI {
 		client = DiceClientFactory.getDiceClient(urls, errorSensitive);
 		client.setSystem(system);
 		originalDiceBotClient = new OriginalDiceBotClient();
-		savedMessage = new HashMap<String, List<String>>();
+		savedMessage = new HashMap<String, List<List<String>>>();
 		this.password = password;
 	}
 
@@ -364,8 +364,7 @@ public class BCDiceCLI {
 		if(command[1].equals("load")) {
 			if(command.length == 3) {
 				try {
-					resultList.add(getMessage(id, new Integer(command[2])));
-					return resultList;
+					return getMessage(id, new Integer(command[2]));
 				} catch(Exception e) {
 					resultList.add("Not found (index = " + command[2] + ")");
 					return resultList;
@@ -572,12 +571,18 @@ public class BCDiceCLI {
 	 * @return The stacked message index
 	 */
 	private int saveMessage(String id, String message) {
-		List<String> msgList = savedMessage.get(id);
+		List<String> currentMessage = new ArrayList<String>();
+		currentMessage.add(message);
+		return saveMessage(id, currentMessage);
+	}
+
+	public int saveMessage(String id, List<String> messages) {
+		List<List<String>> msgList = savedMessage.get(id);
 		if(msgList == null) {
-			msgList = new ArrayList<String>();
+			msgList = new ArrayList<List<String>>();
 			savedMessage.put(id, msgList);
 		}
-		msgList.add(message);
+		msgList.add(messages);
 		return msgList.size();
 	}
 
@@ -588,9 +593,9 @@ public class BCDiceCLI {
 	 * @return the stacked message
 	 * @throws IOException When failed to get message
 	 */
-	private String getMessage(String id, int index) throws IOException {
+	private List<String> getMessage(String id, int index) throws IOException {
 		try {
-			List<String> list = savedMessage.get(id);
+			List<List<String>> list = savedMessage.get(id);
 			return list.get(index - 1);
 		} catch (Exception e) {
 			throw new IOException(e.getMessage(), e);
