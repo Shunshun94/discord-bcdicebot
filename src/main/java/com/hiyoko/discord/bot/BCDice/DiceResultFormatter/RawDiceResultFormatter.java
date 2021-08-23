@@ -5,7 +5,7 @@ import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 public class RawDiceResultFormatter implements DiceResultFormatter {
 	@Override
 	public String getText(DicerollResult dicerollResult) {
-		return dicerollResult.toString();
+		return dicerollResult.getText();
 	}
 
 }

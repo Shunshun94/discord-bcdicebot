@@ -22,6 +22,7 @@ import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
+import com.hiyoko.discord.bot.BCDice.dto.SecretMessage;
 import com.hiyoko.discord.bot.BCDice.dto.SystemInfo;
 import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
@@ -37,7 +38,7 @@ import org.slf4j.Logger;
 public class BCDiceCLI {
 	private DiceClient client;
 	
-	private Map<String, List<String>> savedMessage;
+	private Map<String, Map<String, SecretMessage>> savedMessage;
 	private String password;
 	private String rollCommand = "";
 	private boolean isSuppressed = true;
@@ -64,12 +65,16 @@ public class BCDiceCLI {
 			+ "# 部屋設定をエクスポートする\n> bcdice admin PASSWORD export\n\n"
 			+ "# 特定の部屋設定をエクスポートする\n> bcdice admin PASSWORD export ROOM_ID1 ROOM_ID2 ROOM_ID3 ....\n\n"
 			+ "# 部屋設定をインポートする\n> bcdice admin PASSWORD import\n\n"
+			+ "# ダイスが振られる条件について BCDice API サーバの情報に基づいて更新する\n"
+			+ "> bcdice admin PASSWORD updateDiceRollPreFix\n\n"
 			+ "# BCDice API サーバへのコマンド送信に接頭詞を求めない（デフォルトの挙動）\n"
 			+ "> bcdice admin PASSWORD suppressroll\n"
-			+ "> bcdice admin PASSWORD suppressroll on # どちらでも可能\n\n"
+			+ "> bcdice admin PASSWORD suppressroll on # こっちは近い将来廃止予定\n\n"
 			+ "# コマンドの先頭に何らかのコマンドがある場合のみBCDice API サーバへコマンドを送信する\n"
 			+ "> bcdice admin PASSWORD suppressroll /diceroll # /diceroll 2d6 等としないとダイスを振れない\n"
 			+ "> bcdice admin PASSWORD suppressroll /r # /r 2d6 等としないとダイスを振れない\n\n"
+			+ "# BCDice API サーバへの問い合わせの制限を外す （近い将来廃止予定 ～バージョン 1.11 と同じ挙動）\n"
+			+ "> bcdice admin PASSWORD suppressroll disable\n\n"
 			+ "# ダイスボット表を追加する\n"
 			+ "# ダイスボット表のファイルを Discord にアップロードし、アップロードする際のコメントを以下のようにする\n"
 			+ "# ダイスボット表名をチャットに書き込むと誰でもダイスボット表を振れる\n"
@@ -78,23 +83,26 @@ public class BCDiceCLI {
 			+ "# ダイスボット表を削除する\n"
 			+ "> bcdice admin PASSWORD removeDiceBot ダイスボット表名\n\n"
 			+ "# ダイスボット表の一覧を表示する\n"
-			+ "> bcdice admin PASSWORD listDiceBot";
+			+ "> bcdice admin PASSWORD listDiceBot\n\n"
+			+ "# 72時間以上前のシークレットダイスの情報を削除する\n"
+			+ "> bcdice admin PASSWORD refreshSecretDice";
 
 	/**
 	 * @param url BCDice-API URL.
+	 * @throws IOException 
 	 */
-	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam, String password) {
+	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam, String password) throws IOException {
 		client = DiceClientFactory.getDiceClient(url);
 		originalDiceBotClient = originalDiceBotClientParam;
-		savedMessage = new HashMap<String, List<String>>();
+		savedMessage = new HashMap<String, Map<String, SecretMessage>>();
 		this.password = password;
 	}
 
-	public BCDiceCLI(List<String> urls, String system, boolean errorSensitive, String password) {
+	public BCDiceCLI(List<String> urls, String system, boolean errorSensitive, String password) throws IOException {
 		client = DiceClientFactory.getDiceClient(urls, errorSensitive);
 		client.setSystem(system);
 		originalDiceBotClient = new OriginalDiceBotClient();
-		savedMessage = new HashMap<String, List<String>>();
+		savedMessage = new HashMap<String, Map<String, SecretMessage>>();
 		this.password = password;
 	}
 
@@ -106,10 +114,10 @@ public class BCDiceCLI {
 		return ! (input.toLowerCase().startsWith("bcdice ") || input.toLowerCase().equals("bcdice"));
 	}
 
-	private boolean isShouldRoll(String input) {
-		if(! isSuppressed) { return true; }
+	private boolean isShouldRoll(String input, String system) throws IOException {
+		if(! isSuppressed) { return true; } //TODO 2021/08/22 近々廃止する
 		if( rollCommand.isEmpty() ) {
-			return client.isDiceCommand(input);
+			return client.isDiceCommand(input, system);
 		} else {
 			return input.startsWith(rollCommand);
 		}
@@ -195,7 +203,7 @@ public class BCDiceCLI {
 		}
 
 		Matcher isNumMatcher = MULTIROLL_NUM_PREFIX.matcher(input);
-		if(isNumMatcher.find()) { // いずれ消す。オフィシャルの繰り返しコマンドで置換されるべきでは
+		if(isNumMatcher.find()) { //TODO いずれ消す。オフィシャルの繰り返しコマンドで置換されるべきでは
 			String rawCount = isNumMatcher.group(1);
 			String withoutRepeat = input.replaceFirst(rawCount, "").trim();
 			String originalDiceBot = isOriginalDicebot(String.format("%s%s", rollCommand, withoutRepeat));
@@ -218,7 +226,8 @@ public class BCDiceCLI {
 			String[] targetList = rawTargetList.split(",");
 			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(MULTIROLL_TEXT_PREFIX_STR, "").trim());
 			if(targetList.length > 20) {
-				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand)) ) {
+				String system = client.getSystem(channel);
+				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand, system)) ) {
 					return result;
 				} else {
 					throw new IOException(String.format("1度にダイスを振れる回数は20回までです（%d回振ろうとしていました）", targetList.length));
@@ -254,7 +263,8 @@ public class BCDiceCLI {
 		if(! originalDiceBot.isEmpty()) {
 			return rollOriginalDiceBot(originalDiceBot);
 		}
-		if(isShouldRoll(rawInput)) {
+		String system = client.getSystem(channel);
+		if(isShouldRoll(rawInput, system)) {
 			String input = rawInput.replaceFirst(rollCommand, "").trim();
 			logger.debug(String.format("bot send command to server: %s", input));
 			return client.rollDiceWithChannel(normalizeDiceCommand(input), channel);
@@ -357,8 +367,7 @@ public class BCDiceCLI {
 		if(command[1].equals("load")) {
 			if(command.length == 3) {
 				try {
-					resultList.add(getMessage(id, new Integer(command[2])));
-					return resultList;
+					return getMessage(id, command[2]);
 				} catch(Exception e) {
 					resultList.add("Not found (index = " + command[2] + ")");
 					return resultList;
@@ -485,7 +494,9 @@ public class BCDiceCLI {
 			}
 			return separateStringWithLengthLimitation(resultList, 1000);
 		}
-
+		if(command[3].equals("updateDiceRollPreFix")) {
+			return client.updateDiceBotsPrefixes();
+		}
 		if(command[3].equals("suppressroll")) {
 			if(command.length > 4) {
 				if(command[4].equals("disable")) {
@@ -551,6 +562,9 @@ public class BCDiceCLI {
 			resultList.addAll(separateStringWithLengthLimitation(dicebotList, 1000));
 			return resultList;
 		}
+		if(command[3].equals("refreshSecretDice")) {
+			return separateStringWithLengthLimitation(refreshSecretMessages(), 1000);
+		}
 
 		resultList.add(HELP_ADMIN);
 		return resultList;
@@ -562,14 +576,43 @@ public class BCDiceCLI {
 	 * @param message stacked message
 	 * @return The stacked message index
 	 */
-	private int saveMessage(String id, String message) {
-		List<String> msgList = savedMessage.get(id);
+	public String saveMessage(String id, String message) {
+		List<String> currentMessage = new ArrayList<String>();
+		currentMessage.add(message);
+		return saveMessage(id, currentMessage);
+	}
+
+	public String saveMessage(String id, List<String> messages) {
+		Map<String, SecretMessage> msgList = savedMessage.get(id);
 		if(msgList == null) {
-			msgList = new ArrayList<String>();
+			msgList = new HashMap<String, SecretMessage>();
 			savedMessage.put(id, msgList);
 		}
-		msgList.add(message);
-		return msgList.size();
+		
+		SecretMessage secretMessage = new SecretMessage(messages);
+		String key = String.valueOf(secretMessage.getLimit());
+		while(msgList.containsKey(key)) {
+			key = key + '0';
+		}
+		msgList.put(key, secretMessage);
+		return String.valueOf(key);
+	}
+
+	public String refreshSecretMessages() {
+		StringBuilder sb = new StringBuilder();
+		int i = 0;
+		for(String userId : savedMessage.keySet()) {
+			Map<String, SecretMessage> userMessageMap = savedMessage.get(userId);
+			for(String messageId : userMessageMap.keySet()) {
+				if( userMessageMap.get(messageId).isDeprecated() ) {
+					userMessageMap.remove(messageId);
+					sb.append(String.format("削除: User %s / Id %s\n", userId, messageId));
+					i++;
+				}
+			}
+		}
+		sb.append(String.format("%s件のシークレットダイスの結果を削除しました", i));
+		return sb.toString();
 	}
 
 	/**
@@ -579,10 +622,10 @@ public class BCDiceCLI {
 	 * @return the stacked message
 	 * @throws IOException When failed to get message
 	 */
-	private String getMessage(String id, int index) throws IOException {
+	private List<String> getMessage(String id, String index) throws IOException {
 		try {
-			List<String> list = savedMessage.get(id);
-			return list.get(index - 1);
+			Map<String, SecretMessage> list = savedMessage.get(id);
+			return list.get(index).getMessages();
 		} catch (Exception e) {
 			throw new IOException(e.getMessage(), e);
 		}
@@ -609,7 +652,7 @@ public class BCDiceCLI {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		String password = AdminPasswordGenerator.getPassword();
 		BCDiceCLI cli = new BCDiceCLI(args[0].trim(), new OriginalDiceBotClient(), password);
 

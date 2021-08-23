@@ -14,7 +14,7 @@ public class BCDiceCLITest extends TestCase {
 	private BCDiceCLI cli;
 	private String PASSWORD = "mypassword";
 
-	public BCDiceCLITest(String name) throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
+	public BCDiceCLITest(String name) throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException{
 		super(name);
 
 		cli = new BCDiceCLI("mock", new OriginalDiceBotClient("./testDiceBots"), PASSWORD);
@@ -61,30 +61,32 @@ public class BCDiceCLITest extends TestCase {
 	}
 
 	public void testInputStringStack() {
-		String[] list = {"hiyoko", "hiyoko hitsuji", "hiyoko\nhitsuji", "hiyoko hitsuji\nkoneko\nkoinu"};
+		String[] list = {"hiyoko0", "hiyoko hitsuji1", "hiyoko\nhitsuji2", "hiyoko hitsuji\nkoneko\nkoinu3"};
 		try {
-			assertEquals(cli.inputs("bcdice save " + list[0], "hiyoko", "channel").get(0), "1");
-			assertEquals(cli.inputs("bcdice save " + list[1], "hiyoko", "channel").get(0), "2");
-			assertEquals(cli.inputs("bcdice save " + list[2], "hiyoko", "channel").get(0), "3");
-			assertEquals(cli.inputs("bcdice save " + list[3], "hiyoko", "channel").get(0), "4");
-			assertEquals(cli.inputs("bcdice save", "hiyoko", "channel").get(0), "5");
-			
-			assertEquals(cli.inputs("bcdice load 1", "hiyoko", "channel").get(0), list[0]);
-			assertEquals(cli.inputs("bcdice load 2", "hiyoko", "channel").get(0), list[1]);
-			assertEquals(cli.inputs("bcdice load 3", "hiyoko", "channel").get(0), list[2]);
-			assertEquals(cli.inputs("bcdice load 4", "hiyoko", "channel").get(0), list[3]);
-			assertEquals(cli.inputs("bcdice load 5", "hiyoko", "channel").get(0), "");
-			assertTrue(cli.inputs("bcdice load 1", "", "channel").get(0).startsWith("Not found"));
+			String[] indexes = {
+					cli.saveMessage("hiyoko", list[0]),
+					cli.saveMessage("hiyoko", list[1]),
+					cli.saveMessage("hiyoko", list[2]),
+					cli.saveMessage("hiyoko", list[3]),
+					cli.saveMessage("hiyoko", "")
+			};
+
+			assertEquals(list[0], cli.inputs(String.format("bcdice load %s", indexes[0]), "hiyoko", "channel").get(0));
+			assertEquals(list[1], cli.inputs(String.format("bcdice load %s", indexes[1]), "hiyoko", "channel").get(0));
+			assertEquals(list[2], cli.inputs(String.format("bcdice load %s", indexes[2]), "hiyoko", "channel").get(0));
+			assertEquals(list[3], cli.inputs(String.format("bcdice load %s", indexes[3]), "hiyoko", "channel").get(0));
+			assertEquals(cli.inputs(String.format("bcdice load %s", indexes[4]), "hiyoko", "channel").get(0), "");
+			assertTrue(cli.inputs(String.format("bcdice load %s", indexes[0]), "koneko", "channel").get(0).startsWith("Not found"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}
-	
+
 	public void testInputStringString() {
 		assertEquals(cli.inputs("bcdice status", "", "channel").get(0), cli.inputs("bcdice status", "koneko", "channel").get(0));
 	}
-	
+
 	public void testMultiChannel() {
 		List<String> tmpDiceBotList = cli.inputs("bcdice list", "", "channel");
 		List<String> diceBotList = Arrays.asList(String.join("\n", tmpDiceBotList).split("\n"));

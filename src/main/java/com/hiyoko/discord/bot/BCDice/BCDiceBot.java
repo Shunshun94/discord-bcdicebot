@@ -3,6 +3,7 @@ package com.hiyoko.discord.bot.BCDice;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -31,8 +32,9 @@ public class BCDiceBot {
 	 * Constructor.
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
+	 * @throws IOException 
 	 */
-	public BCDiceBot(String token, String bcDiceUrl, String password) {
+	public BCDiceBot(String token, String bcDiceUrl, String password) throws IOException {
 		new BCDiceBot(token, bcDiceUrl, true, password);
 	}
 
@@ -61,8 +63,9 @@ public class BCDiceBot {
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
 	 * @param errorSensitive
+	 * @throws IOException 
 	 */
-	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive, String password) {
+	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive, String password) throws IOException {
 		BCDiceCLI bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive, password);
 		NameIndicator nameIndicator = NameIndicatorFactory.getNameIndicator();
 		DiceResultFormatter diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
@@ -76,10 +79,14 @@ public class BCDiceBot {
 				String userId = user.getIdAsString();
 				String message = event.getMessage().getContent();
 				List<MessageAttachment> attachements = event.getMessage().getAttachments();
-
-				logger.debug(String.format("%s posts: https://discordapp.com/channels/%s/%s/%s",
-						userId,
-						event.getServer().get().getIdAsString(), channel, event.getMessage().getIdAsString()));
+				try {
+					logger.debug(String.format("%s posts: https://discordapp.com/channels/%s/%s/%s",
+							userId,
+							event.getServer().get().getIdAsString(), channel, event.getMessage().getIdAsString()));
+				} catch(NoSuchElementException e) {
+					logger.debug(String.format("%s posts in DM", userId));
+				}
+				
 				api.updateActivity("bcdice help とチャットに打ち込むとコマンドのヘルプを確認できます");
 				if( myId.equals(userId) ) { return; }
 				if(chatToolClient.isRequest( message )) {
@@ -109,20 +116,31 @@ public class BCDiceBot {
 								sb.add(diceResultFormatter.getText(rollResult));
 							}
 						}
-						bcDice.separateStringWithLengthLimitation(String.format("＞%s\n%s", name, sb.stream().collect(Collectors.joining("\n\n"))), 1000).forEach((post)->{
-							event.getChannel().sendMessage(chatToolClient.formatMessage(post));
-						});
+						List<String> resultMessage = bcDice.separateStringWithLengthLimitation(String.format("＞%s\n%s", name, sb.stream().collect(Collectors.joining("\n\n"))), 1000); 
 						DicerollResult firstOne = rollResults.get(0); 
 						if( firstOne.isSecret() ) {
-							int index = Integer.parseInt(bcDice.inputs("bcdice save " + firstOne.getSystem() + firstOne.getText(), userId, "dummy").get(0));
+							String index = bcDice.saveMessage(userId, resultMessage);
+							event.getChannel().sendMessage(chatToolClient.formatMessage(String.format("＞%s\n%s",
+									name,
+									diceResultFormatter.getText(new DicerollResult(
+										String.format("[Secret Dice] Key: %s", index),
+										firstOne.getSystem(),
+										true, true
+									)))));
 							try {
-								api.getUserById(userId).get().sendMessage(firstOne.getSystem() + firstOne.getText());
-								api.getUserById(userId).get().sendMessage("To recall this,\nbcdice load " + index);
+								for(String post : resultMessage) {
+									api.getUserById(userId).get().sendMessage(chatToolClient.formatMessage(post));
+								}
+								api.getUserById(userId).get().sendMessage(String.format("この結果を呼び出すには次のようにしてください。\n> bcdice load %s\nこのコマンドは最短72時間後には無効になります\nその後も必要であればそのままコピー&ペーストするか、スクリーンショットなどで共有してください", index));
 							} catch (InterruptedException e) {
 								throw new IOException(e.getMessage(), e);
 							} catch (ExecutionException e) {
 								throw new IOException(e.getMessage(), e);
 							}
+						} else {
+							resultMessage.forEach((post)->{
+								event.getChannel().sendMessage(chatToolClient.formatMessage(post));
+							});
 						}
 					}
 				} catch (IOException e) {
@@ -146,8 +164,9 @@ public class BCDiceBot {
 	/**
 	 * First called method.
 	 * @param args command line parameters. 1st should be Discord bot token. 2nd should be the URL of BCDice-API.
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		if( args.length < 2 || args[0].equals("help") ||
 			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
 			System.out.println(String.format("Discord-BCDicebot Version %s", getVersion()));
