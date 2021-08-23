@@ -131,7 +131,7 @@ public class BCDiceBot {
 								for(String post : resultMessage) {
 									api.getUserById(userId).get().sendMessage(chatToolClient.formatMessage(post));
 								}
-								api.getUserById(userId).get().sendMessage("この結果を呼び出すには次のようにしてください。\nこのコマンドは最短72時間後には無効になります\nその後も必要であればそのままコピー&ペーストするか、スクリーンショットなどで共有してください\n> bcdice load " + index);
+								api.getUserById(userId).get().sendMessage(String.format("この結果を呼び出すには次のようにしてください。\n> bcdice load %s\nこのコマンドは最短72時間後には無効になります\nその後も必要であればそのままコピー&ペーストするか、スクリーンショットなどで共有してください", index));
 							} catch (InterruptedException e) {
 								throw new IOException(e.getMessage(), e);
 							} catch (ExecutionException e) {
