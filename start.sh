@@ -2,10 +2,10 @@
 DISCORD_BOT_TOKEN=
 BCDICE_API_URL=
 IGNORE_ERROR=
-# BCDICE_PASSWORD=PleaseChangeMeIfYouUseThis
-# BCDICE_API_SECONDARY=http://secondary.bcdice-api.yourdomain.co.jp/
-# BCDICE_DEFAULT_SYSTEM=DiceBot
-# BCDICE_MENTION_MODE=1
-# BCDICE_RESULT_DISPLAY_FORMAT=V1
+# export BCDICE_PASSWORD=PleaseChangeMeIfYouUseThis
+# export BCDICE_API_SECONDARY=http://secondary.bcdice-api.yourdomain.co.jp/
+# export BCDICE_DEFAULT_SYSTEM=DiceBot
+# export BCDICE_MENTION_MODE=1
+# export BCDICE_RESULT_DISPLAY_FORMAT=V1
 
 java -jar discord-bcdicebot.jar "$DISCORD_BOT_TOKEN" "$BCDICE_API_URL" "$IGNORE_ERROR"
