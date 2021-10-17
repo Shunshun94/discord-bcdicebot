@@ -66,13 +66,9 @@ public class OriginalDiceBotTableTest extends TestCase {
 				"#12\n" + 
 				"RuinBreakers: (1D12) ＞ 12";
 		List<String> target = nekonbu.getResultsAsInvalidTable(input);
-		assertEquals(12 * 3, target.size());
-		assertEquals("#1", target.get(0));
-		assertEquals("サンプルダイスボット-夜食表(1) ＞ 24時間営業のレストランまでいく", target.get(1));
-		assertEquals("", target.get(2));
-		assertEquals("#12", target.get(33));
-		assertEquals("サンプルダイスボット-夜食表(12) ＞ 何も食べない", target.get(34));
-		assertEquals("", target.get(35));
+		assertEquals(12, target.size());
+		assertEquals("#1\nサンプルダイスボット-夜食表(1) ＞ 24時間営業のレストランまでいく", target.get(0));
+		assertEquals("#12\nサンプルダイスボット-夜食表(12) ＞ 何も食べない", target.get(11));
 		assertEquals(
 				nekonbu.getResultAsInvalidTable("RuinBreakers: (1D12) ＞ 1"),
 				nekonbu.getResultsAsInvalidTable("RuinBreakers: (1D12) ＞ 1").get(0));

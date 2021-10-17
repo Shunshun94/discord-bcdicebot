@@ -87,9 +87,7 @@ public class OriginalDiceBotTable {
 				try {
 					String diceValue = rollResult.group(1);
 					String tableValue = this.invalidTableMap.get(diceValue);
-					values.add(String.format("#%s", length));
-					values.add(String.format("%s(%s) ＞ %s", this.name, diceValue, tableValue.replaceAll("\\\\n", "\n")));
-					values.add("");
+					values.add(String.format("#%d\n%s(%s) ＞ %s", length, this.name, diceValue, tableValue.replaceAll("\\\\n", "\n")));
 				} catch (Exception e) {
 					throw new IOException(String.format("%d番目のダイスの結果が取得できませんでした (振った結果:%s / ダイスコマンド:%s)", length, result, command), e);
 				}
@@ -97,12 +95,12 @@ public class OriginalDiceBotTable {
 		} catch (IndexOutOfBoundsException e) {
 			throw new IOException(String.format("ダイス結果の検索クエリがおかしいです。振った結果の長さ:%s / 検索開始地点:%s / 振った結果 %s", result.length(), cursor, result), e);
 		}
-
-		if(length == 1) {
-			return values.subList(1, 2);
-		}
 		if(length == 0) {
 			throw new IOException(String.format("ダイスの結果が取得できませんでした (振った結果:%s / ダイスコマンド:%s)", result, command));
+		}
+		if(length == 1) {
+			String text = values.get(0).replace("#1", "").trim();
+			values.set(0, text);
 		}
 		return values;
 	}
