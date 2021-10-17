@@ -190,8 +190,6 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(3, cli.rolls("rep3 サンプルダイスボット-夜食表", "no_channel").size());
 		assertEquals(3, cli.rolls("repeat3 サンプルダイスボット-夜食表", "no_channel").size());
 		assertEquals(3, cli.rolls("x3 サンプルダイスボット-夜食表", "no_channel").size());
-		assertEquals(20, cli.rolls("20 サンプルダイスボット-夜食表", "no_channel").size());
-		assertEquals(0, cli.rolls("21 なにもない", "no_channel").size());
 
 		String PREFIX = "/hiyoko";
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll " + PREFIX, "", "channel").get(0).contains("で始まるコマンドのみサーバに送信します "));

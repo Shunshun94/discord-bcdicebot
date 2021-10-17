@@ -63,6 +63,80 @@ public class DiceClientMock implements DiceClient {
 		if(command.equals("1d12")) {
 			return new DicerollResult("(1d12) ＞ 12[12] ＞ 12", system, true, true);
 		}
+		if(command.equals("x1 1d12")) {
+			return new DicerollResult("#1\n(1d12) ＞ 12[12] ＞ 12", system, true, true);
+		}
+		if(command.equals("x3 1d12") || command.equals("rep3 1d12") || command.equals("repeat3 1d12")) {
+			return new DicerollResult("#1\n" + 
+					"(1D12) ＞ 12\n" + 
+					"\n" + 
+					"#2\n" + 
+					"(1D12) ＞ 5\n" + 
+					"\n" + 
+					"#3\n" + 
+					"(1D12) ＞ 3", system, true, true);
+		}
+		if(command.equals("x20 1d12")) {
+			return new DicerollResult("#1\n" + 
+					"RuinBreakers: (1D12) ＞ 10\n" + 
+					"\n" + 
+					"#2\n" + 
+					"RuinBreakers: (1D12) ＞ 6\n" + 
+					"\n" + 
+					"#3\n" + 
+					"RuinBreakers: (1D12) ＞ 1\n" + 
+					"\n" + 
+					"#4\n" + 
+					"RuinBreakers: (1D12) ＞ 6\n" + 
+					"\n" + 
+					"#5\n" + 
+					"RuinBreakers: (1D12) ＞ 6\n" + 
+					"\n" + 
+					"#6\n" + 
+					"RuinBreakers: (1D12) ＞ 5\n" + 
+					"\n" + 
+					"#7\n" + 
+					"RuinBreakers: (1D12) ＞ 8\n" + 
+					"\n" + 
+					"#8\n" + 
+					"RuinBreakers: (1D12) ＞ 2\n" + 
+					"\n" + 
+					"#9\n" + 
+					"RuinBreakers: (1D12) ＞ 10\n" + 
+					"\n" + 
+					"#10\n" + 
+					"RuinBreakers: (1D12) ＞ 1\n" + 
+					"\n" + 
+					"#11\n" + 
+					"RuinBreakers: (1D12) ＞ 3\n" + 
+					"\n" + 
+					"#12\n" + 
+					"RuinBreakers: (1D12) ＞ 8\n" + 
+					"\n" + 
+					"#13\n" + 
+					"RuinBreakers: (1D12) ＞ 4\n" + 
+					"\n" + 
+					"#14\n" + 
+					"RuinBreakers: (1D12) ＞ 12\n" + 
+					"\n" + 
+					"#15\n" + 
+					"RuinBreakers: (1D12) ＞ 10\n" + 
+					"\n" + 
+					"#16\n" + 
+					"RuinBreakers: (1D12) ＞ 4\n" + 
+					"\n" + 
+					"#17\n" + 
+					"RuinBreakers: (1D12) ＞ 6\n" + 
+					"\n" + 
+					"#18\n" + 
+					"RuinBreakers: (1D12) ＞ 8\n" + 
+					"\n" + 
+					"#19\n" + 
+					"RuinBreakers: (1D12) ＞ 12\n" + 
+					"\n" + 
+					"#20\n" + 
+					"RuinBreakers: (1D12) ＞ 12", system, true, true);
+		}
 		return new DicerollResult(command, system, true, true);
 	}
 
