@@ -78,23 +78,18 @@ public class OriginalDiceBotTable {
 	public List<String> getResultsAsInvalidTable(String result) throws IOException {
 		Matcher rollResult = RESULT_VALUE_REGEXP.matcher(result + "\n");
 		List<String> values = new ArrayList<String>();
-		int cursor = 0;
 		int length = 0;
-		try {
-			while( rollResult.find(cursor) ) {
-				length++;
-				cursor = rollResult.end();
-				try {
-					String diceValue = rollResult.group(1);
-					String tableValue = this.invalidTableMap.get(diceValue);
-					values.add(String.format("#%d\n%s(%s) ＞ %s", length, this.name, diceValue, tableValue.replaceAll("\\\\n", "\n")));
-				} catch (Exception e) {
-					throw new IOException(String.format("%d番目のダイスの結果が取得できませんでした (振った結果:%s / ダイスコマンド:%s)", length, result, command), e);
-				}
+		while( rollResult.find() ) {
+			length++;
+			try {
+				String diceValue = rollResult.group(1);
+				String tableValue = this.invalidTableMap.get(diceValue);
+				values.add(String.format("#%d\n%s(%s) ＞ %s", length, this.name, diceValue, tableValue.replaceAll("\\\\n", "\n")));
+			} catch (Exception e) {
+				throw new IOException(String.format("%d番目のダイスの結果が取得できませんでした (振った結果:%s / ダイスコマンド:%s)", length, result, command), e);
 			}
-		} catch (IndexOutOfBoundsException e) {
-			throw new IOException(String.format("ダイス結果の検索クエリがおかしいです。振った結果の長さ:%s / 検索開始地点:%s / 振った結果 %s", result.length(), cursor, result), e);
 		}
+
 		if(length == 0) {
 			throw new IOException(String.format("ダイスの結果が取得できませんでした (振った結果:%s / ダイスコマンド:%s)", result, command));
 		}
