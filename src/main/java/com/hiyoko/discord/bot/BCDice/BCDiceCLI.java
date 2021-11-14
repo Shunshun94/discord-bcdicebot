@@ -140,29 +140,11 @@ public class BCDiceCLI {
 	
 	private List<DicerollResult> rollOriginalDiceBotMultiple(OriginalDiceBotTable dbt, int times) throws IOException {
 		logger.debug(String.format("ダイスボット表 [%s] を%s回 実行します", dbt.getName(), times));
-		List<DicerollResult> list = new ArrayList<DicerollResult>();
 		try {
-			if(dbt.isValid) {
-				for(int i = 0; i < times; i++) {
-					list.add(client.rollOriginalDiceBotTable(dbt));
-				}
-			} else {
-				for(int i = 0; i < times; i++) {
-					DicerollResult tmp = client.rollDice(dbt.getCommand());
-					String value = dbt.getResultAsInvalidTable(tmp.getText());
-					list.add(new DicerollResult(value, "DiceBot", false, true, false));
-				}
-			}
-			if(times == 1) {
-				return list;
-			} else {
-				List<DicerollResult> fixedResult = new ArrayList<DicerollResult>();
-				for(int i = 0; i < times; i++) {
-					DicerollResult targetResult = list.get(i);
-					fixedResult.add(new DicerollResult(String.format("#%s\n%s", i + 1, targetResult.getText()), targetResult.getSystem(), false, true, false));
-				}
-				return fixedResult;
-			}
+			DicerollResult tmp = client.rollDice(String.format("x%s %s", times, dbt.getCommand()));
+			return dbt.getResultsAsInvalidTable(tmp.getText()).stream().map(t->{
+				return new DicerollResult(t, "DiceBot", false, true, false);
+			}).collect(Collectors.toList());
 		} catch(IOException e) {
 			throw new IOException(String.format("[ERROR] %s", e.getMessage()));
 		}

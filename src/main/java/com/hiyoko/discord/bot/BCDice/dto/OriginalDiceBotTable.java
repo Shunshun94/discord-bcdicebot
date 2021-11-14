@@ -1,6 +1,7 @@
 package com.hiyoko.discord.bot.BCDice.dto;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class OriginalDiceBotTable {
 	private static final Pattern ORIGINAL_DICEBOT_VALUE_LINE = Pattern.compile("^\\d+:");
 	private static final Pattern DICE_COMMAND_PATTERN = Pattern.compile("\\d*[Dd]\\d+[AaNnSsDd]?");
-	private static final Pattern RESULT_VALUE_REGEXP = Pattern.compile("(\\d+)$");
+	public static final Pattern RESULT_VALUE_REGEXP = Pattern.compile("＞ (\\d+)$", Pattern.MULTILINE);
 	private static final Logger logger = LoggerFactory.getLogger(OriginalDiceBotTable.class);
 	public final boolean isValid;
 	private final String body;
@@ -48,13 +49,8 @@ public class OriginalDiceBotTable {
 			}
 			this.isValid = false;
 		}
-		if(this.isValid) {
-			this.invalidTableMap = null;
-			this.command = null;
-		} else {
-			this.invalidTableMap = getInvalidTableMap(fileContents);
-			this.command = isFirstLineCommand ? fileContents.get(0) : fileContents.get(1);
-		}
+		this.invalidTableMap = getInvalidTableMap(fileContents);
+		this.command = isFirstLineCommand ? fileContents.get(0) : fileContents.get(1);
 	}
 
 	private Map<String, String> getInvalidTableMap(List<String> fileContents) {
@@ -77,6 +73,31 @@ public class OriginalDiceBotTable {
 			}
 		}
 		return true;
+	}
+
+	public List<String> getResultsAsInvalidTable(String result) throws IOException {
+		Matcher rollResult = RESULT_VALUE_REGEXP.matcher(result + "\n");
+		List<String> values = new ArrayList<String>();
+		int length = 0;
+		while( rollResult.find() ) {
+			length++;
+			try {
+				String diceValue = rollResult.group(1);
+				String tableValue = this.invalidTableMap.get(diceValue);
+				values.add(String.format("#%d\n%s(%s) ＞ %s", length, this.name, diceValue, tableValue.replaceAll("\\\\n", "\n")));
+			} catch (Exception e) {
+				throw new IOException(String.format("%d番目のダイスの結果が取得できませんでした (振った結果:%s / ダイスコマンド:%s)", length, result, command), e);
+			}
+		}
+
+		if(length == 0) {
+			throw new IOException(String.format("ダイスの結果が取得できませんでした (振った結果:%s / ダイスコマンド:%s)", result, command));
+		}
+		if(length == 1) {
+			String text = values.get(0).replace("#1", "").trim();
+			values.set(0, text);
+		}
+		return values;
 	}
 
 	public String getResultAsInvalidTable(String result) throws IOException {
