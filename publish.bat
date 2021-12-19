@@ -1,6 +1,8 @@
 @echo off
 cd /d %~dp0
 
+call mvn clean compile package -Duser.name=%1
+
 del /Q discord-bcdicebot
 mkdir discord-bcdicebot
 copy target\discord-bcdicebot-jar-with-dependencies.jar discord-bcdicebot
