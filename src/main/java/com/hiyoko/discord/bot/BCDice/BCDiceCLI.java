@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
+import com.hiyoko.discord.bot.BCDice.SystemClient.SystemClient;
+import com.hiyoko.discord.bot.BCDice.SystemClient.TextSystemClient;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 import com.hiyoko.discord.bot.BCDice.dto.SecretMessage;
@@ -43,6 +45,7 @@ public class BCDiceCLI {
 	private String rollCommand = "";
 	private boolean isSuppressed = true;
 	private final OriginalDiceBotClient originalDiceBotClient;
+	private final SystemClient systemClient;
 	private static final String[] REMOVE_WHITESPACE_TARGETS = {"<", ">", "="};
 	private final Logger logger = LoggerFactory.getLogger(BCDiceCLI.class);
 	private static final Pattern GAMESYSTEM_ROOM_PAIR_REGEXP = Pattern.compile("^(\\d*):(.*)");
@@ -93,6 +96,15 @@ public class BCDiceCLI {
 	 */
 	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam, String password) throws IOException {
 		client = DiceClientFactory.getDiceClient(url);
+		systemClient = new TextSystemClient();
+		try {
+			Map<String, String> roomSystemMap = systemClient.getSystemList();
+			for(Map.Entry<String, String> roomSystem : roomSystemMap.entrySet() ) {
+				client.setSystem(roomSystem.getValue(), roomSystem.getKey());
+			}
+		} catch(IOException e) {
+			logger.warn("チャンネルごとのダイスボット設定のファイルからの読み込みに失敗しましたが、処理は続行します。必要ならば管理コマンドまたは各チャンネル毎に再設定してください", e);
+		}
 		originalDiceBotClient = originalDiceBotClientParam;
 		savedMessage = new HashMap<String, Map<String, SecretMessage>>();
 		this.password = password;
@@ -101,6 +113,15 @@ public class BCDiceCLI {
 	public BCDiceCLI(List<String> urls, String system, boolean errorSensitive, String password) throws IOException {
 		client = DiceClientFactory.getDiceClient(urls, errorSensitive);
 		client.setSystem(system);
+		systemClient = new TextSystemClient();
+		try {
+			Map<String, String> roomSystemMap = systemClient.getSystemList();
+			for(Map.Entry<String, String> roomSystem : roomSystemMap.entrySet() ) {
+				client.setSystem(roomSystem.getValue(), roomSystem.getKey());
+			}
+		} catch(IOException e) {
+			logger.warn("チャンネルごとのダイスボット設定の読み込みに失敗しましたが、処理は続行します。必要ならば管理コマンドまたは各チャンネル毎に再設定してください", e);
+		}
 		originalDiceBotClient = new OriginalDiceBotClient();
 		savedMessage = new HashMap<String, Map<String, SecretMessage>>();
 		this.password = password;
@@ -325,6 +346,11 @@ public class BCDiceCLI {
 			if(command.length > 2) {
 				String systemName = String.join(" ", Arrays.copyOfRange(command, 2, command.length));
 				client.setSystem(systemName, channel);
+				try {
+					systemClient.exportSystemList(client.getRoomsSystem());
+				} catch(IOException e) {
+					logger.warn("チャンネルごとのダイスボット設定のファイルへの書き出しに失敗しましたが、処理は続行します", e);
+				}
 				resultList.add("BCDice system is changed: " + systemName);
 				return resultList;
 			} else {
@@ -473,6 +499,11 @@ public class BCDiceCLI {
 					client.setSystem(matchResult.group(2), matchResult.group(1));
 					resultList.add("Room" + matchResult.group(1) + " -> " + matchResult.group(2));
 				}
+			}
+			try {
+				systemClient.exportSystemList(client.getRoomsSystem());
+			} catch(IOException e) {
+				logger.warn("チャンネルごとのダイスボット設定のファイルへの書き出しに失敗しましたが、処理は続行します", e);
 			}
 			return separateStringWithLengthLimitation(resultList, 1000);
 		}
