@@ -21,7 +21,7 @@ import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
 import com.hiyoko.discord.bot.BCDice.SystemClient.SystemClient;
-import com.hiyoko.discord.bot.BCDice.SystemClient.TextSystemClient;
+import com.hiyoko.discord.bot.BCDice.SystemClient.SystemClientFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 import com.hiyoko.discord.bot.BCDice.dto.SecretMessage;
@@ -96,7 +96,7 @@ public class BCDiceCLI {
 	 */
 	public BCDiceCLI(String url, OriginalDiceBotClient originalDiceBotClientParam, String password) throws IOException {
 		client = DiceClientFactory.getDiceClient(url);
-		systemClient = new TextSystemClient();
+		systemClient = SystemClientFactory.getSystemClient(url);
 		try {
 			Map<String, String> roomSystemMap = systemClient.getSystemList();
 			for(Map.Entry<String, String> roomSystem : roomSystemMap.entrySet() ) {
@@ -113,7 +113,7 @@ public class BCDiceCLI {
 	public BCDiceCLI(List<String> urls, String system, boolean errorSensitive, String password) throws IOException {
 		client = DiceClientFactory.getDiceClient(urls, errorSensitive);
 		client.setSystem(system);
-		systemClient = new TextSystemClient();
+		systemClient = SystemClientFactory.getSystemClient(urls.get(0));
 		try {
 			Map<String, String> roomSystemMap = systemClient.getSystemList();
 			for(Map.Entry<String, String> roomSystem : roomSystemMap.entrySet() ) {
