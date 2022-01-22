@@ -106,6 +106,10 @@ public class BCDiceCLI {
 		this.password = password;
 	}
 
+	public DiceClient getDiceClient() {
+		return client;
+	}
+
 	/**
 	 * @param inputted command
 	 * @return If the command is for roll dice command, true. If not false
