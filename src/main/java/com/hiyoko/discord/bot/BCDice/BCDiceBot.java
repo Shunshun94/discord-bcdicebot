@@ -3,24 +3,12 @@ package com.hiyoko.discord.bot.BCDice;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
-import org.javacord.api.entity.message.MessageAttachment;
-import org.javacord.api.entity.message.MessageAuthor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClient;
-import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClientFactory;
-import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatter;
-import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatterFactory;
-import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicator;
-import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicatorFactory;
-import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 
 /**
  * First kicked class for discord-bcdicebot.
@@ -29,24 +17,8 @@ import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
  */
 public class BCDiceBot {
 	final Logger logger = LoggerFactory.getLogger(BCDiceBot.class);
-	DiscordApi api;
-	BCDiceCLI bcDice;
-	NameIndicator nameIndicator;
-	DiceResultFormatter diceResultFormatter;
-	String myId;
-	ChatToolClient chatToolClient;
-
-	/**
-	 * Constructor.
-	 * @param token Discord bot token
-	 * @param bcDiceUrl BCDice-API URL
-	 * @throws IOException 
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
-	 */
-	public BCDiceBot(String token, String bcDiceUrl, String password) throws IOException, InterruptedException, ExecutionException {
-		new BCDiceBot(token, bcDiceUrl, true, password);
-	}
+	final DiscordApi api;
+	final BCDiceCLI bcDice;
 
 	private List<String> getUrlList(String bcDiceUrl) {
 		List<String> urlList = new ArrayList<String>();
@@ -119,7 +91,7 @@ public class BCDiceBot {
 		String password = AdminPasswordGenerator.getPassword();
 
 		if(args.length == 2) {
-			new BCDiceBot(args[0].trim(), args[1].trim(), password);
+			new BCDiceBot(args[0].trim(), args[1].trim(), true, password);
 		} else {
 			new BCDiceBot(args[0].trim(), args[1].trim(), args[2].trim().equals("0"), password);
 		}
