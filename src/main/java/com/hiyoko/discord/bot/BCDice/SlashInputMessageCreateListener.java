@@ -121,14 +121,14 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		adminCommands.put("reloadoriginaltable", new ReloadOriginalTable());
 		adminCommands.put("removeoriginaltable", new RemoveOriginalTable());
 		adminCommands.put("addoriginaltable", null);
-		adminCommands.put("refreshsecretdice", new RefreshSecretDice(bcDice));
+		adminCommands.put("refreshsecretdice", new RefreshSecretDice());
 		adminCommands.put("updatedicerollprefix", new UpdateDiceRollPreFix());
 
 		configCommands.put("list", new ListDiceSystems());
 		configCommands.put("status", new Status());
 		configCommands.put("set", new SetDiceSystem());
-		configCommands.put("help", new HelpDiceSystem(bcDice));
-		configCommands.put("load", new LoadValue(bcDice));
+		configCommands.put("help", new HelpDiceSystem());
+		configCommands.put("load", new LoadValue());
 	}
 
 	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) throws IOException {

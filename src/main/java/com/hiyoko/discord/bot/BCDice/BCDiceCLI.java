@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
+import com.hiyoko.discord.bot.BCDice.DiceClient.SavedMessageFactory;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClientFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
@@ -39,7 +40,7 @@ import org.slf4j.Logger;
 public class BCDiceCLI {
 	private DiceClient client;
 	
-	private Map<String, Map<String, SecretMessage>> savedMessage;
+	private Map<String, Map<String, SecretMessage>> savedMessage = SavedMessageFactory.getSavedMessages();
 	private String password;
 	private String rollCommand = "";
 	private boolean isSuppressed = true;
@@ -589,7 +590,7 @@ public class BCDiceCLI {
 		return String.valueOf(key);
 	}
 
-	public String refreshSecretMessages() {
+	private String refreshSecretMessages() {
 		StringBuilder sb = new StringBuilder();
 		int i = 0;
 		for(String userId : savedMessage.keySet()) {
@@ -613,7 +614,7 @@ public class BCDiceCLI {
 	 * @return the stacked message
 	 * @throws IOException When failed to get message
 	 */
-	public List<String> getMessage(String id, String index) throws IOException {
+	private List<String> getMessage(String id, String index) throws IOException {
 		try {
 			Map<String, SecretMessage> list = savedMessage.get(id);
 			return list.get(index).getMessages();

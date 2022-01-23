@@ -1,9 +1,14 @@
 package com.hiyoko.discord.bot.BCDice.ConfigCommand;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ConfigUtil {
+	public static List<String> separateStringWithLengthLimitation(String raw, int limitLength) {
+		return separateStringWithLengthLimitation(Arrays.asList(raw.split("\\n")), limitLength);
+	}
+
 	public static List<String> separateStringWithLengthLimitation(List<String> raw, int limitLength) {
 		List<String> result = new ArrayList<String>();
 		StringBuilder sb = new StringBuilder("");
