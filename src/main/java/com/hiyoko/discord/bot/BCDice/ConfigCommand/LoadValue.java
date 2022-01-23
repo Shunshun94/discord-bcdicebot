@@ -28,16 +28,16 @@ public class LoadValue implements ConfigCommand {
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client, User user, Channel channel) {
 		String key = option.getOptionByIndex(0).get().getStringValue().get();
-		return exec(key, client, user, channel);
+		return exec(key, client, user.getIdAsString(), channel.getIdAsString());
 	}
 
 	@Override
-	public List<String> exec(String key, DiceClient client, User user, Channel channel) {
+	public List<String> exec(String key, DiceClient client, String user, String channel) {
 		try {
-			return getMessage(user.getIdAsString(), key);
+			return getMessage(user, key);
 		} catch (IOException e) {
 			String msg = String.format("[%s] に該当するメッセージは見つかりませんでした", key);
-			logger.info(String.format("%s(%s) %s", user.getIdAsString(), user.getName(), msg), e);
+			logger.info(String.format("%s (User:%s)", msg, user), e);
 			return ConfigUtil.getSingleMessage(msg);
 		}
 	}

@@ -10,5 +10,5 @@ import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 
 public interface ConfigCommand {
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client, User user, Channel channel);
-	public List<String> exec(String param, DiceClient client, User user, Channel channel);
+	public List<String> exec(String param, DiceClient client, String user, String channel);
 }
