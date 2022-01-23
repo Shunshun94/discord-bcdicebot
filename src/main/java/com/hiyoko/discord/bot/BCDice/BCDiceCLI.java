@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClientFactory;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClient;
+import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClientFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 import com.hiyoko.discord.bot.BCDice.dto.SecretMessage;
@@ -101,7 +102,7 @@ public class BCDiceCLI {
 	public BCDiceCLI(List<String> urls, String system, boolean errorSensitive, String password) throws IOException {
 		client = DiceClientFactory.getDiceClient(urls, errorSensitive);
 		client.setSystem(system);
-		originalDiceBotClient = new OriginalDiceBotClient();
+		originalDiceBotClient = OriginalDiceBotClientFactory.getOriginalDiceBotClient();
 		savedMessage = new HashMap<String, Map<String, SecretMessage>>();
 		this.password = password;
 	}
@@ -127,7 +128,7 @@ public class BCDiceCLI {
 		}
 	}
 
-	private String serachOriginalDicebot(String input) {
+	public String serachOriginalDicebot(String input) {
 		List<String> list = originalDiceBotClient.getDiceBotList();
 		for(String name : list) {
 			if(input.startsWith(name)) {return name;}
@@ -608,7 +609,7 @@ public class BCDiceCLI {
 	 * @return the stacked message
 	 * @throws IOException When failed to get message
 	 */
-	private List<String> getMessage(String id, String index) throws IOException {
+	public List<String> getMessage(String id, String index) throws IOException {
 		try {
 			Map<String, SecretMessage> list = savedMessage.get(id);
 			return list.get(index).getMessages();
@@ -640,7 +641,7 @@ public class BCDiceCLI {
 
 	public static void main(String[] args) throws IOException {
 		String password = AdminPasswordGenerator.getPassword();
-		BCDiceCLI cli = new BCDiceCLI(args[0].trim(), new OriginalDiceBotClient(), password);
+		BCDiceCLI cli = new BCDiceCLI(args[0].trim(), OriginalDiceBotClientFactory.getOriginalDiceBotClient(), password);
 
 		String line;
 		Scanner scanner = new Scanner(System.in);

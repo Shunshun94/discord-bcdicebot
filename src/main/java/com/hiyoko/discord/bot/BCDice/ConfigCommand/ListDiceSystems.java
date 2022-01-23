@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.user.User;
 import org.javacord.api.interaction.SlashCommandInteractionOption;
 
@@ -13,7 +14,7 @@ public class ListDiceSystems implements ConfigCommand {
 
 
 	@Override
-	public List<String> exec(SlashCommandInteractionOption option, DiceClient client, User user) {
+	public List<String> exec(SlashCommandInteractionOption option, DiceClient client, User user, Channel channel) {
 		List<String> resultList = new ArrayList<String>();
 		resultList.add("[DiceBot List]");
 		try {

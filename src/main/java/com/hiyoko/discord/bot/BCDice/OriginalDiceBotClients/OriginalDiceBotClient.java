@@ -117,4 +117,9 @@ public class OriginalDiceBotClient {
 	public List<String> getDiceBotList() {
 		return diceBotList;
 	}
+
+	public List<String> reloadDiceList() {
+		diceBotList = getRawDiceBotList();
+		return diceBotList;
+	}
 }

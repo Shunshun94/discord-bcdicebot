@@ -58,7 +58,6 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 
 	private void defineSlashCommand() {
 		Server server = api.getServerById("302452071993442307").get();
-		List<SlashCommandOption> dummy = new ArrayList<SlashCommandOption>();
 		SlashCommand.with("bcdice", "BCDice のダイスボットを利用します", Arrays.asList(
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "roll", "ダイスを振ります", Arrays.asList(
 				SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
@@ -71,6 +70,9 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 				)),
 				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "help", "ダイスボットで使用するシステムのヘルプメッセージを参照します", Arrays.asList(
 						SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
+				)),
+				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "load", "シークレットダイスの結果を呼び出します", Arrays.asList(
+						SlashCommandOption.create(SlashCommandOptionType.STRING, "key", "シークレットダイスを振った際にDMに送られてくる値です", true)
 				))
 			)),
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "admin", "（管理者向け）ダイスボットを管理します", Arrays.asList(
@@ -82,19 +84,31 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 				)),
 				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listServer", "（管理者向け）ダイスサーバを一覧します"),
 				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "refreshSecretDice", "（管理者向け）保存してあるシークレットダイスの結果をリセットします"),
+				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "updateDiceRollPreFix", "（管理者向け）ダイスコマンドを再読み込みします"),
 				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "addOriginalTable", "（管理者向け）スラッシュコマンドでのオリジナル表の追加は未対応です"),
 				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeOriginalTable", "（管理者向け）オリジナル表を削除します", Arrays.asList(
 					SlashCommandOption.create(SlashCommandOptionType.STRING, "originalTable", "（管理者向け）削除するオリジナル表の名前です", true)
 				)),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listOriginalTable", "（管理者向け）利用可能なオリジナル表を一覧します")
+				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listOriginalTable", "（管理者向け）利用可能なオリジナル表を一覧します"),
+				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "reloadOriginalTable", "（管理者向け）利用可能なオリジナル表を再読み込みして一覧します")
 			))
 		)).createForServer(server).join();
 
 		adminCommands.put("setserver", new SetServer());
 		adminCommands.put("removeserver", new RemoveServer());
 		adminCommands.put("listserver", new ListServer());
+		adminCommands.put("listoriginaltable", new ListOriginalTable());
+		adminCommands.put("reloadoriginaltable", new ReloadOriginalTable());
+		adminCommands.put("removeoriginaltable", new RemoveOriginalTable());
+		adminCommands.put("addoriginaltable", null);
+		adminCommands.put("refreshsecretdice", new RefreshSecretDice(bcDice));
+		adminCommands.put("updatedicerollprefix", new UpdateDiceRollPreFix());
 
 		configCommands.put("list", new ListDiceSystems());
+		configCommands.put("status", new Status());
+		configCommands.put("set", new SetDiceSystem());
+		configCommands.put("help", new HelpDiceSystem(bcDice));
+		configCommands.put("load", new LoadValue(bcDice));
 	}
 
 	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) throws IOException {
@@ -153,7 +167,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		String subCommand = option.getName();
 		ConfigCommand command = configCommands.get(subCommand);
 		if(command != null) {
-			return command.exec(option, client, user);
+			return command.exec(option, client, user, channel);
 		} else {
 			logger.warn(String.format("無効なコマンド %s が実行されました", subCommand));
 		}
