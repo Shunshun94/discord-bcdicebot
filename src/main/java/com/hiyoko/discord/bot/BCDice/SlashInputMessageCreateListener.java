@@ -53,12 +53,26 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
 		this.admin = api.getOwner().get();
 		this.chatToolClient = ChatToolClientFactory.getChatToolClient(api);
-		defineSlashCommand();
+		defineSlashCommand("bcdice");
 	}
 
-	private void defineSlashCommand() {
+	public SlashInputMessageCreateListener(DiscordApi api, BCDiceCLI cli, String prefix) throws InterruptedException, ExecutionException {
+		this.api = api;
+		this.bcDice = cli;
+		this.nameIndicator = NameIndicatorFactory.getNameIndicator();
+		this.diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
+		this.admin = api.getOwner().get();
+		this.chatToolClient = ChatToolClientFactory.getChatToolClient(api);
+		if(prefix.startsWith("/")) {
+			defineSlashCommand(prefix.substring(1));
+		} else {
+			defineSlashCommand(prefix);
+		}
+	}
+
+	private void defineSlashCommand(String prefix) {
 		Server server = api.getServerById("302452071993442307").get();
-		SlashCommand.with("bcdice", "BCDice のダイスボットを利用します", Arrays.asList(
+		SlashCommand.with(prefix, "BCDice のダイスボットを利用します", Arrays.asList(
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "roll", "ダイスを振ります", Arrays.asList(
 				SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
 			)),
