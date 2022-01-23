@@ -111,6 +111,10 @@ public class BCDiceCLI {
 		return client;
 	}
 
+	public String getRollCommand() {
+		return rollCommand;
+	}
+
 	/**
 	 * @param inputted command
 	 * @return If the command is for roll dice command, true. If not false

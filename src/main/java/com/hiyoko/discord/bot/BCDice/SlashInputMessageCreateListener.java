@@ -35,13 +35,16 @@ import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicatorFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 
 public class SlashInputMessageCreateListener implements SlashCommandCreateListener {
-	final Logger logger = LoggerFactory.getLogger(StandardInputMessageCreateListener.class);
-	final DiscordApi api;
-	final BCDiceCLI bcDice;
-	final NameIndicator nameIndicator;
-	final DiceResultFormatter diceResultFormatter;
-	final User admin;
-	final ChatToolClient chatToolClient;
+	private final Logger logger = LoggerFactory.getLogger(StandardInputMessageCreateListener.class);
+	private final DiscordApi api;
+	private final BCDiceCLI bcDice;
+	private final NameIndicator nameIndicator;
+	private final DiceResultFormatter diceResultFormatter;
+	private final User admin;
+	private final ChatToolClient chatToolClient;
+
+	private final String prefix;
+	private final String shortPrefix;
 
 	final Map<String, AdminCommand> adminCommands = new HashMap<String, AdminCommand>();
 	final Map<String, ConfigCommand> configCommands = new HashMap<String, ConfigCommand>();
@@ -53,27 +56,27 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
 		this.admin = api.getOwner().get();
 		this.chatToolClient = ChatToolClientFactory.getChatToolClient(api);
-		defineSlashCommand("bcdice");
+		this.prefix = "bcdice";
+		this.shortPrefix = "br";
+		defineSlashCommand();
 	}
 
-	public SlashInputMessageCreateListener(DiscordApi api, BCDiceCLI cli, String prefix) throws InterruptedException, ExecutionException {
+	public SlashInputMessageCreateListener(DiscordApi api, BCDiceCLI cli, String prefix, String shortPrefix) throws InterruptedException, ExecutionException {
 		this.api = api;
 		this.bcDice = cli;
 		this.nameIndicator = NameIndicatorFactory.getNameIndicator();
 		this.diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
 		this.admin = api.getOwner().get();
 		this.chatToolClient = ChatToolClientFactory.getChatToolClient(api);
-		if(prefix.startsWith("/")) {
-			defineSlashCommand(prefix.substring(1));
-		} else {
-			defineSlashCommand(prefix);
-		}
+		this.prefix = prefix.startsWith("/") ? prefix.substring(1) : prefix;
+		this.shortPrefix = shortPrefix.startsWith("/") ? shortPrefix.substring(1) : shortPrefix;
+		defineSlashCommand();
 	}
 
-	private void defineSlashCommand(String prefix) {
+	private void defineSlashCommand() {
 		Server server = api.getServerById("302452071993442307").get();
 		SlashCommand.with(prefix, "BCDice のダイスボットを利用します", Arrays.asList(
-			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "roll", "ダイスを振ります", Arrays.asList(
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "roll", String.format("ダイスを振ります。/%s というショートカットもあります", shortPrefix), Arrays.asList(
 				SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
 			)),
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "config", "ダイスボットの設定を確認・実施します", Arrays.asList(
@@ -107,6 +110,9 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "reloadOriginalTable", "（管理者向け）利用可能なオリジナル表を再読み込みして一覧します")
 			))
 		)).createForServer(server).join();
+		SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(
+			SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
+		)).createForServer(server).join();
 
 		adminCommands.put("setserver", new SetServer());
 		adminCommands.put("removeserver", new RemoveServer());
@@ -126,7 +132,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 	}
 
 	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) throws IOException {
-		List<DicerollResult> rollResults = bcDice.rolls(diceCommand, channel.getIdAsString());
+		List<DicerollResult> rollResults = bcDice.rolls(bcDice.getRollCommand() + " " + diceCommand, channel.getIdAsString());
 		if(rollResults.size() > 0) {
 			logger.debug("Dice command request for dice server is done");
 			List<String> sb = new ArrayList<String>();
@@ -201,14 +207,9 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		TextChannel channel = interaction.getChannel().get();
 
 		List<String> responseMessage = null;
-
 		SlashCommandInteractionOption firstOption = interaction.getOptionByIndex(0).get();
-		String firstOptionAsString = firstOption.getName();
-
-		SlashCommandInteractionOption secondOption = firstOption.getOptionByIndex(0).get();
-
-		if(firstOptionAsString.equals("roll")) {
-			String diceCommand = secondOption.getStringValue().orElse("");
+		if(interaction.getCommandName().equals(shortPrefix)) {
+			String diceCommand = firstOption.getStringValue().orElse("");
 			try {
 				responseMessage = handleRoll(diceCommand, channel, user);
 			} catch (IOException ioe) {
@@ -216,15 +217,33 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 				logger.warn(String.format("USERID: %s MESSAGE: %s", user.getIdAsString() , diceCommand));
 				logger.warn("Failed to reply to user request", ioe);
 			}
-		} else if(firstOptionAsString.equals("config")) {
-			responseMessage = handleConfig(secondOption, channel, user);
-		} else if(firstOptionAsString.equals("admin")) {
-			if(user.getIdAsString().equals(admin.getIdAsString())) {
-				responseMessage = handleAdmin(secondOption, channel, user);
-			} else {
-				getSingleMessage("Bot の管理者以外が admin コマンドを使うことはできません");
+		}
+		if(interaction.getCommandName().equals(prefix)) {
+			String firstOptionAsString = firstOption.getName();
+
+			SlashCommandInteractionOption secondOption = firstOption.getOptionByIndex(0).get();
+
+			if(firstOptionAsString.equals("roll")) {
+				String diceCommand = secondOption.getStringValue().orElse("");
+				try {
+					responseMessage = handleRoll(diceCommand, channel, user);
+				} catch (IOException ioe) {
+					responseMessage = getSingleMessage(String.format("[ERROR]%s", ioe.getMessage()));
+					logger.warn(String.format("USERID: %s MESSAGE: %s", user.getIdAsString() , diceCommand));
+					logger.warn("Failed to reply to user request", ioe);
+				}
+			} else if(firstOptionAsString.equals("config")) {
+				responseMessage = handleConfig(secondOption, channel, user);
+			} else if(firstOptionAsString.equals("admin")) {
+				if(user.getIdAsString().equals(admin.getIdAsString())) {
+					responseMessage = handleAdmin(secondOption, channel, user);
+				} else {
+					responseMessage = getSingleMessage("Bot の管理者以外が admin コマンドを使うことはできません");
+				}
 			}
 		}
+
+
 		if(responseMessage == null) {
 			responseMessage = getSingleMessage("無効なコマンドっぽいです。未実装なのかもしれない。");
 		}
