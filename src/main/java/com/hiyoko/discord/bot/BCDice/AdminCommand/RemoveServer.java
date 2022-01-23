@@ -11,6 +11,11 @@ public class RemoveServer implements AdminCommand {
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client) {
 		String url = option.getOptionByIndex(0).get().getStringValue().get();
+		return exec(url, client);
+	}
+
+	@Override
+	public List<String> exec(String url, DiceClient client) {
 		try {
 			boolean removeResult = client.removeDiceServer(url);
 			if(removeResult) {

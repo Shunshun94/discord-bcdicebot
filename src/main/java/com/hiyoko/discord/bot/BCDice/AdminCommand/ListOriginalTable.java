@@ -10,6 +10,11 @@ import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClien
 public class ListOriginalTable implements AdminCommand {
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client) {
+		return exec("", client);
+	}
+
+	@Override
+	public List<String> exec(String option, DiceClient client) {
 		return OriginalDiceBotClientFactory.getOriginalDiceBotClient().getDiceBotList();
 	}
 

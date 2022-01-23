@@ -9,6 +9,11 @@ import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 public class ListServer implements AdminCommand {
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client) {
+		return exec("", client);
+	}
+
+	@Override
+	public List<String> exec(String option, DiceClient client) {
 		return client.getDiceUrlList();
 	}
 }

@@ -10,7 +10,6 @@ import org.javacord.api.interaction.SlashCommandInteractionOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hiyoko.discord.bot.BCDice.BCDiceCLI;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 import com.hiyoko.discord.bot.BCDice.DiceClient.SavedMessageFactory;
 import com.hiyoko.discord.bot.BCDice.dto.SecretMessage;
@@ -29,6 +28,11 @@ public class LoadValue implements ConfigCommand {
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client, User user, Channel channel) {
 		String key = option.getOptionByIndex(0).get().getStringValue().get();
+		return exec(key, client, user, channel);
+	}
+
+	@Override
+	public List<String> exec(String key, DiceClient client, User user, Channel channel) {
 		try {
 			return getMessage(user.getIdAsString(), key);
 		} catch (IOException e) {

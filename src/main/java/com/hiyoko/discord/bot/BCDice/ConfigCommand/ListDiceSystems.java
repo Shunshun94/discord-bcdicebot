@@ -15,6 +15,11 @@ public class ListDiceSystems implements ConfigCommand {
 
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client, User user, Channel channel) {
+		return exec("", client, user, channel);
+	}
+
+	@Override
+	public List<String> exec(String param, DiceClient client, User user, Channel channel) {
 		List<String> resultList = new ArrayList<String>();
 		resultList.add("[DiceBot List]");
 		try {

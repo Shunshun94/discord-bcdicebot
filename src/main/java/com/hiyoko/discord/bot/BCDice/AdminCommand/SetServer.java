@@ -14,8 +14,13 @@ public class SetServer implements AdminCommand {
 
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client) {
+		String url = option.getOptionByIndex(0).get().getStringValue().get();
+		return exec(url, client);
+	}
+
+	@Override
+	public List<String> exec(String url, DiceClient client) {
 		try {
-			String url = option.getOptionByIndex(0).get().getStringValue().get();
 			client.setDiceServer(url);
 			VersionInfo vi = client.getVersion();
 			String msg = String.format("%s(API v.%s / BCDice v.%s)", client.toString(), vi.getApiVersion(), vi.getDiceVersion()); 

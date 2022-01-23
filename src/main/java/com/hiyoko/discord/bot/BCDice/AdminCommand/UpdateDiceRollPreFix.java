@@ -10,6 +10,11 @@ public class UpdateDiceRollPreFix implements AdminCommand {
 
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client) {
+		return exec("", client);
+	}
+
+	@Override
+	public List<String> exec(String option, DiceClient client) {
 		return client.updateDiceBotsPrefixes();
 	}
 

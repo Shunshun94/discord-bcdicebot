@@ -16,6 +16,10 @@ public class Status implements ConfigCommand {
 	final Logger logger = LoggerFactory.getLogger(Status.class);
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client, User user, Channel channel) {
+		return exec("", client, user, channel);
+	}
+	@Override
+	public List<String> exec(String param, DiceClient client, User user, Channel channel) {
 		VersionInfo vi;
 		try {
 			vi = client.getVersion();

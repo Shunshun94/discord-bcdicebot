@@ -15,6 +15,10 @@ public class RemoveOriginalTable implements AdminCommand {
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client) {
 		String name = option.getOptionByIndex(0).get().getStringValue().get();
+		return exec(name, client);
+	}
+	@Override
+	public List<String> exec(String name, DiceClient client) {
 		try {
 			OriginalDiceBotClientFactory.getOriginalDiceBotClient().unregisterDiceBot(name);
 			return AdminUtil.getSingleMessage(String.format("ダイスボット表 [%s] を削除しました", name));

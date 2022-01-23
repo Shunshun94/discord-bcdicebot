@@ -11,6 +11,11 @@ public class ReloadOriginalTable implements AdminCommand {
 
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client) {
+		return exec("", client);
+	}
+
+	@Override
+	public List<String> exec(String option, DiceClient client) {
 		return OriginalDiceBotClientFactory.getOriginalDiceBotClient().reloadDiceList();
 	}
 
