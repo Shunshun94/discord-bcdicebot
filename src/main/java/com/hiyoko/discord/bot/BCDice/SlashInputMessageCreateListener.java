@@ -3,7 +3,6 @@ package com.hiyoko.discord.bot.BCDice;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -46,8 +45,8 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 	private final String prefix;
 	private final String shortPrefix;
 
-	final Map<String, AdminCommand> adminCommands = new HashMap<String, AdminCommand>();
-	final Map<String, ConfigCommand> configCommands = new HashMap<String, ConfigCommand>();
+	private final Map<String, AdminCommand> adminCommands = AdminCommandsMapFactory.getAdminCommands();
+	private final Map<String, ConfigCommand> configCommands;
 
 	public SlashInputMessageCreateListener(DiscordApi api, BCDiceCLI cli) throws InterruptedException, ExecutionException {
 		this.api = api;
@@ -59,6 +58,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.prefix = "bcdice";
 		this.shortPrefix = "br";
 		defineSlashCommand();
+		this.configCommands = bcDice.getConfigCommands();
 	}
 
 	public SlashInputMessageCreateListener(DiscordApi api, BCDiceCLI cli, String prefix, String shortPrefix) throws InterruptedException, ExecutionException {
@@ -71,6 +71,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.prefix = prefix.startsWith("/") ? prefix.substring(1) : prefix;
 		this.shortPrefix = shortPrefix.startsWith("/") ? shortPrefix.substring(1) : shortPrefix;
 		defineSlashCommand();
+		this.configCommands = bcDice.getConfigCommands();
 	}
 
 	private void defineSlashCommand() {
@@ -113,22 +114,6 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(
 			SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
 		)).createForServer(server).join();
-
-		adminCommands.put("setserver", new SetServer());
-		adminCommands.put("removeserver", new RemoveServer());
-		adminCommands.put("listserver", new ListServer());
-		adminCommands.put("listoriginaltable", new ListOriginalTable());
-		adminCommands.put("reloadoriginaltable", new ReloadOriginalTable());
-		adminCommands.put("removeoriginaltable", new RemoveOriginalTable());
-		adminCommands.put("addoriginaltable", null);
-		adminCommands.put("refreshsecretdice", new RefreshSecretDice());
-		adminCommands.put("updatedicerollprefix", new UpdateDiceRollPreFix());
-
-		configCommands.put("list", new ListDiceSystems());
-		configCommands.put("status", new Status());
-		configCommands.put("set", new SetDiceSystem());
-		configCommands.put("help", new HelpDiceSystem());
-		configCommands.put("load", new LoadValue());
 	}
 
 	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) throws IOException {

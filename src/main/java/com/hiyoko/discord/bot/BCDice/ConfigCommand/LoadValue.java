@@ -11,17 +11,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
-import com.hiyoko.discord.bot.BCDice.DiceClient.SavedMessageFactory;
 import com.hiyoko.discord.bot.BCDice.dto.SecretMessage;
 
 public class LoadValue implements ConfigCommand {
-	final Logger logger = LoggerFactory.getLogger(LoadValue.class);
+	private final Logger logger = LoggerFactory.getLogger(LoadValue.class);
+	private final Map<String, Map<String, SecretMessage>> savedMessages;
+	public LoadValue(Map<String, Map<String, SecretMessage>> map) {
+		savedMessages = map;
+	}
 	private List<String> getMessage(String id, String index) throws IOException {
+		Map<String, SecretMessage> list = savedMessages.get(id);
+		if(list == null) {
+			String comment = String.format("ユーザ [%s] の情報が見つかりませんでした", id);
+			logger.warn(savedMessages.toString());
+			throw new IOException(comment);
+		} 
 		try {
-			Map<String, SecretMessage> list = SavedMessageFactory.getSavedMessages().get(id);
 			return list.get(index).getMessages();
-		} catch (Exception e) {
-			throw new IOException(e.getMessage(), e);
+		} catch (NullPointerException e) {
+			String comment = String.format("ユーザ [%s] の情報は見つかりましたが、インデックス [%s] の値は見つかりませんでした", id, index);
+			throw new IOException(comment, e);
 		}
 	}
 
