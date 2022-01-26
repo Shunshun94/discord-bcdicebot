@@ -29,7 +29,6 @@ import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClien
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 import com.hiyoko.discord.bot.BCDice.dto.OriginalDiceBotTable;
 import com.hiyoko.discord.bot.BCDice.dto.SecretMessage;
-import com.hiyoko.discord.bot.BCDice.dto.VersionInfo;
 
 import org.slf4j.Logger;
 
@@ -389,7 +388,7 @@ public class BCDiceCLI {
 			return resultList;
 		}
 		if(command[3].equals("listServer")) {
-			resultList.addAll(client.getDiceUrlList());
+			resultList.addAll(adminCommands.get("listserver").exec("", client));
 			return resultList;
 		}
 		if(command[3].equals("removeServer")) {
@@ -398,17 +397,7 @@ public class BCDiceCLI {
 				resultList.add(HELP_ADMIN);
 				return resultList;
 			} else {
-				try {
-					boolean removeResult = client.removeDiceServer(command[4]);
-					if(removeResult) {
-						resultList.add(String.format("%s をダイスサーバのリストから削除しました", command[4]));
-					} else {
-						resultList.add(String.format("%s がダイスサーバのリストに見つかりませんでした", command[4]));
-					}
-				} catch(IOException e) {
-					resultList.add(e.getMessage());
-				}
-				return resultList;
+				return adminCommands.get("removeserver").exec(command[4], client);
 			}
 		}
 		if(command[3].equals("setServer")) {
@@ -417,20 +406,7 @@ public class BCDiceCLI {
 				resultList.add(HELP_ADMIN);
 				return resultList;
 			} else {
-				client.setDiceServer(command[4]);
-				try {
-					VersionInfo vi = client.getVersion();
-					String msg = client.toString() + "(API v." + vi.getApiVersion() + " / BCDice v." + vi.getDiceVersion() + ")";
-					if(msg.contains(command[4])) {
-						resultList.add("ダイスサーバを再設定しました");
-					} else {
-						resultList.add("ダイスサーバの設定に失敗しました。以下のサーバを利用します");
-					}
-					resultList.add(msg);
-				} catch(IOException e) {
-					resultList.add(client.toString() + "(ダイスサーバの情報の取得に失敗しました)");
-				}
-				return resultList;
+				return adminCommands.get("removeserver").exec(command[4], client);
 			}
 		}
 		if(command[3].equals("export")) {
@@ -462,7 +438,7 @@ public class BCDiceCLI {
 			return separateStringWithLengthLimitation(resultList, 1000);
 		}
 		if(command[3].equals("updateDiceRollPreFix")) {
-			return client.updateDiceBotsPrefixes();
+			return adminCommands.get("updatedicerollprefix").exec("", client);
 		}
 		if(command[3].equals("suppressroll")) {
 			if(command.length > 4) {
@@ -514,23 +490,13 @@ public class BCDiceCLI {
 				resultList.add("ダイスボット表の名前を指定してください");
 				return resultList;
 			}
-			try {
-				originalDiceBotClient.unregisterDiceBot(command[4]);
-				resultList.add(String.format("ダイスボット表 [%s] を削除しました", command[4]));
-				return resultList;
-			} catch(IOException e) {
-				logger.warn("ダイスボット表の削除に失敗しました", e);
-				resultList.add(e.getMessage());
-				return resultList;
-			}
+			return adminCommands.get("removeoriginaltable").exec(command[4], client);
 		}
 		if(command[3].equals("listDiceBot")) {
-			List<String> dicebotList = originalDiceBotClient.getDiceBotList();
-			resultList.addAll(separateStringWithLengthLimitation(dicebotList, 1000));
-			return resultList;
+			return adminCommands.get("listoriginaltable").exec("", client);
 		}
 		if(command[3].equals("refreshSecretDice")) {
-			return separateStringWithLengthLimitation(refreshSecretMessages(), 1000);
+			return adminCommands.get("refreshsecretdice").exec("", client);
 		}
 
 		resultList.add(HELP_ADMIN);
@@ -565,23 +531,6 @@ public class BCDiceCLI {
 		msgList.put(key, secretMessage);
 		logger.info(String.format("%s-%s - %s (%s)", id, key, messages.get(0), msgList.size()));
 		return String.valueOf(key);
-	}
-
-	private String refreshSecretMessages() {
-		StringBuilder sb = new StringBuilder();
-		int i = 0;
-		for(String userId : savedMessage.keySet()) {
-			Map<String, SecretMessage> userMessageMap = savedMessage.get(userId);
-			for(String messageId : userMessageMap.keySet()) {
-				if( userMessageMap.get(messageId).isDeprecated() ) {
-					userMessageMap.remove(messageId);
-					sb.append(String.format("削除: User %s / Id %s\n", userId, messageId));
-					i++;
-				}
-			}
-		}
-		sb.append(String.format("%s件のシークレットダイスの結果を削除しました", i));
-		return sb.toString();
 	}
 
 	/**
