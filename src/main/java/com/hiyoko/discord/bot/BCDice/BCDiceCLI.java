@@ -137,7 +137,7 @@ public class BCDiceCLI {
 	private boolean isShouldRoll(String input, String system) throws IOException {
 		if(! isSuppressed) { return true; } //TODO 2021/08/22 近々廃止する
 		if( rollCommand.isEmpty() ) {
-			return client.isDiceCommand(input, system);
+			return client.isDiceCommand(input.trim(), system);
 		} else {
 			return input.startsWith(rollCommand);
 		}

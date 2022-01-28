@@ -130,7 +130,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 				}
 			}
 			List<String> resultMessage = bcDice.separateStringWithLengthLimitation(
-				String.format("> %s\n%s\n%s", nameIndicator.getName(user), diceCommand, sb.stream().collect(Collectors.joining("\n\n"))), 1000); 
+				String.format("> %s\n%s\n%s", nameIndicator.getName(user), diceCommand, sb.stream().collect(Collectors.joining("\n\n"))), 1000);
 			DicerollResult firstOne = rollResults.get(0);
 			if( firstOne.isSecret() ) {
 				String index = bcDice.saveMessage(user.getIdAsString(), resultMessage);
@@ -149,8 +149,10 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 				return resultMessage;
 			}
 		} else {
+			String message = String.format("ダイスを振るのに失敗しました。ダイスコマントとして恐らく無効です\n%s", diceCommand); 
+			logger.warn(message);
 			List<String> empty = new ArrayList<String>();
-			empty.add(String.format("ダイスを振るのに失敗しました。ダイスコマントとして恐らく無効です\n%s", diceCommand));
+			empty.add(message);
 			return empty;
 		}
 	}
