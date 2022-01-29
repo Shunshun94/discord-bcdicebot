@@ -10,6 +10,8 @@ import org.javacord.api.DiscordApiBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hiyoko.discord.bot.BCDice.Listener.StandardInputMessageCreateListener;
+
 /**
  * First kicked class for discord-bcdicebot.
  * It creates two instances, DiscordAPI client and BCDice client.

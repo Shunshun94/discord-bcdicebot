@@ -1,4 +1,4 @@
-package com.hiyoko.discord.bot.BCDice;
+package com.hiyoko.discord.bot.BCDice.Listener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import org.javacord.api.listener.message.MessageCreateListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hiyoko.discord.bot.BCDice.BCDiceCLI;
 import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClient;
 import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClientFactory;
 import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatter;
