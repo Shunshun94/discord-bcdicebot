@@ -231,7 +231,6 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 			}
 		}
 
-
 		if(responseMessage == null) {
 			responseMessage = getSingleMessage("無効なコマンドっぽいです。未実装なのかもしれない。");
 		}

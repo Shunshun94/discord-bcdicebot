@@ -10,6 +10,7 @@ import org.javacord.api.DiscordApiBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hiyoko.discord.bot.BCDice.Listener.SlashInputMessageCreateListener;
 import com.hiyoko.discord.bot.BCDice.Listener.StandardInputMessageCreateListener;
 
 /**
@@ -43,6 +44,33 @@ public class BCDiceBot {
 		}
 	}
 
+	private String getSlashPrefix() {
+		String prefix = System.getenv("BCDICE_SLASH_PREFIX");
+		if(prefix == null) {
+			return "";
+		} else {
+			return prefix.trim();
+		}
+	}
+
+	private String getSlashShortPrefix() {
+		String prefix = System.getenv("BCDICE_SLASH_SHORT_PREFIX");
+		if(prefix == null) {
+			return "br";
+		} else {
+			return prefix.trim();
+		}
+	}
+
+	private boolean isStandardChatEnabled() {
+		String isDisabledString = System.getenv("BCDICE_STANDARD_INPUT_DISABLED");
+		if(isDisabledString == null || isDisabledString.trim().isEmpty()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
@@ -54,7 +82,16 @@ public class BCDiceBot {
 	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive, String password) throws IOException, InterruptedException, ExecutionException {
 		bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive, password);
 		api = new DiscordApiBuilder().setToken(token).login().get();
-		api.addMessageCreateListener(new StandardInputMessageCreateListener(api, bcDice));
+
+		if(isStandardChatEnabled()) {
+			api.addMessageCreateListener(new StandardInputMessageCreateListener(api, bcDice));
+		}
+
+		String slashPrefix = getSlashPrefix();
+		if(! slashPrefix.isEmpty()) {
+			String slashShortPrefix = getSlashShortPrefix();
+			api.addSlashCommandCreateListener(new SlashInputMessageCreateListener(api, bcDice, slashPrefix, slashShortPrefix));
+		}
 	}
 
 	private static String getVersion() {
