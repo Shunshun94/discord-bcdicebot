@@ -76,7 +76,6 @@ public class BCDiceCLITest extends TestCase {
 			assertEquals(list[2], cli.inputs(String.format("bcdice load %s", indexes[2]), "hiyoko", "channel").get(0));
 			assertEquals(list[3], cli.inputs(String.format("bcdice load %s", indexes[3]), "hiyoko", "channel").get(0));
 			assertEquals(cli.inputs(String.format("bcdice load %s", indexes[4]), "hiyoko", "channel").get(0), "");
-			System.out.println(cli.inputs(String.format("bcdice load %s", indexes[0]), "koneko", "channel").get(0));
 			assertTrue(cli.inputs(String.format("bcdice load %s", indexes[0]), "koneko", "channel").get(0).endsWith("該当するメッセージは見つかりませんでした"));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -100,8 +99,6 @@ public class BCDiceCLITest extends TestCase {
 		cli.inputs("bcdice set " + diceBotList.get(3), "hiyoko", "ungeneral");
 		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(3)));
 		assertFalse(cli.inputs("bcdice status", "hiyoko", "general").get(0).contains(diceBotList.get(3)));
-		System.out.println("=====" + cli.inputs("bcdice status", "hiyoko", "dummydummy") + "=====");
-		System.out.println("=====" + diceBotList + "=====");
 		assertTrue(cli.inputs("bcdice status", "hiyoko", "dummydummy").get(0).contains(diceBotList.get(0)));
 	}
 
