@@ -5,7 +5,7 @@
 
 	<groupId>com.hiyoko.discord.bot</groupId>
 	<artifactId>com.hiyoko.discord.bot.BCDice</artifactId>
-	<version>2.5.7</version>
+	<version>2.6.0</version>
 	<packaging>jar</packaging>
 	<name>com.hiyoko.discord.bot.BCDice</name>
 	<url>https://github.com/Shunshun94/discord-bcdicebot</url>
