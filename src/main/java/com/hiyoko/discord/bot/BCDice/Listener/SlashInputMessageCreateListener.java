@@ -76,7 +76,6 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 	}
 
 	private void defineSlashCommand() {
-		Server server = api.getServerById("302452071993442307").get();
 		SlashCommand.with(prefix, "BCDice のダイスボットを利用します", Arrays.asList(
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "roll", String.format("ダイスを振ります。/%s というショートカットもあります", shortPrefix), Arrays.asList(
 				SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
@@ -117,10 +116,10 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listServers", "（管理者向け）サーバを一覧します"),
 				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "removeSlashCommands", "（管理者向け）スラッシュコマンドを全削除し、再起動するまでスラッシュコマンドが使えなくなります。スラッシュコマンドを再設定したい場合はこれを実行した後にダイスボットを停止・再起動してください")
 			))
-		)).createForServer(server).join();
+		)).createGlobal(api).join();
 		SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(
 			SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
-		)).createForServer(server).join();
+		)).createGlobal(api).join();
 	}
 
 	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) throws IOException {
