@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import com.hiyoko.discord.bot.BCDice.BCDiceCLI;
 import com.hiyoko.discord.bot.BCDice.AdminCommand.*;
 import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClient;
-import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClientFactory;
 import com.hiyoko.discord.bot.BCDice.ChatTool.DiscordClientV2;
 import com.hiyoko.discord.bot.BCDice.ConfigCommand.*;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
@@ -115,7 +114,8 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "Discord", "（管理者向け）ダイスボットが導入されているDiscordサーバについて確認します", Arrays.asList(
 				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listRoomIds", "（管理者向け）チャンネルの ID を一覧します"),
 				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listRooms", "（管理者向け）チャンネルの情報を一覧します"),
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listServers", "（管理者向け）サーバを一覧します")
+				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listServers", "（管理者向け）サーバを一覧します"),
+				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "removeSlashCommands", "（管理者向け）スラッシュコマンドを全削除し、再起動するまでスラッシュコマンドが使えなくなります。スラッシュコマンドを再設定したい場合はこれを実行した後にダイスボットを停止・再起動してください")
 			))
 		)).createForServer(server).join();
 		SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(

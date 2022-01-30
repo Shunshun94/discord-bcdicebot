@@ -2,9 +2,11 @@ package com.hiyoko.discord.bot.BCDice.ChatTool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import org.javacord.api.DiscordApi;
+import org.javacord.api.interaction.SlashCommand;
 
 public class DiscordClientV2 implements ChatToolClient {
 	private final DiscordApi api;
@@ -30,6 +32,9 @@ public class DiscordClientV2 implements ChatToolClient {
 		}
 		if(command.equals("listservers")) {
 			return getServerList();
+		}
+		if(command.equals("removeslashcommands")) {
+			return cleanUpSlashCommands();
 		}
 		return new ArrayList<String>();
 	}
@@ -57,5 +62,28 @@ public class DiscordClientV2 implements ChatToolClient {
 
 	private List<String> getServerList() {
 		return api.getServers().stream().map(server->String.format("%s,%s", server.getIdAsString(), server.getName())).collect(Collectors.toList());
+	}
+
+	private List<String> cleanUpSlashCommands() {
+		List<String> result = new ArrayList<String>();
+		for(SlashCommand sc : api.getGlobalSlashCommands().join()) {
+			sc.deleteGlobal();
+			result.add(String.format("削除成功：%s @ GLOBAL", sc.getName()));
+		}
+		api.getServers().stream().forEach(server->{
+			List<SlashCommand> slachCommandsOnServer;
+			try {
+				slachCommandsOnServer = api.getServerSlashCommands(server).get();
+				for(SlashCommand sc : slachCommandsOnServer) {
+					result.add(String.format("削除成功：%s @ %s", sc.getName(), server.getIdAsString()));
+					sc.deleteForServer(server);
+				}
+			} catch (InterruptedException e) {
+				result.add(String.format("削除失敗：サーバ%sの情報", server.getIdAsString()));
+			} catch (ExecutionException e) {
+				result.add(String.format("削除失敗：サーバ%sの情報", server.getIdAsString()));
+			}
+		});
+		return result;
 	}
 }
