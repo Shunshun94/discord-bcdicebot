@@ -23,8 +23,7 @@ public class ListDiceSystems implements ConfigCommand {
 		List<String> resultList = new ArrayList<String>();
 		resultList.add("[DiceBot List]");
 		try {
-			resultList.addAll(ConfigUtil.separateStringWithLengthLimitation(client.getSystems().getSystemList(), 1000));
-			return resultList;
+			return ConfigUtil.separateStringWithLengthLimitation(client.getSystems().getSystemList(), 1000);
 		} catch (IOException e) {
 			return ConfigUtil.getSingleMessage(e.getMessage());
 		}

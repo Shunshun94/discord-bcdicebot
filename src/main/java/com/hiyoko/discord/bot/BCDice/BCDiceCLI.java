@@ -408,8 +408,7 @@ public class BCDiceCLI {
 			return resultList;
 		}
 		if(command[3].equals("listServer")) {
-			resultList.addAll(adminCommands.get("listserver").exec("", client));
-			return resultList;
+			return separateStringWithLengthLimitation(adminCommands.get("listserver").exec("", client), 1000);
 		}
 		if(command[3].equals("removeServer")) {
 			if(command.length < 5) {
@@ -463,7 +462,7 @@ public class BCDiceCLI {
 			return separateStringWithLengthLimitation(resultList, 1000);
 		}
 		if(command[3].equals("updateDiceRollPreFix")) {
-			return adminCommands.get("updatedicerollprefix").exec("", client);
+			return separateStringWithLengthLimitation(adminCommands.get("updatedicerollprefix").exec("", client),1000);
 		}
 		if(command[3].equals("suppressroll")) {
 			if(command.length > 4) {
@@ -515,13 +514,13 @@ public class BCDiceCLI {
 				resultList.add("ダイスボット表の名前を指定してください");
 				return resultList;
 			}
-			return adminCommands.get("removeoriginaltable").exec(command[4], client);
+			return separateStringWithLengthLimitation(adminCommands.get("removeoriginaltable").exec(command[4], client), 1000);
 		}
 		if(command[3].equals("listDiceBot")) {
-			return adminCommands.get("listoriginaltable").exec("", client);
+			return separateStringWithLengthLimitation(adminCommands.get("listoriginaltable").exec("", client),1000);
 		}
 		if(command[3].equals("refreshSecretDice")) {
-			return adminCommands.get("refreshsecretdice").exec("", client);
+			return separateStringWithLengthLimitation(adminCommands.get("refreshsecretdice").exec("", client),1000);
 		}
 
 		resultList.add(HELP_ADMIN);
