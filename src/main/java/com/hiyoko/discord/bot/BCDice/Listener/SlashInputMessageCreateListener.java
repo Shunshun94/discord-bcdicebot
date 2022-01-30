@@ -26,6 +26,7 @@ import com.hiyoko.discord.bot.BCDice.BCDiceCLI;
 import com.hiyoko.discord.bot.BCDice.AdminCommand.*;
 import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClient;
 import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClientFactory;
+import com.hiyoko.discord.bot.BCDice.ChatTool.DiscordClientV2;
 import com.hiyoko.discord.bot.BCDice.ConfigCommand.*;
 import com.hiyoko.discord.bot.BCDice.DiceClient.DiceClient;
 import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatter;
@@ -55,7 +56,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.nameIndicator = NameIndicatorFactory.getNameIndicator();
 		this.diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
 		this.admin = api.getOwner().get();
-		this.chatToolClient = ChatToolClientFactory.getChatToolClient(api);
+		this.chatToolClient = new DiscordClientV2(api);
 		this.prefix = "bcdice";
 		this.shortPrefix = "br";
 		defineSlashCommand();
@@ -68,7 +69,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.nameIndicator = NameIndicatorFactory.getNameIndicator();
 		this.diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
 		this.admin = api.getOwner().get();
-		this.chatToolClient = ChatToolClientFactory.getChatToolClient(api);
+		this.chatToolClient = new DiscordClientV2(api);
 		this.prefix = prefix.startsWith("/") ? prefix.substring(1) : prefix;
 		this.shortPrefix = shortPrefix.startsWith("/") ? shortPrefix.substring(1) : shortPrefix;
 		defineSlashCommand();
@@ -110,6 +111,11 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 				)),
 				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listOriginalTable", "（管理者向け）利用可能なオリジナル表を一覧します"),
 				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "reloadOriginalTable", "（管理者向け）利用可能なオリジナル表を再読み込みして一覧します")
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "Discord", "（管理者向け）ダイスボットが導入されているDiscordサーバについて確認します", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listRoomIds", "（管理者向け）チャンネルの ID を一覧します"),
+				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listRooms", "（管理者向け）チャンネルの情報を一覧します"),
+				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listServers", "（管理者向け）サーバを一覧します")
 			))
 		)).createForServer(server).join();
 		SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(
@@ -170,6 +176,10 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		return null;
 	}
 
+	private List<String> handleDiscord(SlashCommandInteractionOption option, TextChannel channel, User user) {
+		return bcDice.separateStringWithLengthLimitation(chatToolClient.input(option.getName()), 1000);
+	}
+
 	private List<String> handleConfig(SlashCommandInteractionOption option, TextChannel channel, User user) {
 		DiceClient client = bcDice.getDiceClient();
 		String subCommand = option.getName();
@@ -228,10 +238,16 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 				} else {
 					responseMessage = getSingleMessage("Bot の管理者以外が admin コマンドを使うことはできません");
 				}
+			} else if(firstOptionAsString.equals("discord")) {
+				if(user.getIdAsString().equals(admin.getIdAsString())) {
+					responseMessage = handleDiscord(secondOption, channel, user);
+				} else {
+					responseMessage = getSingleMessage("Bot の管理者以外が discord コマンドを使うことはできません");
+				}
 			}
 		}
 
-		if(responseMessage == null) {
+		if(responseMessage == null || responseMessage.size() == 0) {
 			responseMessage = getSingleMessage("無効なコマンドっぽいです。未実装なのかもしれない。");
 		}
 		try {
