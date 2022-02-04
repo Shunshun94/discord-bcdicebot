@@ -46,16 +46,16 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(cli.inputs("bcdice nonsense", "", "channel").get(0), BCDiceCLI.HELP);
 		List<String> diceBotList = cli.inputs("bcdice list", "dummy", "dummy");
 		assertTrue(cli.inputs("bcdice help nonsense", "", "channel").get(0).indexOf("is not found") > -1);
-		assertTrue(cli.inputs("bcdice help " + diceBotList.get(1), "", "channel").get(0).indexOf("is not found") == -1);
-		assertTrue(cli.inputs("bcdice help " + diceBotList.get(1) + "\ndayodayo", "", "channel").get(0).indexOf("is not found") == -1);
+		assertTrue(cli.inputs("bcdice help " + diceBotList.get(0), "", "channel").get(0).indexOf("is not found") == -1);
+		assertTrue(cli.inputs("bcdice help " + diceBotList.get(0) + "\ndayodayo", "", "channel").get(0).indexOf("is not found") == -1);
 	}
 	
 	public void testInputStringSet() {
 		List<String> diceBotList = cli.inputs("bcdice list", "dummy", "dummy");
 		assertTrue(cli.inputs("bcdice set", "", "channel").get(0).indexOf("ERROR") > -1);
-		assertTrue(cli.inputs("bcdice set " + diceBotList.get(1), "", "channel").get(0).indexOf("ERROR") == -1);
-		assertTrue(cli.inputs("bcdice set " + diceBotList.get(1) + " nonsense", "", "channel").get(0).indexOf("ERROR") == -1);
-		assertTrue(cli.inputs("bcdice set " + diceBotList.get(1) + "\nhiyohiyo", "", "channel").get(0).indexOf("ERROR") == -1);
+		assertTrue(cli.inputs("bcdice set " + diceBotList.get(0), "", "channel").get(0).indexOf("ERROR") == -1);
+		assertTrue(cli.inputs("bcdice set " + diceBotList.get(0) + " nonsense", "", "channel").get(0).indexOf("ERROR") == -1);
+		assertTrue(cli.inputs("bcdice set " + diceBotList.get(0) + "\nhiyohiyo", "", "channel").get(0).indexOf("ERROR") == -1);
 		assertTrue(cli.inputs("bcdice set Hiyoko", "", "hiyohitsu").get(0).contains("Hiyoko"));
 		assertTrue(cli.inputs("bcdice set hitsuji & hiyoko", "", "hiyohitsu").get(0).contains("hitsuji & hiyoko"));
 	}
@@ -76,7 +76,7 @@ public class BCDiceCLITest extends TestCase {
 			assertEquals(list[2], cli.inputs(String.format("bcdice load %s", indexes[2]), "hiyoko", "channel").get(0));
 			assertEquals(list[3], cli.inputs(String.format("bcdice load %s", indexes[3]), "hiyoko", "channel").get(0));
 			assertEquals(cli.inputs(String.format("bcdice load %s", indexes[4]), "hiyoko", "channel").get(0), "");
-			assertTrue(cli.inputs(String.format("bcdice load %s", indexes[0]), "koneko", "channel").get(0).startsWith("Not found"));
+			assertTrue(cli.inputs(String.format("bcdice load %s", indexes[0]), "koneko", "channel").get(0).endsWith("該当するメッセージは見つかりませんでした"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -99,7 +99,7 @@ public class BCDiceCLITest extends TestCase {
 		cli.inputs("bcdice set " + diceBotList.get(3), "hiyoko", "ungeneral");
 		assertTrue(cli.inputs("bcdice status", "hiyoko", "ungeneral").get(0).contains(diceBotList.get(3)));
 		assertFalse(cli.inputs("bcdice status", "hiyoko", "general").get(0).contains(diceBotList.get(3)));
-		assertTrue(cli.inputs("bcdice status", "hiyoko", "dummydummy").get(0).contains(diceBotList.get(1)));
+		assertTrue(cli.inputs("bcdice status", "hiyoko", "dummydummy").get(0).contains(diceBotList.get(0)));
 	}
 
 	public void testNormalizeCommand() throws IOException {
