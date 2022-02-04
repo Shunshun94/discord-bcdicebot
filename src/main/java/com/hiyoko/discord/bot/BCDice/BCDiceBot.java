@@ -3,23 +3,15 @@ package com.hiyoko.discord.bot.BCDice;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
+import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
-import org.javacord.api.entity.message.MessageAttachment;
-import org.javacord.api.entity.message.MessageAuthor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClient;
-import com.hiyoko.discord.bot.BCDice.ChatTool.ChatToolClientFactory;
-import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatter;
-import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatterFactory;
-import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicator;
-import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicatorFactory;
-import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
+import com.hiyoko.discord.bot.BCDice.Listener.SlashInputMessageCreateListener;
+import com.hiyoko.discord.bot.BCDice.Listener.StandardInputMessageCreateListener;
 
 /**
  * First kicked class for discord-bcdicebot.
@@ -28,15 +20,8 @@ import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
  */
 public class BCDiceBot {
 	final Logger logger = LoggerFactory.getLogger(BCDiceBot.class);
-	/**
-	 * Constructor.
-	 * @param token Discord bot token
-	 * @param bcDiceUrl BCDice-API URL
-	 * @throws IOException 
-	 */
-	public BCDiceBot(String token, String bcDiceUrl, String password) throws IOException {
-		new BCDiceBot(token, bcDiceUrl, true, password);
-	}
+	final DiscordApi api;
+	final BCDiceCLI bcDice;
 
 	private List<String> getUrlList(String bcDiceUrl) {
 		List<String> urlList = new ArrayList<String>();
@@ -59,97 +44,54 @@ public class BCDiceBot {
 		}
 	}
 
+	private String getSlashPrefix() {
+		String prefix = System.getenv("BCDICE_SLASH_PREFIX");
+		if(prefix == null) {
+			return "";
+		} else {
+			return prefix.trim();
+		}
+	}
+
+	private String getSlashShortPrefix() {
+		String prefix = System.getenv("BCDICE_SLASH_SHORT_PREFIX");
+		if(prefix == null) {
+			return "br";
+		} else {
+			return prefix.trim();
+		}
+	}
+
+	private boolean isStandardChatEnabled() {
+		String isDisabledString = System.getenv("BCDICE_STANDARD_INPUT_DISABLED");
+		if(isDisabledString == null || isDisabledString.trim().isEmpty()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
 	 * @param errorSensitive
 	 * @throws IOException 
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive, String password) throws IOException {
-		BCDiceCLI bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive, password);
-		NameIndicator nameIndicator = NameIndicatorFactory.getNameIndicator();
-		DiceResultFormatter diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
-		new DiscordApiBuilder().setToken(token).login().thenAccept(api -> {
-			String myId = api.getYourself().getIdAsString();
-			ChatToolClient chatToolClient = ChatToolClientFactory.getChatToolClient(api);
-			api.addMessageCreateListener(event -> {
-				String channel = event.getChannel().getIdAsString();
-				MessageAuthor user = event.getMessageAuthor();
-				String name = nameIndicator.getName(user);
-				String userId = user.getIdAsString();
-				String message = event.getMessage().getContent();
-				List<MessageAttachment> attachements = event.getMessage().getAttachments();
-				try {
-					logger.debug(String.format("%s posts: https://discordapp.com/channels/%s/%s/%s",
-							userId,
-							event.getServer().get().getIdAsString(), channel, event.getMessage().getIdAsString()));
-				} catch(NoSuchElementException e) {
-					logger.debug(String.format("%s posts in DM", userId));
-				}
-				
-				api.updateActivity("bcdice help とチャットに打ち込むとコマンドのヘルプを確認できます");
-				if( myId.equals(userId) ) { return; }
-				if(chatToolClient.isRequest( message )) {
-					List<String> result = chatToolClient.input(message);
-					if(! result.isEmpty()) {
-						bcDice.separateStringWithLengthLimitation(result, 1000).forEach(p->event.getChannel().sendMessage(p));
-						return;
-					}
-				}
-				if(! bcDice.isRoll( message )) {
-					bcDice.inputs(message, userId, channel, attachements).forEach(msg->{
-						event.getChannel().sendMessage(chatToolClient.formatMessage(msg));
-					});
-					return;
-				}
+	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive, String password) throws IOException, InterruptedException, ExecutionException {
+		bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive, password);
+		api = new DiscordApiBuilder().setToken(token).login().get();
 
-				try {
-					List<DicerollResult> rollResults = bcDice.rolls(message, channel);
-					if(rollResults.size() > 0) {
-						logger.debug("Dice command request for dice server is done");
-						List<String> sb = new ArrayList<String>();
-						for(DicerollResult rollResult : rollResults) {
-							if(rollResult.isError()) {
-								throw new IOException(rollResult.getText());
-							}
-							if( rollResult.isRolled() ) {
-								sb.add(diceResultFormatter.getText(rollResult));
-							}
-						}
-						List<String> resultMessage = bcDice.separateStringWithLengthLimitation(String.format("＞%s\n%s", name, sb.stream().collect(Collectors.joining("\n\n"))), 1000); 
-						DicerollResult firstOne = rollResults.get(0); 
-						if( firstOne.isSecret() ) {
-							String index = bcDice.saveMessage(userId, resultMessage);
-							event.getChannel().sendMessage(chatToolClient.formatMessage(String.format("＞%s\n%s",
-									name,
-									diceResultFormatter.getText(new DicerollResult(
-										String.format("[Secret Dice] Key: %s", index),
-										firstOne.getSystem(),
-										true, true
-									)))));
-							try {
-								for(String post : resultMessage) {
-									api.getUserById(userId).get().sendMessage(chatToolClient.formatMessage(post));
-								}
-								api.getUserById(userId).get().sendMessage(String.format("この結果を呼び出すには次のようにしてください。\n> bcdice load %s\nこのコマンドは最短72時間後には無効になります\nその後も必要であればそのままコピー&ペーストするか、スクリーンショットなどで共有してください", index));
-							} catch (InterruptedException e) {
-								throw new IOException(e.getMessage(), e);
-							} catch (ExecutionException e) {
-								throw new IOException(e.getMessage(), e);
-							}
-						} else {
-							resultMessage.forEach((post)->{
-								event.getChannel().sendMessage(chatToolClient.formatMessage(post));
-							});
-						}
-					}
-				} catch (IOException e) {
-					event.getChannel().sendMessage(String.format("＞%s\n[ERROR]%s", name, e.getMessage()));
-					logger.warn(String.format("USERID: %s MESSAGE: %s", userId, message));
-					logger.warn("Failed to reply to user request", e);
-				}
-			});
-		});
+		if(isStandardChatEnabled()) {
+			api.addMessageCreateListener(new StandardInputMessageCreateListener(api, bcDice));
+		}
+
+		String slashPrefix = getSlashPrefix();
+		if(! slashPrefix.isEmpty()) {
+			String slashShortPrefix = getSlashShortPrefix();
+			api.addSlashCommandCreateListener(new SlashInputMessageCreateListener(api, bcDice, slashPrefix, slashShortPrefix));
+		}
 	}
 
 	private static String getVersion() {
@@ -165,8 +107,10 @@ public class BCDiceBot {
 	 * First called method.
 	 * @param args command line parameters. 1st should be Discord bot token. 2nd should be the URL of BCDice-API.
 	 * @throws IOException 
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
 		if( args.length < 2 || args[0].equals("help") ||
 			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
 			System.out.println(String.format("Discord-BCDicebot Version %s", getVersion()));
@@ -186,7 +130,7 @@ public class BCDiceBot {
 		String password = AdminPasswordGenerator.getPassword();
 
 		if(args.length == 2) {
-			new BCDiceBot(args[0].trim(), args[1].trim(), password);
+			new BCDiceBot(args[0].trim(), args[1].trim(), true, password);
 		} else {
 			new BCDiceBot(args[0].trim(), args[1].trim(), args[2].trim().equals("0"), password);
 		}

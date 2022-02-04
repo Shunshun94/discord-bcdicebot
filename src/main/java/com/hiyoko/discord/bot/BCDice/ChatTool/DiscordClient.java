@@ -2,13 +2,12 @@ package com.hiyoko.discord.bot.BCDice.ChatTool;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.javacord.api.DiscordApi;
 
 public class DiscordClient implements ChatToolClient {
-	private final DiscordApi api;
+	private final DiscordClientV2 client;
 	private final String password;
 	private final String HELP_MESSAGE = "bcdicediscord コマンドの使い方\n"
 			+ "# チャンネルの ID を一覧する\n"
@@ -19,12 +18,12 @@ public class DiscordClient implements ChatToolClient {
 			+ "> bcdicediscord PASSWORD listServers";
 
 	public DiscordClient(DiscordApi api, String password) {
-		this.api = api;
+		this.client = new DiscordClientV2(api);
 		this.password = password;
 	}
 
 	public DiscordClient(DiscordApi api) {
-		this.api = api;
+		this.client = new DiscordClientV2(api);
 		this.password = getPassword();
 	}
 
@@ -37,13 +36,13 @@ public class DiscordClient implements ChatToolClient {
 		String[] inputArray = input.split(" ");
 		if(inputArray.length > 2 && inputArray[1].equals(password)) {
 			if(inputArray[2].equals("listRoomIds")) {
-				return getRoomIds();
+				return client.input(inputArray[2]);
 			}
 			if(inputArray[2].equals("listRooms")) {
-				return getRooms();
+				return client.input(inputArray[2]);
 			}
 			if(inputArray[2].equals("listServers")) {
-				return getServerList();
+				return client.input(inputArray[2]);
 			}
 			if(inputArray[2].equals("help")) {
 				result.add(HELP_MESSAGE);
@@ -55,25 +54,6 @@ public class DiscordClient implements ChatToolClient {
 	public String formatMessage(String input) {
 		String result = input.replaceAll("\\*\\*", "\\\\*\\\\*");
 		return result;
-	}
-
-	private List<String> getRoomIds() {
-		return api.getChannels().stream().filter(channel->{
-			return channel.getType().isTextChannelType();
-		}).map(channel->channel.getIdAsString()).collect(Collectors.toList());
-	}
-
-	private List<String> getRooms() {
-		return api.getChannels().stream().filter(channel->{
-			return channel.getType().isTextChannelType();
-		}).map(channel->String.format("%s\t%s\t%s",
-				channel.getIdAsString(),
-				channel.asServerTextChannel().get().getName(),
-				channel.asServerTextChannel().get().getServer().getName())).collect(Collectors.toList());
-	}
-
-	private List<String> getServerList() {
-		return api.getServers().stream().map(server->String.format("%s\t%s", server.getIdAsString(), server.getName())).collect(Collectors.toList());
 	}
 
 	private String getPassword() {
