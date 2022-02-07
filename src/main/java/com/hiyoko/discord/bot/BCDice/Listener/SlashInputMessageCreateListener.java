@@ -154,7 +154,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 				return resultMessage;
 			}
 		} else {
-			String message = String.format("ダイスを振るのに失敗しました。ダイスコマントとして恐らく無効です\n%s", diceCommand); 
+			String message = String.format("ダイスを振るのに失敗しました。ダイスコマンドとして恐らく無効です\n%s", diceCommand); 
 			logger.warn(message);
 			List<String> empty = new ArrayList<String>();
 			empty.add(message);
