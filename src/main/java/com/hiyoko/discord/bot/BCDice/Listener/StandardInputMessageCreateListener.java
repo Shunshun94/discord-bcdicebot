@@ -76,7 +76,7 @@ public class StandardInputMessageCreateListener implements MessageCreateListener
 
 		try {
 			List<DicerollResult> rollResults = bcDice.rolls(message, channel);
-			if(rollResults.size() > 0) {
+			if(rollResults.size() > 0 && rollResults.get(0).isRolled()) {
 				logger.debug("Dice command request for dice server is done");
 				List<String> sb = new ArrayList<String>();
 				for(DicerollResult rollResult : rollResults) {
