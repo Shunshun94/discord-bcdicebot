@@ -123,7 +123,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 
 	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) throws IOException {
 		List<DicerollResult> rollResults = bcDice.rolls(bcDice.getRollCommand() + " " + diceCommand, channel.getIdAsString());
-		if(rollResults.size() > 0) {
+		if( rollResults.size() > 0 && rollResults.get(0).isRolled() ) {
 			logger.debug("Dice command request for dice server is done");
 			List<String> sb = new ArrayList<String>();
 			for(DicerollResult rollResult : rollResults) {
