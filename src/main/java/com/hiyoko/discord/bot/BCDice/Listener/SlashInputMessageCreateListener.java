@@ -167,7 +167,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		String subCommand = option.getName();
 		AdminCommand command = adminCommands.get(subCommand);
 		if(command != null) {
-			return command.exec(option, client);
+			return bcDice.separateStringWithLengthLimitation(command.exec(option, client), 1000);
 		} else {
 			logger.warn(String.format("無効な管理コマンド %s が実行されました", subCommand));
 		}

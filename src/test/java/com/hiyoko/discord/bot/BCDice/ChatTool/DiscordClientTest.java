@@ -8,7 +8,7 @@ public class DiscordClientTest extends TestCase {
 		DiscordClient dc = new DiscordClient(null);
 		assertEquals("\\*\\*", dc.formatMessage("**"));
 		assertEquals("\\*\\*てすとてすと\\*\\*", dc.formatMessage("**てすとてすと**"));
-		assertEquals("*てすとてすと*", dc.formatMessage("*てすとてすと*"));
+		assertEquals("\\*てすとてすと\\*", dc.formatMessage("*てすとてすと*"));
 		
 	}
 
