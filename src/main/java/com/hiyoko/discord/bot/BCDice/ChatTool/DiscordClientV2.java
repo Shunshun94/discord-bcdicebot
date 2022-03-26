@@ -41,7 +41,7 @@ public class DiscordClientV2 implements ChatToolClient {
 
 	@Override
 	public String formatMessage(String input) {
-		String result = input.replaceAll("\\*\\*", "\\\\*\\\\*");
+		String result = input.replaceAll("\\*", "\\\\*");
 		return result;
 	}
 

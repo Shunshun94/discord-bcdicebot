@@ -52,8 +52,7 @@ public class DiscordClient implements ChatToolClient {
 	}
 
 	public String formatMessage(String input) {
-		String result = input.replaceAll("\\*\\*", "\\\\*\\\\*");
-		return result;
+		return client.formatMessage(input);
 	}
 
 	private String getPassword() {
