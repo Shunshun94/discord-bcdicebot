@@ -31,6 +31,7 @@ import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatter;
 import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatterFactory;
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicator;
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicatorFactory;
+import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClientFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 
 public class SlashInputMessageCreateListener implements SlashCommandCreateListener {
@@ -74,11 +75,19 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.configCommands = bcDice.getConfigCommands();
 	}
 
+	private List<SlashCommandOption> getCommonDicerollList() {
+		ArrayList<SlashCommandOption> result = new ArrayList<SlashCommandOption>();
+		result.add(SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです"));
+		List<String> originalTableList = OriginalDiceBotClientFactory.getOriginalDiceBotClient().getDiceBotList();
+		for(String originalTableName : originalTableList) {
+			result.add(SlashCommandOption.create(SlashCommandOptionType.STRING, originalTableName, String.format("オリジナル表 %s を振ります", originalTableName)));
+		}
+		return result;
+	}
+
 	private void defineSlashCommand() {
 		SlashCommand.with(prefix, "BCDice のダイスボットを利用します", Arrays.asList(
-			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "roll", String.format("ダイスを振ります。/%s というショートカットもあります", shortPrefix), Arrays.asList(
-				SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
-			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "roll", String.format("ダイスを振ります。/%s というショートカットもあります", shortPrefix), getCommonDicerollList()),
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "config", "ダイスボットの設定を確認・実施します", Arrays.asList(
 				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "status", "ダイスボットが利用しているダイスサーバやバージョン、使用しているシステムを確認します"),
 				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "list", "ダイスボットで利用できるシステムを一覧します"),
@@ -115,10 +124,8 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listServers", "（管理者向け）サーバを一覧します"),
 				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "removeSlashCommands", "（管理者向け）スラッシュコマンドを全削除し、再起動するまでスラッシュコマンドが使えなくなります。スラッシュコマンドを再設定したい場合はこれを実行した後にダイスボットを停止・再起動してください")
 			))
-		)).createGlobal(api).join();
-		SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(
-			SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
-		)).createGlobal(api).join();
+		)).createForServer(api.getServerById("302452071993442307").get()).join();    //.createGlobal(api).join();
+		SlashCommand.with(shortPrefix, "ダイスを振ります", getCommonDicerollList()).createForServer(api.getServerById("302452071993442307").get()).join(); //.createGlobal(api).join();
 	}
 
 	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) throws IOException {
@@ -205,7 +212,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		List<String> responseMessage = null;
 		SlashCommandInteractionOption firstOption = interaction.getOptionByIndex(0).get();
 		if(interaction.getCommandName().equals(shortPrefix)) {
-			String diceCommand = firstOption.getStringValue().orElse("");
+			String diceCommand = firstOption.getName().equals("dicecommand") ? firstOption.getStringValue().orElse("") : firstOption.getName();
 			try {
 				responseMessage = handleRoll(diceCommand, channel, user);
 			} catch (IOException ioe) {
@@ -220,7 +227,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 			SlashCommandInteractionOption secondOption = firstOption.getOptionByIndex(0).get();
 
 			if(firstOptionAsString.equals("roll")) {
-				String diceCommand = secondOption.getStringValue().orElse("");
+				String diceCommand = firstOption.getName().equals("dicecommand") ? firstOption.getStringValue().orElse("") : firstOption.getName();
 				try {
 					responseMessage = handleRoll(diceCommand, channel, user);
 				} catch (IOException ioe) {
