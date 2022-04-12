@@ -130,7 +130,6 @@ public class BCDiceCLI {
 		} catch(IOException e) {
 			logger.warn("チャンネルごとのダイスボット設定の読み込みに失敗しましたが、処理は続行します。必要ならば管理コマンドまたは各チャンネル毎に再設定してください", e);
 		}
-		savedMessage = new HashMap<String, Map<String, SecretMessage>>();
 		this.password = password;
 	}
 
@@ -553,7 +552,7 @@ public class BCDiceCLI {
 			key = key + '0';
 		}
 		msgList.put(key, secretMessage);
-		logger.info(String.format("%s-%s - %s (%s)", id, key, messages.get(0), msgList.size()));
+		logger.info(String.format("Message saved User:%s Key:%s - %s (%s)", id, key, messages.get(0), msgList.size()));
 		return String.valueOf(key);
 	}
 
