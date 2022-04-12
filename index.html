@@ -404,7 +404,6 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 <br/><br/>
 オリジナルダイスボット表を削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [オリジナルダイスボット表名]</code><br/>
 オリジナルダイスボット表の一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code></p>
-<div class="comment">上述の通り、heroku に設置した場合に独自のダイスボット表の名前を正しく取得できないことがあります</div>
 <div class="comment">上述の通り、スラッシュコマンドから<code>addDiceBot</code>は利用できないため、<br/>
 <code>BCDICE_STANDARD_INPUT_DISABLED</code>が設定されている場合はオリジナルダイスボット表の追加は Discord から行えません。<br/>
 オリジナルダイスボット表を追加する場合は<code>start.bat</code>ないし<code>start.sh</code>と同じディレクトリにある<br/>
@@ -451,21 +450,23 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 			<li>先の 4. でメモした Token を登録します<br/><code>heroku config:set DISCORD_BOT_TOKEN=NDA0MgAIC0QK18lU0dxMt99F.HuWAIt.Nh9OTLbjxdMp3pcmw3Lsqd4aQlb</code> (トークンはダミーです)</li>
 			<li>利用する BCDice-API サーバの URL を登録します<br/><code>heroku config:set BCDICE_API_URL=http://xxxx.xxxxx.xxxxx.example.com/</code> (URL はダミーです)</li>
 			<li>管理用パスワードを設定します<br/><code>heroku config:set BCDICE_PASSWORD=MY_PASSWORD</code> (MY_PASSWORD を任意の文字列に書き換えてください)</li>
+			<li>オリジナルダイス表を扱えるようにします<br/><code>heroku config:set LANG=ja_JP.UTF-8</code></li>
 		</ul>
 	</li>
-	<li>(必須ではない) 以下の環境変数を設定します。
+	<li>(必須ではない) 必要に応じて以下の環境変数を設定します。
 		<ul>
 			<li>予備の BCDice-API サーバを登録します。<br/><code>heroku config:set BCDICE_API_SECONDARY=http://xxxx.xxxxx.xxxxx.example.com/</code> (URL はダミーです)</li>
 			<li>どのシステムのダイスボットを使うのか設定していない部屋で利用するダイスボットを設定します。<br/><code>heroku config:set BCDICE_DEFAULT_SYSTEM=DiceBot</code> (DiceBot は任意のシステムに書き換えてください)</li>
 			<li>ダイスを振った時に振った人にメンションを飛ばすようにします。<br/><code>heroku config:set BCDICE_MENTION_MODE=1</code></li>
 			<li>ダイスを振った時の結果にシステム名を添えるようにします。<br/><code>heroku config:set BCDICE_RESULT_DISPLAY_FORMAT=V1</code></li>
+			<li>スラッシュコマンドを有効にします。<br/><code>heroku config:set BCDICE_SLASH_PREFIX=bcdice</code></li>
+			<li>スラッシュコマンドの短縮ワードを有効にします。<br/><code>heroku config:set BCDICE_SLASH_SHORT_PREFIX=br</code></li>
+			<li>スラッシュコマンド以外の手段で設定やダイスロールをできないようにします<br/><code>heroku config:set BCDICE_STANDARD_INPUT_DISABLED=1</code></li>
 		</ul>
 	</li>
 	<li>Heroku の Dashboard から worker を起動します。<br/>Heroku の Dashboard：<a target="_blank" href="https://dashboard.heroku.com/">https://dashboard.heroku.com/</a></li>
 </ol>
-<div class="comment"><a href="https://dinosaur-fossil.hatenablog.com/entry/2020/12/23/001818">https://dinosaur-fossil.hatenablog.com/entry/2020/12/23/001818</a> を参考に記載しています。<br/>
-また、既知の問題として追加したダイスボット表の名前に ascii 文字以外が含まれる場合にダイスボット表の名前を正しく読み込めない問題が存在します。
-この方法で設置する場合はダイスボット表を半角英数字・記号で命名してください。</div>
+<div class="comment"><a href="https://dinosaur-fossil.hatenablog.com/entry/2020/12/23/001818">https://dinosaur-fossil.hatenablog.com/entry/2020/12/23/001818</a> を参考に記載しています。</div>
 
 <h2 id="contact">連絡先</h2>
 <h3 id="contact-report">バグ報告など</h3>
