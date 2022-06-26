@@ -116,7 +116,10 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listServer", "（管理者向け）ダイスサーバを一覧します"),
 				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "refreshSecretDice", "（管理者向け）保存してあるシークレットダイスの結果をリセットします"),
 				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "updateDiceRollPreFix", "（管理者向け）ダイスコマンドを再読み込みします"),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "addOriginalTable", "（管理者向け）スラッシュコマンドでのオリジナル表の追加は未対応です"),
+				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "addOriginalTable", "（管理者向け）オリジナル表を追加します",  Arrays.asList(
+						SlashCommandOption.create(SlashCommandOptionType.ATTACHMENT, "file", "追加するオリジナル表のファイルです。UTF-8で保存されたものである必要があります", true),
+						SlashCommandOption.create(SlashCommandOptionType.STRING, "title", "追加するオリジナル表の名前です")
+				)),
 				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeOriginalTable", "（管理者向け）オリジナル表を削除します", Arrays.asList(
 					SlashCommandOption.create(SlashCommandOptionType.STRING, "originalTable", "（管理者向け）削除するオリジナル表の名前です", true)
 				)),
