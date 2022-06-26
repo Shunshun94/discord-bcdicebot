@@ -45,6 +45,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 
 	private final String prefix;
 	private final String shortPrefix;
+	private final String shortTablePrefix;
 
 	private final Map<String, AdminCommand> adminCommands = AdminCommandsMapFactory.getAdminCommands();
 	private final Map<String, ConfigCommand> configCommands;
@@ -58,6 +59,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.chatToolClient = new DiscordClientV2(api);
 		this.prefix = "bcdice";
 		this.shortPrefix = "br";
+		this.shortTablePrefix = "brt";
 		defineSlashCommand();
 		this.configCommands = bcDice.getConfigCommands();
 	}
@@ -71,6 +73,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.chatToolClient = new DiscordClientV2(api);
 		this.prefix = prefix.startsWith("/") ? prefix.substring(1) : prefix;
 		this.shortPrefix = shortPrefix.startsWith("/") ? shortPrefix.substring(1) : shortPrefix;
+		this.shortTablePrefix = this.shortPrefix + "t"; 
 		defineSlashCommand();
 		this.configCommands = bcDice.getConfigCommands();
 	}
@@ -128,19 +131,28 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 			))
 		)).createForServer(api.getServerById("302452071993442307").get()).join();    //.createGlobal(api).join();
 		SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(
-				SlashCommandOption.create(SlashCommandOptionType.STRING, "roll", String.format("ダイスを振ります。/%s というショートカットもあります", shortPrefix))
+			SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
 		)).createForServer(api.getServerById("302452071993442307").get()).join(); //.createGlobal(api).join();
 		SlashCommand.with(String.format("%st", shortPrefix), "オリジナル表を振ります", getOriginalTableCommandList()).createForServer(api.getServerById("302452071993442307").get()).join(); //.createGlobal(api).join();
 	}
 
-	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) throws IOException {
-		List<DicerollResult> rollResults = bcDice.rolls(bcDice.getRollCommand() + " " + diceCommand, channel.getIdAsString());
+	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) {
+		List<DicerollResult> rollResults;
+		try {
+			rollResults = bcDice.rolls(bcDice.getRollCommand() + " " + diceCommand, channel.getIdAsString());	
+		} catch(IOException ioe) {
+			logger.warn(String.format("USERID: %s MESSAGE: %s", user.getIdAsString() , diceCommand));
+			logger.warn("Failed to reply to user request", ioe);
+			return getSingleMessage(String.format("[ERROR]%s", ioe.getMessage()));
+		}
+		
 		if( rollResults.size() > 0 && rollResults.get(0).isRolled() ) {
 			logger.debug("Dice command request for dice server is done");
 			List<String> sb = new ArrayList<String>();
 			for(DicerollResult rollResult : rollResults) {
 				if(rollResult.isError()) {
-					throw new IOException(rollResult.getText());
+					logger.warn(String.format("USERID: %s MESSAGE: %s", user.getIdAsString() , diceCommand));
+					return getSingleMessage(String.format("[ERROR]%s", rollResult.getText()));
 				}
 				if( rollResult.isRolled() ) {
 					sb.add(diceResultFormatter.getText(rollResult));
@@ -213,33 +225,25 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		SlashCommandInteraction interaction = event.getSlashCommandInteraction();
 		User user = interaction.getUser();
 		TextChannel channel = interaction.getChannel().get();
+		String slashCommandName = interaction.getCommandName();
 
 		List<String> responseMessage = null;
 		SlashCommandInteractionOption firstOption = interaction.getOptionByIndex(0).get();
-		if(interaction.getCommandName().equals(shortPrefix)) {
+		if(slashCommandName.equals(shortPrefix)) {
 			String diceCommand = firstOption.getStringValue().orElse("");
-			try {
-				responseMessage = handleRoll(diceCommand, channel, user);
-			} catch (IOException ioe) {
-				responseMessage = getSingleMessage(String.format("[ERROR]%s", ioe.getMessage()));
-				logger.warn(String.format("USERID: %s MESSAGE: %s", user.getIdAsString() , diceCommand));
-				logger.warn("Failed to reply to user request", ioe);
-			}
-		}
-		if(interaction.getCommandName().equals(prefix)) {
+			responseMessage = handleRoll(diceCommand, channel, user);
+		} else if(slashCommandName.equals(shortTablePrefix)) {
+			String diceCommand = firstOption.getName();
+			responseMessage = handleRoll(diceCommand, channel, user);
+		} else if(slashCommandName.equals(prefix)) {
 			String firstOptionAsString = firstOption.getName();
-
 			SlashCommandInteractionOption secondOption = firstOption.getOptionByIndex(0).get();
-
 			if(firstOptionAsString.equals("roll")) {
-				String diceCommand = firstOption.getStringValue().orElse("");
-				try {
-					responseMessage = handleRoll(diceCommand, channel, user);
-				} catch (IOException ioe) {
-					responseMessage = getSingleMessage(String.format("[ERROR]%s", ioe.getMessage()));
-					logger.warn(String.format("USERID: %s MESSAGE: %s", user.getIdAsString() , diceCommand));
-					logger.warn("Failed to reply to user request", ioe);
-				}
+				String diceCommand = secondOption.getStringValue().orElse("");
+				responseMessage = handleRoll(diceCommand, channel, user);
+			} else if(firstOptionAsString.equals("table")) {
+				String diceCommand = secondOption.getName();
+				responseMessage = handleRoll(diceCommand, channel, user);
 			} else if(firstOptionAsString.equals("config")) {
 				responseMessage = handleConfig(secondOption, channel, user);
 			} else if(firstOptionAsString.equals("admin")) {
