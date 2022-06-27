@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -494,20 +493,9 @@ public class BCDiceCLI {
 				resultList.add("ダイスボット表を登録する際はダイスボット表のファイルをアップロードする必要があります");
 				return resultList;
 			}
-
-			try {
-				String botName = (command.length > 4) ? command[4] : attachements.get(0).getFileName().split("\\.")[0];
-				URL url = attachements.get(0).getUrl();
-				originalDiceBotClient.registerDiceBot(url, botName);
-				String logMessage = String.format("ダイスボット表 [%s] を登録しました", botName);
-				logger.info(logMessage);
-				resultList.add(logMessage);
-				return resultList;
-			} catch(Exception e) {
-				logger.warn("ダイスボット表の登録に失敗しました", e);
-				resultList.add(e.getMessage());
-				return resultList;
-			}
+			String botName = (command.length > 4) ? command[4] : attachements.get(0).getFileName().split("\\.")[0];
+			return separateStringWithLengthLimitation(adminCommands.get("addoriginaltable").exec(
+				String.format("%s %s",attachements.get(0).getUrl().toString(), botName), client), 1000);
 		}
 		if(command[3].equals("removeDiceBot")) {
 			if(command.length < 5) {
