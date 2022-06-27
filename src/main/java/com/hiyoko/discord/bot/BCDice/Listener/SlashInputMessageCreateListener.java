@@ -3,6 +3,7 @@ package com.hiyoko.discord.bot.BCDice.Listener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -87,56 +88,76 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		return result;
 	}
 
-	private void defineSlashCommand() {
-		SlashCommand.with(prefix, "BCDice のダイスボットを利用します", Arrays.asList(
+	private List<SlashCommandOption> getBcdiceAdminSubCommands() {
+		return Arrays.asList(SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "setServer", "（管理者向け）ダイスサーバを変更します", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "serverURL", "新しく利用するダイスサーバの URL です", true)
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeServer", "（管理者向け）ダイスサーバを削除します", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "serverURL", "削除するダイスサーバの URL です", true)
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listServer", "（管理者向け）ダイスサーバを一覧します"),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "refreshSecretDice", "（管理者向け）保存してあるシークレットダイスの結果をリセットします"),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "updateDiceRollPreFix", "（管理者向け）ダイスコマンドを再読み込みします"),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "addOriginalTable", "（管理者向け）オリジナル表を追加します",  Arrays.asList(
+					SlashCommandOption.create(SlashCommandOptionType.ATTACHMENT, "file", "追加するオリジナル表のファイルです。UTF-8で保存されたものである必要があります", true),
+					SlashCommandOption.create(SlashCommandOptionType.STRING, "title", "追加するオリジナル表の名前です")
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeOriginalTable", "（管理者向け）オリジナル表を削除します", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "originalTable", "（管理者向け）削除するオリジナル表の名前です", true)
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listOriginalTable", "（管理者向け）利用可能なオリジナル表を一覧します"),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "reloadOriginalTable", "（管理者向け）利用可能なオリジナル表を再読み込みして一覧します")
+		);
+	}
+	private List<SlashCommandOption> getBcdiceConfigSubCommands() {
+		return Arrays.asList(
+			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "status", "ダイスボットが利用しているダイスサーバやバージョン、使用しているシステムを確認します"),
+			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "list", "ダイスボットで利用できるシステムを一覧します"),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "set", "ダイスボットで使用するシステムを設定します", Arrays.asList(
+					SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "help", "ダイスボットで使用するシステムのヘルプメッセージを参照します", Arrays.asList(
+					SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "load", "シークレットダイスの結果を呼び出します", Arrays.asList(
+					SlashCommandOption.create(SlashCommandOptionType.STRING, "key", "シークレットダイスを振った際にDMに送られてくる値です", true)
+			))
+		);
+	}
+	private List<SlashCommandOption> getBcdiceDiscordSubCommands() {
+		return Arrays.asList(
+			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listRoomIds", "（管理者向け）チャンネルの ID を一覧します"),
+			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listRooms", "（管理者向け）チャンネルの情報を一覧します"),
+			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listServers", "（管理者向け）サーバを一覧します"),
+			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "removeSlashCommands", "（管理者向け）スラッシュコマンドを全削除し、再起動するまでスラッシュコマンドが使えなくなります。スラッシュコマンドを再設定したい場合はこれを実行した後にダイスボットを停止・再起動してください")
+		);
+	}
+
+	private List<SlashCommandOption> getBcdiceCommandOptions(boolean isActiveOriginalTableSuggestion) {
+		List<SlashCommandOption> options = new ArrayList<SlashCommandOption>();
+		Collections.addAll(options,
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "roll", String.format("ダイスを振ります。/%s というショートカットもあります", shortPrefix), Arrays.asList(
 				SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
 			)),
-			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "table", String.format("オリジナル表を振ります。/%st というショートカットもあります", shortPrefix), getOriginalTableCommandList()),
-			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "config", "ダイスボットの設定を確認・実施します", Arrays.asList(
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "status", "ダイスボットが利用しているダイスサーバやバージョン、使用しているシステムを確認します"),
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "list", "ダイスボットで利用できるシステムを一覧します"),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "set", "ダイスボットで使用するシステムを設定します", Arrays.asList(
-						SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
-				)),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "help", "ダイスボットで使用するシステムのヘルプメッセージを参照します", Arrays.asList(
-						SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
-				)),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "load", "シークレットダイスの結果を呼び出します", Arrays.asList(
-						SlashCommandOption.create(SlashCommandOptionType.STRING, "key", "シークレットダイスを振った際にDMに送られてくる値です", true)
-				))
-			)),
-			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "admin", "（管理者向け）ダイスボットを管理します", Arrays.asList(
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "setServer", "（管理者向け）ダイスサーバを変更します", Arrays.asList(
-					SlashCommandOption.create(SlashCommandOptionType.STRING, "serverURL", "新しく利用するダイスサーバの URL です", true)
-				)),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeServer", "（管理者向け）ダイスサーバを削除します", Arrays.asList(
-					SlashCommandOption.create(SlashCommandOptionType.STRING, "serverURL", "削除するダイスサーバの URL です", true)
-				)),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listServer", "（管理者向け）ダイスサーバを一覧します"),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "refreshSecretDice", "（管理者向け）保存してあるシークレットダイスの結果をリセットします"),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "updateDiceRollPreFix", "（管理者向け）ダイスコマンドを再読み込みします"),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "addOriginalTable", "（管理者向け）オリジナル表を追加します",  Arrays.asList(
-						SlashCommandOption.create(SlashCommandOptionType.ATTACHMENT, "file", "追加するオリジナル表のファイルです。UTF-8で保存されたものである必要があります", true),
-						SlashCommandOption.create(SlashCommandOptionType.STRING, "title", "追加するオリジナル表の名前です")
-				)),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeOriginalTable", "（管理者向け）オリジナル表を削除します", Arrays.asList(
-					SlashCommandOption.create(SlashCommandOptionType.STRING, "originalTable", "（管理者向け）削除するオリジナル表の名前です", true)
-				)),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listOriginalTable", "（管理者向け）利用可能なオリジナル表を一覧します"),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "reloadOriginalTable", "（管理者向け）利用可能なオリジナル表を再読み込みして一覧します")
-			)),
-			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "Discord", "（管理者向け）ダイスボットが導入されているDiscordサーバについて確認します", Arrays.asList(
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listRoomIds", "（管理者向け）チャンネルの ID を一覧します"),
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listRooms", "（管理者向け）チャンネルの情報を一覧します"),
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listServers", "（管理者向け）サーバを一覧します"),
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "removeSlashCommands", "（管理者向け）スラッシュコマンドを全削除し、再起動するまでスラッシュコマンドが使えなくなります。スラッシュコマンドを再設定したい場合はこれを実行した後にダイスボットを停止・再起動してください")
-			))
-		)).createForServer(api.getServerById("302452071993442307").get()).join();    //.createGlobal(api).join();
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "config", "ダイスボットの設定を確認・実施します", getBcdiceConfigSubCommands()),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "admin", "（管理者向け）ダイスボットを管理します", getBcdiceAdminSubCommands()),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "Discord", "（管理者向け）ダイスボットが導入されているDiscordサーバについて確認します", getBcdiceDiscordSubCommands())
+		);
+		if(isActiveOriginalTableSuggestion) {
+			options.add(SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "table", String.format("オリジナル表を振ります。/%st というショートカットもあります", shortPrefix), getOriginalTableCommandList()));
+		}
+		return options;
+	}
+	
+	private void defineSlashCommand() {
+		boolean isActiveOriginalTableSuggestion = true;
+		SlashCommand.with(prefix, "BCDice のダイスボットを利用します", getBcdiceCommandOptions(isActiveOriginalTableSuggestion)).createForServer(api.getServerById("302452071993442307").get()).join();    //.createGlobal(api).join();
 		SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(
 			SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
 		)).createForServer(api.getServerById("302452071993442307").get()).join(); //.createGlobal(api).join();
-		SlashCommand.with(String.format("%st", shortPrefix), "オリジナル表を振ります", getOriginalTableCommandList()).createForServer(api.getServerById("302452071993442307").get()).join(); //.createGlobal(api).join();
+		if(isActiveOriginalTableSuggestion) {
+			SlashCommand.with(String.format("%st", shortPrefix), "オリジナル表を振ります", getOriginalTableCommandList()).createForServer(api.getServerById("302452071993442307").get()).join(); //.createGlobal(api).join();			
+		}
 	}
 
 	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) {
