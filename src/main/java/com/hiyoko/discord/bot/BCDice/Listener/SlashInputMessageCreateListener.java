@@ -61,11 +61,11 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.prefix = "bcdice";
 		this.shortPrefix = "br";
 		this.shortTablePrefix = "brt";
-		defineSlashCommand();
+		defineSlashCommand(true);
 		this.configCommands = bcDice.getConfigCommands();
 	}
 
-	public SlashInputMessageCreateListener(DiscordApi api, BCDiceCLI cli, String prefix, String shortPrefix) throws InterruptedException, ExecutionException {
+	public SlashInputMessageCreateListener(DiscordApi api, BCDiceCLI cli, String prefix, String shortPrefix, boolean isActiveOriginalTableSuggestion) throws InterruptedException, ExecutionException {
 		this.api = api;
 		this.bcDice = cli;
 		this.nameIndicator = NameIndicatorFactory.getNameIndicator();
@@ -75,7 +75,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.prefix = prefix.startsWith("/") ? prefix.substring(1) : prefix;
 		this.shortPrefix = shortPrefix.startsWith("/") ? shortPrefix.substring(1) : shortPrefix;
 		this.shortTablePrefix = this.shortPrefix + "t"; 
-		defineSlashCommand();
+		defineSlashCommand(isActiveOriginalTableSuggestion);
 		this.configCommands = bcDice.getConfigCommands();
 	}
 
@@ -149,8 +149,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		return options;
 	}
 	
-	private void defineSlashCommand() {
-		boolean isActiveOriginalTableSuggestion = true;
+	private void defineSlashCommand(boolean isActiveOriginalTableSuggestion) {
 		SlashCommand.with(prefix, "BCDice のダイスボットを利用します", getBcdiceCommandOptions(isActiveOriginalTableSuggestion)).createForServer(api.getServerById("302452071993442307").get()).join();    //.createGlobal(api).join();
 		SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(
 			SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
