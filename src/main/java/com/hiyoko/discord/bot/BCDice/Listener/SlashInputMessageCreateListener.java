@@ -47,6 +47,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 	private final String prefix;
 	private final String shortPrefix;
 	private final String shortTablePrefix;
+	private final boolean isActiveOriginalTableSuggestion;
 
 	private final Map<String, AdminCommand> adminCommands = AdminCommandsMapFactory.getAdminCommands();
 	private final Map<String, ConfigCommand> configCommands;
@@ -61,6 +62,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.prefix = "bcdice";
 		this.shortPrefix = "br";
 		this.shortTablePrefix = "brt";
+		this.isActiveOriginalTableSuggestion = true;
 		defineSlashCommand(true);
 		this.configCommands = bcDice.getConfigCommands();
 	}
@@ -75,6 +77,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.prefix = prefix.startsWith("/") ? prefix.substring(1) : prefix;
 		this.shortPrefix = shortPrefix.startsWith("/") ? shortPrefix.substring(1) : shortPrefix;
 		this.shortTablePrefix = this.shortPrefix + "t"; 
+		this.isActiveOriginalTableSuggestion = isActiveOriginalTableSuggestion;
 		defineSlashCommand(isActiveOriginalTableSuggestion);
 		this.configCommands = bcDice.getConfigCommands();
 	}
@@ -214,7 +217,11 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		String subCommand = option.getName();
 		AdminCommand command = adminCommands.get(subCommand);
 		if(command != null) {
-			return command.exec(option, client);
+			List<String> tmp = command.exec(option, client);
+			if( isActiveOriginalTableSuggestion && subCommand.endsWith("originaltable") ) {
+				defineSlashCommand(true);
+			}
+			return tmp;
 		} else {
 			logger.warn(String.format("無効な管理コマンド %s が実行されました", subCommand));
 		}
