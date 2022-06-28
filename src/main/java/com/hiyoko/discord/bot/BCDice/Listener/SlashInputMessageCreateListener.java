@@ -102,8 +102,8 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "refreshSecretDice", "（管理者向け）保存してあるシークレットダイスの結果をリセットします"),
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "updateDiceRollPreFix", "（管理者向け）ダイスコマンドを再読み込みします"),
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "addOriginalTable", "（管理者向け）オリジナル表を追加します",  Arrays.asList(
-					SlashCommandOption.create(SlashCommandOptionType.ATTACHMENT, "file", "追加するオリジナル表のファイルです。UTF-8で保存されたものである必要があります", true),
-					SlashCommandOption.create(SlashCommandOptionType.STRING, "title", "追加するオリジナル表の名前です")
+				SlashCommandOption.create(SlashCommandOptionType.ATTACHMENT, "file", "追加するオリジナル表のファイルです。UTF-8で保存されたものである必要があります", true),
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "title", "追加するオリジナル表の名前です")
 			)),
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeOriginalTable", "（管理者向け）オリジナル表を削除します", Arrays.asList(
 				SlashCommandOption.create(SlashCommandOptionType.STRING, "originalTable", "（管理者向け）削除するオリジナル表の名前です", true)
@@ -116,13 +116,13 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "status", "ダイスボットが利用しているダイスサーバやバージョン、使用しているシステムを確認します"),
 			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "list", "ダイスボットで利用できるシステムを一覧します"),
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "set", "ダイスボットで使用するシステムを設定します", Arrays.asList(
-					SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
 			)),
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "help", "ダイスボットで使用するシステムのヘルプメッセージを参照します", Arrays.asList(
-					SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
 			)),
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "load", "シークレットダイスの結果を呼び出します", Arrays.asList(
-					SlashCommandOption.create(SlashCommandOptionType.STRING, "key", "シークレットダイスを振った際にDMに送られてくる値です", true)
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "key", "シークレットダイスを振った際にDMに送られてくる値です", true)
 			))
 		);
 	}
