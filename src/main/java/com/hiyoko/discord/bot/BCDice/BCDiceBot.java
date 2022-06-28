@@ -62,6 +62,15 @@ public class BCDiceBot {
 		}
 	}
 
+	private boolean isActiveOriginalTableSuggestion() {
+		String isDisabledString = System.getenv("BCDICE_SLASH_TABLE_SUGGESTION_DISABLED");
+		if(isDisabledString == null || isDisabledString.trim().isEmpty()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	private boolean isStandardChatEnabled() {
 		String isDisabledString = System.getenv("BCDICE_STANDARD_INPUT_DISABLED");
 		if(isDisabledString == null || isDisabledString.trim().isEmpty()) {
@@ -90,7 +99,8 @@ public class BCDiceBot {
 		String slashPrefix = getSlashPrefix();
 		if(! slashPrefix.isEmpty()) {
 			String slashShortPrefix = getSlashShortPrefix();
-			api.addSlashCommandCreateListener(new SlashInputMessageCreateListener(api, bcDice, slashPrefix, slashShortPrefix));
+			boolean isActiveOriginalTableSuggestion = isActiveOriginalTableSuggestion();
+			api.addSlashCommandCreateListener(new SlashInputMessageCreateListener(api, bcDice, slashPrefix, slashShortPrefix, isActiveOriginalTableSuggestion));
 		}
 	}
 
