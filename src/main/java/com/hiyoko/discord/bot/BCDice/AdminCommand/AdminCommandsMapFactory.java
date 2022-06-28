@@ -11,7 +11,6 @@ public class AdminCommandsMapFactory {
 		adminCommands.put("listserver", new ListServer());
 		adminCommands.put("listoriginaltable", new ListOriginalTable());
 		adminCommands.put("addoriginaltable", new AddOriginalTable());
-		adminCommands.put("reloadoriginaltable", new ReloadOriginalTable());
 		adminCommands.put("removeoriginaltable", new RemoveOriginalTable());
 		adminCommands.put("refreshsecretdice", new RefreshSecretDice());
 		adminCommands.put("updatedicerollprefix", new UpdateDiceRollPreFix());
