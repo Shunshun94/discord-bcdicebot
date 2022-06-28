@@ -217,7 +217,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		String subCommand = option.getName();
 		AdminCommand command = adminCommands.get(subCommand);
 		if(command != null) {
-			List<String> tmp = command.exec(option, client);
+			List<String> tmp = bcDice.separateStringWithLengthLimitation(command.exec(option, client), 1000);
 			if( isActiveOriginalTableSuggestion && subCommand.endsWith("originaltable") ) {
 				defineSlashCommand(true);
 			}
