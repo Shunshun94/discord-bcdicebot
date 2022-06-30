@@ -3,7 +3,6 @@ package com.hiyoko.discord.bot.BCDice.Listener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +35,7 @@ import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClien
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 
 public class SlashInputMessageCreateListener implements SlashCommandCreateListener {
+	private final static String LIST_ORIGINAL_TABLE = "listoriginaltable";
 	private final Logger logger = LoggerFactory.getLogger(StandardInputMessageCreateListener.class);
 	private final DiscordApi api;
 	private final BCDiceCLI bcDice;
@@ -43,6 +43,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 	private final DiceResultFormatter diceResultFormatter;
 	private final User admin;
 	private final ChatToolClient chatToolClient;
+	private final SlashInputConfig slashInputConfig;
 
 	private final String prefix;
 	private final String shortPrefix;
@@ -52,41 +53,33 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 	private final Map<String, AdminCommand> adminCommands = AdminCommandsMapFactory.getAdminCommands();
 	private final Map<String, ConfigCommand> configCommands;
 
-	public SlashInputMessageCreateListener(DiscordApi api, BCDiceCLI cli) throws InterruptedException, ExecutionException {
-		this.api = api;
-		this.bcDice = cli;
+	public SlashInputMessageCreateListener(SlashInputConfig config) throws InterruptedException, ExecutionException {
+		logger.info(config.toString());
+		this.slashInputConfig = config;
+		this.api = config.getDiscordApi();
+		this.bcDice = config.getCli();
 		this.nameIndicator = NameIndicatorFactory.getNameIndicator();
 		this.diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
 		this.admin = api.getOwner().get();
 		this.chatToolClient = new DiscordClientV2(api);
-		this.prefix = "bcdice";
-		this.shortPrefix = "br";
-		this.shortTablePrefix = "brt";
-		this.isActiveOriginalTableSuggestion = true;
-		defineSlashCommand(true);
-		this.configCommands = bcDice.getConfigCommands();
-	}
-
-	public SlashInputMessageCreateListener(DiscordApi api, BCDiceCLI cli, String prefix, String shortPrefix, boolean isActiveOriginalTableSuggestion) throws InterruptedException, ExecutionException {
-		this.api = api;
-		this.bcDice = cli;
-		this.nameIndicator = NameIndicatorFactory.getNameIndicator();
-		this.diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
-		this.admin = api.getOwner().get();
-		this.chatToolClient = new DiscordClientV2(api);
-		this.prefix = prefix.startsWith("/") ? prefix.substring(1) : prefix;
-		this.shortPrefix = shortPrefix.startsWith("/") ? shortPrefix.substring(1) : shortPrefix;
+		this.prefix = config.getPrefix();
+		this.shortPrefix = config.getShortPreifx();
 		this.shortTablePrefix = this.shortPrefix + "t"; 
-		this.isActiveOriginalTableSuggestion = isActiveOriginalTableSuggestion;
+		this.isActiveOriginalTableSuggestion = config.isActiveOriginalTableSuggestion();
 		defineSlashCommand(isActiveOriginalTableSuggestion);
 		this.configCommands = bcDice.getConfigCommands();
 	}
 
 	private List<SlashCommandOption> getOriginalTableCommandList() {
-		ArrayList<SlashCommandOption> result = new ArrayList<SlashCommandOption>();
 		List<String> originalTableList = OriginalDiceBotClientFactory.getOriginalDiceBotClient().getDiceBotList();
-		for(String originalTableName : originalTableList) {
-			result.add(SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, originalTableName, String.format("オリジナル表 %s を振ります", originalTableName)));
+		ArrayList<SlashCommandOption> result = new ArrayList<SlashCommandOption>();
+		int size = originalTableList.size();
+		if(size > 25) {
+			result.add(SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, LIST_ORIGINAL_TABLE, String.format("オリジナル表を一覧します（現在%s件が登録されています）", size)));
+		} else {
+			for(String originalTableName : originalTableList) {
+				result.add(SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, originalTableName, String.format("オリジナル表 %s を振ります", originalTableName)));
+			}
 		}
 		return result;
 	}
@@ -135,29 +128,25 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		);
 	}
 
-	private List<SlashCommandOption> getBcdiceCommandOptions(boolean isActiveOriginalTableSuggestion) {
-		List<SlashCommandOption> options = new ArrayList<SlashCommandOption>();
-		Collections.addAll(options,
+	private List<SlashCommandOption> getBcdiceCommandOptions() {
+		return Arrays.asList(
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "roll", String.format("ダイスを振ります。/%s というショートカットもあります", shortPrefix), Arrays.asList(
-				SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
+					SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
 			)),
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "config", "ダイスボットの設定を確認・実施します", getBcdiceConfigSubCommands()),
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "admin", "（管理者向け）ダイスボットを管理します", getBcdiceAdminSubCommands()),
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "Discord", "（管理者向け）ダイスボットが導入されているDiscordサーバについて確認します", getBcdiceDiscordSubCommands())
 		);
-		if(isActiveOriginalTableSuggestion) {
-			options.add(SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "table", String.format("オリジナル表を振ります。/%st というショートカットもあります", shortPrefix), getOriginalTableCommandList()));
-		}
-		return options;
 	}
 	
 	private void defineSlashCommand(boolean isActiveOriginalTableSuggestion) {
-		SlashCommand.with(prefix, "BCDice のダイスボットを利用します", getBcdiceCommandOptions(isActiveOriginalTableSuggestion)).createForServer(api.getServerById("302452071993442307").get()).join();    //.createGlobal(api).join();
-		SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(
+		slashInputConfig.joinSlashCommand(SlashCommand.with(prefix, "BCDice のダイスボットを利用します", getBcdiceCommandOptions()));
+		slashInputConfig.joinSlashCommand(SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(
 			SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
-		)).createForServer(api.getServerById("302452071993442307").get()).join(); //.createGlobal(api).join();
+		)));
 		if(isActiveOriginalTableSuggestion) {
-			SlashCommand.with(String.format("%st", shortPrefix), "オリジナル表を振ります", getOriginalTableCommandList()).createForServer(api.getServerById("302452071993442307").get()).join(); //.createGlobal(api).join();			
+			List<SlashCommandOption> originalTableList = getOriginalTableCommandList();
+			slashInputConfig.joinSlashCommand(SlashCommand.with(String.format("%st", shortPrefix), "オリジナル表を振ります", originalTableList));
 		}
 	}
 
@@ -170,7 +159,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 			logger.warn("Failed to reply to user request", ioe);
 			return getSingleMessage(String.format("[ERROR]%s", ioe.getMessage()));
 		}
-		
+
 		if( rollResults.size() > 0 && rollResults.get(0).isRolled() ) {
 			logger.debug("Dice command request for dice server is done");
 			List<String> sb = new ArrayList<String>();
@@ -263,7 +252,12 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 			responseMessage = handleRoll(diceCommand, channel, user);
 		} else if(slashCommandName.equals(shortTablePrefix)) {
 			String diceCommand = firstOption.getName();
-			responseMessage = handleRoll(diceCommand, channel, user);
+			logger.info("[" + diceCommand + "]");
+			if(diceCommand.equals(LIST_ORIGINAL_TABLE)) {
+				responseMessage = handleAdmin(firstOption, channel, user);
+			} else {
+				responseMessage = handleRoll(diceCommand, channel, user);
+			}
 		} else if(slashCommandName.equals(prefix)) {
 			String firstOptionAsString = firstOption.getName();
 			SlashCommandInteractionOption secondOption = firstOption.getOptionByIndex(0).get();
