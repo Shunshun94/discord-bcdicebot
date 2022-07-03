@@ -32,6 +32,7 @@ import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatterFact
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicator;
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicatorFactory;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClientFactory;
+import com.hiyoko.discord.bot.BCDice.UserSuspender.UserSuspenderFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 
 public class SlashInputMessageCreateListener implements SlashCommandCreateListener {
@@ -68,6 +69,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.isActiveOriginalTableSuggestion = config.isActiveOriginalTableSuggestion();
 		defineSlashCommand(isActiveOriginalTableSuggestion);
 		this.configCommands = bcDice.getConfigCommands();
+		UserSuspenderFactory.initializeUserSuepnder(api.getYourself().getIdAsString());
 	}
 
 	private List<SlashCommandOption> getOriginalTableCommandList() {
@@ -244,7 +246,9 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		User user = interaction.getUser();
 		TextChannel channel = interaction.getChannel().get();
 		String slashCommandName = interaction.getCommandName();
-
+		if(UserSuspenderFactory.getUserSuspender().isSuspended(user.getIdAsString())) {
+			return;
+		}
 		List<String> responseMessage = null;
 		SlashCommandInteractionOption firstOption = interaction.getOptionByIndex(0).get();
 		if(slashCommandName.equals(shortPrefix)) {

@@ -22,6 +22,7 @@ import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatter;
 import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatterFactory;
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicator;
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicatorFactory;
+import com.hiyoko.discord.bot.BCDice.UserSuspender.UserSuspenderFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 
 public class StandardInputMessageCreateListener implements MessageCreateListener {
@@ -30,7 +31,6 @@ public class StandardInputMessageCreateListener implements MessageCreateListener
 	final BCDiceCLI bcDice;
 	final NameIndicator nameIndicator;
 	final DiceResultFormatter diceResultFormatter;
-	final String myId;
 	final ChatToolClient chatToolClient;
 
 	public StandardInputMessageCreateListener(DiscordApi api, BCDiceCLI bcDice) {
@@ -38,8 +38,8 @@ public class StandardInputMessageCreateListener implements MessageCreateListener
 		this.bcDice = bcDice;
 		this.nameIndicator = NameIndicatorFactory.getNameIndicator();
 		this.diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
-		this.myId = api.getYourself().getIdAsString();
 		this.chatToolClient = ChatToolClientFactory.getChatToolClient(api);
+		UserSuspenderFactory.initializeUserSuepnder(api.getYourself().getIdAsString());
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class StandardInputMessageCreateListener implements MessageCreateListener
 		}
 		
 		api.updateActivity("bcdice help とチャットに打ち込むとコマンドのヘルプを確認できます");
-		if( myId.equals(userId) ) { return; }
+		if( UserSuspenderFactory.getUserSuspender().isSuspended(userId) ) { return; }
 		if(chatToolClient.isRequest( message )) {
 			List<String> result = chatToolClient.input(message);
 			if(! result.isEmpty()) {
