@@ -14,6 +14,8 @@ public class AdminCommandsMapFactory {
 		adminCommands.put("removeoriginaltable", new RemoveOriginalTable());
 		adminCommands.put("refreshsecretdice", new RefreshSecretDice());
 		adminCommands.put("updatedicerollprefix", new UpdateDiceRollPreFix());
+		adminCommands.put("suspenduser", new SuspendUser());
+		adminCommands.put("unsuspenduser", new UnsuspendUser());
 		return adminCommands;
 	}
 }

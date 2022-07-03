@@ -32,6 +32,7 @@ import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatterFact
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicator;
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicatorFactory;
 import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClientFactory;
+import com.hiyoko.discord.bot.BCDice.UserSuspender.UserSuspenderFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 
 public class SlashInputMessageCreateListener implements SlashCommandCreateListener {
@@ -68,6 +69,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.isActiveOriginalTableSuggestion = config.isActiveOriginalTableSuggestion();
 		defineSlashCommand(isActiveOriginalTableSuggestion);
 		this.configCommands = bcDice.getConfigCommands();
+		UserSuspenderFactory.initializeUserSuepnder(api.getYourself().getIdAsString());
 	}
 
 	private List<SlashCommandOption> getOriginalTableCommandList() {
@@ -101,7 +103,14 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeOriginalTable", "（管理者向け）オリジナル表を削除します", Arrays.asList(
 				SlashCommandOption.create(SlashCommandOptionType.STRING, "originalTable", "（管理者向け）削除するオリジナル表の名前です", true)
 			)),
-			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listOriginalTable", "（管理者向け）利用可能なオリジナル表を一覧します")
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listOriginalTable", "（管理者向け）利用可能なオリジナル表を一覧します"),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "suspendUser", "（管理者向け）指定したユーザをダイスロール抑止ユーザ一覧に追加し、ダイスを振れないようにします", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "userId", "ダイスロール抑止ユーザ一覧に追加するユーザの ID です", true),
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "reason", "ダイスロール抑止ユーザ一覧に追加する理由です", false)
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "unsuspendUser", "（管理者向け）指定したユーザをダイスロール抑止ユーザ一覧から削除し、ダイスを振れるようにします", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "userId", "ダイスロール抑止ユーザ一覧から削除するユーザの ID です", true)
+			))
 		);
 	}
 	private List<SlashCommandOption> getBcdiceConfigSubCommands() {
@@ -244,7 +253,9 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		User user = interaction.getUser();
 		TextChannel channel = interaction.getChannel().get();
 		String slashCommandName = interaction.getCommandName();
-
+		if(UserSuspenderFactory.getUserSuspender().isSuspended(user.getIdAsString())) {
+			return;
+		}
 		List<String> responseMessage = null;
 		SlashCommandInteractionOption firstOption = interaction.getOptionByIndex(0).get();
 		if(slashCommandName.equals(shortPrefix)) {
