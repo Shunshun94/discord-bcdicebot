@@ -14,7 +14,7 @@ public class UserSuspender {
 
 	public String putSuspendUser(String userId, String reason) {
 		suspendedList.put(userId, new SuspendedUserInfo(userId, reason));
-		return String.format("%sをロール抑止ユーザに追加し、ダイスを振れないようにしました", userId);
+		return String.format("%sをロール抑止ユーザに追加し、ダイスを振れないようにしました。 理由：%s", userId, reason);
 	}
 
 	public boolean isSuspended(String userId) {

@@ -103,7 +103,14 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeOriginalTable", "（管理者向け）オリジナル表を削除します", Arrays.asList(
 				SlashCommandOption.create(SlashCommandOptionType.STRING, "originalTable", "（管理者向け）削除するオリジナル表の名前です", true)
 			)),
-			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listOriginalTable", "（管理者向け）利用可能なオリジナル表を一覧します")
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listOriginalTable", "（管理者向け）利用可能なオリジナル表を一覧します"),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "suspendUser", "（管理者向け）指定したユーザをダイスロール抑止ユーザ一覧に追加し、ダイスを振れないようにします", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "userId", "ダイスロール抑止ユーザ一覧に追加するユーザの ID です", true),
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "reason", "ダイスロール抑止ユーザ一覧に追加する理由です", false)
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "unsuspendUser", "（管理者向け）指定したユーザをダイスロール抑止ユーザ一覧から削除し、ダイスを振れるようにします", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "userId", "ダイスロール抑止ユーザ一覧から削除するユーザの ID です", true)
+			))
 		);
 	}
 	private List<SlashCommandOption> getBcdiceConfigSubCommands() {
