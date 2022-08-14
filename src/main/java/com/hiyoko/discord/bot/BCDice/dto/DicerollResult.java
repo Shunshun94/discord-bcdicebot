@@ -15,6 +15,7 @@ public class DicerollResult {
 
 	private final String UNSUPPORTED_DICEBOT = "unsupported game system";
 	private final String INVALID_MULTIPLE_ROLLS = "繰り返し対象のコマンドが実行できませんでした";
+	private final String TOOMUCH_MULTIPLE_ROLLS = "繰り返し回数は1以上、100以下としてください";
 	private final String UNABLED_GET_MESSAGE = "[ERROR] コマンドが成功しているにも関わらずメッセージが取得できませんでした";
 
 	public DicerollResult(String text, String system, boolean secret, boolean rolled) {
@@ -35,7 +36,7 @@ public class DicerollResult {
 
 	private Boolean isRolled(JsonObject json) {
 		String text = json.getString("text", "");
-		if(text.startsWith(INVALID_MULTIPLE_ROLLS)) {
+		if(text.startsWith(INVALID_MULTIPLE_ROLLS) || text.startsWith(TOOMUCH_MULTIPLE_ROLLS)) {
 			return false;
 		}
 		return json.getBoolean("ok", false);

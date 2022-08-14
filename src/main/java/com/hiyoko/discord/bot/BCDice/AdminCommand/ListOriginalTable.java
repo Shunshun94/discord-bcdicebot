@@ -1,5 +1,6 @@
 package com.hiyoko.discord.bot.BCDice.AdminCommand;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.javacord.api.interaction.SlashCommandInteractionOption;
@@ -15,7 +16,9 @@ public class ListOriginalTable implements AdminCommand {
 
 	@Override
 	public List<String> exec(String option, DiceClient client) {
-		return OriginalDiceBotClientFactory.getOriginalDiceBotClient().getDiceBotList();
+		List<String> result = OriginalDiceBotClientFactory.getOriginalDiceBotClient().getDiceBotList();
+		Collections.sort(result);
+		return result;
 	}
 
 }

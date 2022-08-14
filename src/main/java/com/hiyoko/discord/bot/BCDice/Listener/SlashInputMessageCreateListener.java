@@ -31,9 +31,12 @@ import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatter;
 import com.hiyoko.discord.bot.BCDice.DiceResultFormatter.DiceResultFormatterFactory;
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicator;
 import com.hiyoko.discord.bot.BCDice.NameIndicator.NameIndicatorFactory;
+import com.hiyoko.discord.bot.BCDice.OriginalDiceBotClients.OriginalDiceBotClientFactory;
+import com.hiyoko.discord.bot.BCDice.UserSuspender.UserSuspenderFactory;
 import com.hiyoko.discord.bot.BCDice.dto.DicerollResult;
 
 public class SlashInputMessageCreateListener implements SlashCommandCreateListener {
+	private final static String LIST_ORIGINAL_TABLE = "listoriginaltable";
 	private final Logger logger = LoggerFactory.getLogger(StandardInputMessageCreateListener.class);
 	private final DiscordApi api;
 	private final BCDiceCLI bcDice;
@@ -41,94 +44,138 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 	private final DiceResultFormatter diceResultFormatter;
 	private final User admin;
 	private final ChatToolClient chatToolClient;
+	private final SlashInputConfig slashInputConfig;
 
 	private final String prefix;
 	private final String shortPrefix;
+	private final String shortTablePrefix;
+	private final boolean isActiveOriginalTableSuggestion;
 
 	private final Map<String, AdminCommand> adminCommands = AdminCommandsMapFactory.getAdminCommands();
 	private final Map<String, ConfigCommand> configCommands;
 
-	public SlashInputMessageCreateListener(DiscordApi api, BCDiceCLI cli) throws InterruptedException, ExecutionException {
-		this.api = api;
-		this.bcDice = cli;
+	public SlashInputMessageCreateListener(SlashInputConfig config) throws InterruptedException, ExecutionException {
+		logger.info(config.toString());
+		this.slashInputConfig = config;
+		this.api = config.getDiscordApi();
+		this.bcDice = config.getCli();
 		this.nameIndicator = NameIndicatorFactory.getNameIndicator();
 		this.diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
 		this.admin = api.getOwner().get();
 		this.chatToolClient = new DiscordClientV2(api);
-		this.prefix = "bcdice";
-		this.shortPrefix = "br";
-		defineSlashCommand();
+		this.prefix = config.getPrefix();
+		this.shortPrefix = config.getShortPreifx();
+		this.shortTablePrefix = this.shortPrefix + "t"; 
+		this.isActiveOriginalTableSuggestion = config.isActiveOriginalTableSuggestion();
+		defineSlashCommand(isActiveOriginalTableSuggestion);
 		this.configCommands = bcDice.getConfigCommands();
+		UserSuspenderFactory.initializeUserSuepnder(api.getYourself().getIdAsString());
 	}
 
-	public SlashInputMessageCreateListener(DiscordApi api, BCDiceCLI cli, String prefix, String shortPrefix) throws InterruptedException, ExecutionException {
-		this.api = api;
-		this.bcDice = cli;
-		this.nameIndicator = NameIndicatorFactory.getNameIndicator();
-		this.diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
-		this.admin = api.getOwner().get();
-		this.chatToolClient = new DiscordClientV2(api);
-		this.prefix = prefix.startsWith("/") ? prefix.substring(1) : prefix;
-		this.shortPrefix = shortPrefix.startsWith("/") ? shortPrefix.substring(1) : shortPrefix;
-		defineSlashCommand();
-		this.configCommands = bcDice.getConfigCommands();
+	private List<SlashCommandOption> getOriginalTableCommandList() {
+		List<String> originalTableList = OriginalDiceBotClientFactory.getOriginalDiceBotClient().getDiceBotList();
+		ArrayList<SlashCommandOption> result = new ArrayList<SlashCommandOption>();
+		int size = originalTableList.size();
+		if(size > 25) {
+			result.add(SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, LIST_ORIGINAL_TABLE, String.format("オリジナル表を一覧します（現在%s件が登録されています）", size)));
+		} else {
+			for(String originalTableName : originalTableList) {
+				result.add(SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, originalTableName, String.format("オリジナル表 %s を振ります", originalTableName)));
+			}
+		}
+		return result;
 	}
 
-	private void defineSlashCommand() {
-		SlashCommand.with(prefix, "BCDice のダイスボットを利用します", Arrays.asList(
-			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "roll", String.format("ダイスを振ります。/%s というショートカットもあります", shortPrefix), Arrays.asList(
-				SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
+	private List<SlashCommandOption> getBcdiceAdminSubCommands() {
+		return Arrays.asList(SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "setServer", "（管理者向け）ダイスサーバを変更します", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "serverURL", "新しく利用するダイスサーバの URL です", true)
 			)),
-			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "config", "ダイスボットの設定を確認・実施します", Arrays.asList(
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "status", "ダイスボットが利用しているダイスサーバやバージョン、使用しているシステムを確認します"),
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "list", "ダイスボットで利用できるシステムを一覧します"),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "set", "ダイスボットで使用するシステムを設定します", Arrays.asList(
-						SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
-				)),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "help", "ダイスボットで使用するシステムのヘルプメッセージを参照します", Arrays.asList(
-						SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
-				)),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "load", "シークレットダイスの結果を呼び出します", Arrays.asList(
-						SlashCommandOption.create(SlashCommandOptionType.STRING, "key", "シークレットダイスを振った際にDMに送られてくる値です", true)
-				))
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeServer", "（管理者向け）ダイスサーバを削除します", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "serverURL", "削除するダイスサーバの URL です", true)
 			)),
-			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "admin", "（管理者向け）ダイスボットを管理します", Arrays.asList(
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "setServer", "（管理者向け）ダイスサーバを変更します", Arrays.asList(
-					SlashCommandOption.create(SlashCommandOptionType.STRING, "serverURL", "新しく利用するダイスサーバの URL です", true)
-				)),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeServer", "（管理者向け）ダイスサーバを削除します", Arrays.asList(
-					SlashCommandOption.create(SlashCommandOptionType.STRING, "serverURL", "削除するダイスサーバの URL です", true)
-				)),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listServer", "（管理者向け）ダイスサーバを一覧します"),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "refreshSecretDice", "（管理者向け）保存してあるシークレットダイスの結果をリセットします"),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "updateDiceRollPreFix", "（管理者向け）ダイスコマンドを再読み込みします"),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "addOriginalTable", "（管理者向け）スラッシュコマンドでのオリジナル表の追加は未対応です"),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeOriginalTable", "（管理者向け）オリジナル表を削除します", Arrays.asList(
-					SlashCommandOption.create(SlashCommandOptionType.STRING, "originalTable", "（管理者向け）削除するオリジナル表の名前です", true)
-				)),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listOriginalTable", "（管理者向け）利用可能なオリジナル表を一覧します"),
-				SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "reloadOriginalTable", "（管理者向け）利用可能なオリジナル表を再読み込みして一覧します")
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listServer", "（管理者向け）ダイスサーバを一覧します"),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "refreshSecretDice", "（管理者向け）保存してあるシークレットダイスの結果をリセットします"),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "updateDiceRollPreFix", "（管理者向け）ダイスコマンドを再読み込みします"),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "addOriginalTable", "（管理者向け）オリジナル表を追加します",  Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.ATTACHMENT, "file", "追加するオリジナル表のファイルです。UTF-8で保存されたものである必要があります", true),
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "title", "追加するオリジナル表の名前です")
 			)),
-			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "Discord", "（管理者向け）ダイスボットが導入されているDiscordサーバについて確認します", Arrays.asList(
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listRoomIds", "（管理者向け）チャンネルの ID を一覧します"),
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listRooms", "（管理者向け）チャンネルの情報を一覧します"),
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listServers", "（管理者向け）サーバを一覧します"),
-				SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "removeSlashCommands", "（管理者向け）スラッシュコマンドを全削除し、再起動するまでスラッシュコマンドが使えなくなります。スラッシュコマンドを再設定したい場合はこれを実行した後にダイスボットを停止・再起動してください")
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "removeOriginalTable", "（管理者向け）オリジナル表を削除します", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "originalTable", "（管理者向け）削除するオリジナル表の名前です", true)
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "listOriginalTable", "（管理者向け）利用可能なオリジナル表を一覧します"),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "suspendUser", "（管理者向け）指定したユーザをダイスロール抑止ユーザ一覧に追加し、ダイスを振れないようにします", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "userId", "ダイスロール抑止ユーザ一覧に追加するユーザの ID です", true),
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "reason", "ダイスロール抑止ユーザ一覧に追加する理由です", false)
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "unsuspendUser", "（管理者向け）指定したユーザをダイスロール抑止ユーザ一覧から削除し、ダイスを振れるようにします", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "userId", "ダイスロール抑止ユーザ一覧から削除するユーザの ID です", true)
 			))
-		)).createGlobal(api).join();
-		SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(
-			SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
-		)).createGlobal(api).join();
+		);
+	}
+	private List<SlashCommandOption> getBcdiceConfigSubCommands() {
+		return Arrays.asList(
+			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "status", "ダイスボットが利用しているダイスサーバやバージョン、使用しているシステムを確認します"),
+			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "list", "ダイスボットで利用できるシステムを一覧します"),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "set", "ダイスボットで使用するシステムを設定します", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "help", "ダイスボットで使用するシステムのヘルプメッセージを参照します", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "system", "ダイスボットで使用するシステムです。Cthulhu7th や DoubleCross、SwordWorld2.5　等", true)
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "load", "シークレットダイスの結果を呼び出します", Arrays.asList(
+				SlashCommandOption.create(SlashCommandOptionType.STRING, "key", "シークレットダイスを振った際にDMに送られてくる値です", true)
+			))
+		);
+	}
+	private List<SlashCommandOption> getBcdiceDiscordSubCommands() {
+		return Arrays.asList(
+			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listRoomIds", "（管理者向け）チャンネルの ID を一覧します"),
+			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listRooms", "（管理者向け）チャンネルの情報を一覧します"),
+			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "listServers", "（管理者向け）サーバを一覧します"),
+			SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, "removeSlashCommands", "（管理者向け）スラッシュコマンドを全削除し、再起動するまでスラッシュコマンドが使えなくなります。スラッシュコマンドを再設定したい場合はこれを実行した後にダイスボットを停止・再起動してください")
+		);
 	}
 
-	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) throws IOException {
-		List<DicerollResult> rollResults = bcDice.rolls(bcDice.getRollCommand() + " " + diceCommand, channel.getIdAsString());
+	private List<SlashCommandOption> getBcdiceCommandOptions() {
+		return Arrays.asList(
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, "roll", String.format("ダイスを振ります。/%s というショートカットもあります", shortPrefix), Arrays.asList(
+					SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
+			)),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "config", "ダイスボットの設定を確認・実施します", getBcdiceConfigSubCommands()),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "admin", "（管理者向け）ダイスボットを管理します", getBcdiceAdminSubCommands()),
+			SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND_GROUP, "Discord", "（管理者向け）ダイスボットが導入されているDiscordサーバについて確認します", getBcdiceDiscordSubCommands())
+		);
+	}
+	
+	private void defineSlashCommand(boolean isActiveOriginalTableSuggestion) {
+		slashInputConfig.joinSlashCommand(SlashCommand.with(prefix, "BCDice のダイスボットを利用します", getBcdiceCommandOptions()));
+		slashInputConfig.joinSlashCommand(SlashCommand.with(shortPrefix, "ダイスを振ります", Arrays.asList(
+			SlashCommandOption.create(SlashCommandOptionType.STRING, "diceCommand", "振りたいダイスのコマンドです", true)
+		)));
+		if(isActiveOriginalTableSuggestion) {
+			List<SlashCommandOption> originalTableList = getOriginalTableCommandList();
+			slashInputConfig.joinSlashCommand(SlashCommand.with(String.format("%st", shortPrefix), "オリジナル表を振ります", originalTableList));
+		}
+	}
+
+	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) {
+		List<DicerollResult> rollResults;
+		try {
+			rollResults = bcDice.rolls(bcDice.getRollCommand() + " " + diceCommand, channel.getIdAsString());	
+		} catch(IOException ioe) {
+			logger.warn(String.format("USERID: %s MESSAGE: %s", user.getIdAsString() , diceCommand));
+			logger.warn("Failed to reply to user request", ioe);
+			return getSingleMessage(String.format("[ERROR]%s", ioe.getMessage()));
+		}
+
 		if( rollResults.size() > 0 && rollResults.get(0).isRolled() ) {
 			logger.debug("Dice command request for dice server is done");
 			List<String> sb = new ArrayList<String>();
 			for(DicerollResult rollResult : rollResults) {
 				if(rollResult.isError()) {
-					throw new IOException(rollResult.getText());
+					logger.warn(String.format("USERID: %s MESSAGE: %s", user.getIdAsString() , diceCommand));
+					return getSingleMessage(String.format("[ERROR]%s", rollResult.getText()));
 				}
 				if( rollResult.isRolled() ) {
 					sb.add(diceResultFormatter.getText(rollResult));
@@ -167,7 +214,11 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		String subCommand = option.getName();
 		AdminCommand command = adminCommands.get(subCommand);
 		if(command != null) {
-			return bcDice.separateStringWithLengthLimitation(command.exec(option, client), 1000);
+			List<String> tmp = bcDice.separateStringWithLengthLimitation(command.exec(option, client), 1000);
+			if( isActiveOriginalTableSuggestion && subCommand.endsWith("originaltable") ) {
+				defineSlashCommand(true);
+			}
+			return tmp;
 		} else {
 			logger.warn(String.format("無効な管理コマンド %s が実行されました", subCommand));
 		}
@@ -201,33 +252,32 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		SlashCommandInteraction interaction = event.getSlashCommandInteraction();
 		User user = interaction.getUser();
 		TextChannel channel = interaction.getChannel().get();
-
+		String slashCommandName = interaction.getCommandName();
+		if(UserSuspenderFactory.getUserSuspender().isSuspended(user.getIdAsString())) {
+			return;
+		}
 		List<String> responseMessage = null;
 		SlashCommandInteractionOption firstOption = interaction.getOptionByIndex(0).get();
-		if(interaction.getCommandName().equals(shortPrefix)) {
+		if(slashCommandName.equals(shortPrefix)) {
 			String diceCommand = firstOption.getStringValue().orElse("");
-			try {
+			responseMessage = handleRoll(diceCommand, channel, user);
+		} else if(slashCommandName.equals(shortTablePrefix)) {
+			String diceCommand = firstOption.getName();
+			logger.info("[" + diceCommand + "]");
+			if(diceCommand.equals(LIST_ORIGINAL_TABLE)) {
+				responseMessage = handleAdmin(firstOption, channel, user);
+			} else {
 				responseMessage = handleRoll(diceCommand, channel, user);
-			} catch (IOException ioe) {
-				responseMessage = getSingleMessage(String.format("[ERROR]%s", ioe.getMessage()));
-				logger.warn(String.format("USERID: %s MESSAGE: %s", user.getIdAsString() , diceCommand));
-				logger.warn("Failed to reply to user request", ioe);
 			}
-		}
-		if(interaction.getCommandName().equals(prefix)) {
+		} else if(slashCommandName.equals(prefix)) {
 			String firstOptionAsString = firstOption.getName();
-
 			SlashCommandInteractionOption secondOption = firstOption.getOptionByIndex(0).get();
-
 			if(firstOptionAsString.equals("roll")) {
 				String diceCommand = secondOption.getStringValue().orElse("");
-				try {
-					responseMessage = handleRoll(diceCommand, channel, user);
-				} catch (IOException ioe) {
-					responseMessage = getSingleMessage(String.format("[ERROR]%s", ioe.getMessage()));
-					logger.warn(String.format("USERID: %s MESSAGE: %s", user.getIdAsString() , diceCommand));
-					logger.warn("Failed to reply to user request", ioe);
-				}
+				responseMessage = handleRoll(diceCommand, channel, user);
+			} else if(firstOptionAsString.equals("table")) {
+				String diceCommand = secondOption.getName();
+				responseMessage = handleRoll(diceCommand, channel, user);
 			} else if(firstOptionAsString.equals("config")) {
 				responseMessage = handleConfig(secondOption, channel, user);
 			} else if(firstOptionAsString.equals("admin")) {

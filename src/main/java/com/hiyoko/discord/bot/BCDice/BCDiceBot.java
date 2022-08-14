@@ -10,6 +10,7 @@ import org.javacord.api.DiscordApiBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hiyoko.discord.bot.BCDice.Listener.SlashInputConfig;
 import com.hiyoko.discord.bot.BCDice.Listener.SlashInputMessageCreateListener;
 import com.hiyoko.discord.bot.BCDice.Listener.StandardInputMessageCreateListener;
 
@@ -62,6 +63,24 @@ public class BCDiceBot {
 		}
 	}
 
+	private String getTestServerId() {
+		String serverId = System.getenv("DISCORD_TEST_SERVER_ID");
+		if(serverId == null) {
+			return "";
+		} else {
+			return serverId.trim();
+		}
+	}
+
+	private boolean isActiveOriginalTableSuggestion() {
+		String isDisabledString = System.getenv("BCDICE_SLASH_TABLE_SUGGESTION_DISABLED");
+		if(isDisabledString == null || isDisabledString.trim().isEmpty()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	private boolean isStandardChatEnabled() {
 		String isDisabledString = System.getenv("BCDICE_STANDARD_INPUT_DISABLED");
 		if(isDisabledString == null || isDisabledString.trim().isEmpty()) {
@@ -89,8 +108,14 @@ public class BCDiceBot {
 
 		String slashPrefix = getSlashPrefix();
 		if(! slashPrefix.isEmpty()) {
-			String slashShortPrefix = getSlashShortPrefix();
-			api.addSlashCommandCreateListener(new SlashInputMessageCreateListener(api, bcDice, slashPrefix, slashShortPrefix));
+			SlashInputConfig config = new SlashInputConfig(
+				api,
+				bcDice,
+				slashPrefix,
+				getSlashShortPrefix(),
+				getTestServerId(),
+				isActiveOriginalTableSuggestion());
+			api.addSlashCommandCreateListener(new SlashInputMessageCreateListener(config));
 		}
 	}
 

@@ -160,6 +160,7 @@ REM set BCDICE_RESULT_DISPLAY_FORMAT=V1
 REM set BCDICE_SLASH_PREFIX=bcdice
 REM set BCDICE_SLASH_SHORT_PREFIX=br
 REM set BCDICE_STANDARD_INPUT_DISABLED=disabled
+REM set BCDICE_SLASH_TABLE_SUGGESTION_DISABLED=disabled
 
 java -jar discord-bcdicebot.jar %DISCORD_BOT_TOKEN% %BCDICE_API_URL% %IGNORE_ERROR%
 pause</pre>
@@ -217,6 +218,10 @@ pause</pre>
 	<tr>
 		<th>BCDICE_STANDARD_INPUT_DISABLED</th>
 		<td>この値に何らかの文字列が入っている場合、スラッシュコマンド以外の手段で設定やダイスロールを行うことができなくなります。先頭の REM ないし # を削除しなければ有効になりません</td>
+	</tr>
+	<tr>
+		<th>BCDICE_SLASH_TABLE_SUGGESTION_DISABLED</th>
+		<td>この値に何らかの文字列が入っている場合、スラッシュコマンドを用いた際のオリジナル表のサジェストが機能しません</td>
 	</tr>
 </table>
 </div>
@@ -398,7 +403,7 @@ import コマンドを実行すると<code>start.bat</code>ないし<code>start.
 </div>
 
 <p><code>BCDICE_SLASH_PREFIX</code>が有効な場合はスラッシュコマンドでダイスを振る際に同様の記法を用いることが可能です。<br/>
-ただし、<code>export</code>、<code>import</code>、<code>suppressroll</code>、<code>addDiceBot</code> はスラッシュコマンドからは利用できません。<br/>
+ただし、<code>export</code>、<code>import</code>、<code>suppressroll</code> はスラッシュコマンドからは利用できません。<br/>
 詳細はスラッシュコマンドの説明をご確認ください。</p>
 
 <h4 id="howToUse-admin-originalTable">オリジナルダイスボット表の管理</h4>
@@ -415,11 +420,6 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 <br/><br/>
 オリジナルダイスボット表を削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [オリジナルダイスボット表名]</code><br/>
 オリジナルダイスボット表の一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code></p>
-<div class="comment">上述の通り、スラッシュコマンドから<code>addDiceBot</code>は利用できないため、<br/>
-<code>BCDICE_STANDARD_INPUT_DISABLED</code>が設定されている場合はオリジナルダイスボット表の追加は Discord から行えません。<br/>
-オリジナルダイスボット表を追加する場合は<code>start.bat</code>ないし<code>start.sh</code>と同じディレクトリにある<br/>
-<code>originalDiceBots</code>にオリジナルダイスボット表のファイルを追加した上で<br/>スラッシュコマンドから管理コマンドの<code>reloadoriginaltable</code>を実行してください。<br/>
-なお、使用時に導入されているオリジナルダイスボット表が一覧されます</div>
 
 <h3 id="howToUse-slashCommands">スラッシュコマンドについて</h3>
 <p><code>BCDICE_SLASH_PREFIX</code> が有効な場合、Discord のスラッシュコマンド機能を用いてダイスを振ったり設定を実施したりできるようになります。</p>
@@ -436,7 +436,7 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 従来パスワードを知っていれば誰でも実行できましたが、スラッシュコマンドにおいては Bot の管理者のみ実行できるように変更されました。</p>
 
 <h4 id="howToUse-slashCommands-disabledCommands">スラッシュコマンドで使えない機能</h4>
-<p>上述の通り、管理コマンドの<code>export</code>、<code>import</code>、<code>suppressroll</code>、<code>addDiceBot</code>はスラッシュコマンドからは利用できません。</p>
+<p>上述の通り、管理コマンドの<code>export</code>、<code>import</code>、<code>suppressroll</code>はスラッシュコマンドからは利用できません。</p>
 
 <h4 id="howToUse-slashCommands-remove">スラッシュコマンドを無効化したい場合</h4>
 <p><code>BCDICE_SLASH_PREFIX</code>や<code>BCDICE_SLASH_SHORT_PREFIX</code>の値を変えたい場合は再起動が必要です。<br/>
@@ -473,6 +473,7 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 			<li>スラッシュコマンドを有効にします。<br/><code>heroku config:set BCDICE_SLASH_PREFIX=bcdice</code></li>
 			<li>スラッシュコマンドの短縮ワードを有効にします。<br/><code>heroku config:set BCDICE_SLASH_SHORT_PREFIX=br</code></li>
 			<li>スラッシュコマンド以外の手段で設定やダイスロールをできないようにします<br/><code>heroku config:set BCDICE_STANDARD_INPUT_DISABLED=1</code></li>
+			<li>スラッシュコマンド上でオリジナル表をサジェストする機能を無効にします<br/><code>heroku config:set BCDICE_SLASH_TABLE_SUGGESTION_DISABLED=1</code></li>
 		</ul>
 	</li>
 	<li>Heroku の Dashboard から worker を起動します。<br/>Heroku の Dashboard：<a target="_blank" href="https://dashboard.heroku.com/">https://dashboard.heroku.com/</a></li>
@@ -489,31 +490,33 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 
 <h3 id="licenses-libs">使用しているライブラリ</h3>
 <ul>
-<li>(Eclipse Public License - v 1.0) (GNU Lesser General Public License) Logback Classic Module (ch.qos.logback:logback-classic:1.2.10 - http://logback.qos.ch/logback-classic)</li>
-<li>(Eclipse Public License - v 1.0) (GNU Lesser General Public License) Logback Core Module (ch.qos.logback:logback-core:1.2.10 - http://logback.qos.ch/logback-core)</li>
-<li>(Apache License, Version 2.0) xsalsa20poly1305 (com.codahale:xsalsa20poly1305:0.10.1 - https://github.com/codahale/xsalsa20poly1305)</li>
+<li>(Eclipse Public License - v 1.0) (GNU Lesser General Public License) Logback Classic Module (ch.qos.logback:logback-classic:1.2.11 - http://logback.qos.ch/logback-classic)</li>
+<li>(Eclipse Public License - v 1.0) (GNU Lesser General Public License) Logback Core Module (ch.qos.logback:logback-core:1.2.11 - http://logback.qos.ch/logback-core)</li>
+<li>(Apache License, Version 2.0) xsalsa20poly1305 (com.codahale:xsalsa20poly1305:0.11.0 - https://github.com/codahale/xsalsa20poly1305)</li>
 <li>(MIT License) minimal-json (com.eclipsesource.minimal-json:minimal-json:0.9.5 - https://github.com/ralfstx/minimal-json)</li>
-<li>(The Apache Software License, Version 2.0) Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.9.0 - http://github.com/FasterXML/jackson)</li>
-<li>(The Apache Software License, Version 2.0) Jackson-core (com.fasterxml.jackson.core:jackson-core:2.9.3 - https://github.com/FasterXML/jackson-core)</li>
-<li>(The Apache Software License, Version 2.0) jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.9.3 - http://github.com/FasterXML/jackson)</li>
-<li>(The Apache Software License, Version 2.0) com.neovisionaries:nv-websocket-client (com.neovisionaries:nv-websocket-client:2.6 - https://github.com/TakahikoKawasaki/nv-websocket-client)</li>
-<li>(Apache 2.0) OkHttp Logging Interceptor (com.squareup.okhttp3:logging-interceptor:3.9.1 - https://github.com/square/okhttp/logging-interceptor)</li>
+<li>(The Apache Software License, Version 2.0) Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.12.6 - http://github.com/FasterXML/jackson)</li>
+<li>(The Apache Software License, Version 2.0) Jackson-core (com.fasterxml.jackson.core:jackson-core:2.12.6 - https://github.com/FasterXML/jackson-core)</li>
+<li>(The Apache Software License, Version 2.0) jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.12.6 - http://github.com/FasterXML/jackson)</li>
+<li>(The Apache Software License, Version 2.0) com.neovisionaries:nv-websocket-client (com.neovisionaries:nv-websocket-client:2.14 - https://github.com/TakahikoKawasaki/nv-websocket-client)</li>
+<li>(The Apache Software License, Version 2.0) okhttp-logging-interceptor (com.squareup.okhttp3:logging-interceptor:4.9.3 - https://square.github.io/okhttp/)</li>
 <li>(The Apache Software License, Version 2.0) okhttp (com.squareup.okhttp3:okhttp:4.9.1 - https://square.github.io/okhttp/)</li>
 <li>(The Apache Software License, Version 2.0) Okio (com.squareup.okio:okio:2.8.0 - https://github.com/square/okio/)</li>
-<li>(The Apache Software License, Version 2.0) Vavr (io.vavr:vavr:0.10.1 - http://vavr.io)</li>
-<li>(The Apache Software License, Version 2.0) Vavr Match (io.vavr:vavr-match:0.10.1 - http://vavr.io)</li>
-<li>(Eclipse Public License 1.0) JUnit (junit:junit:4.13.1 - http://junit.org)</li>
+<li>(The Apache Software License, Version 2.0) Vavr (io.vavr:vavr:0.10.4 - http://vavr.io)</li>
+<li>(The Apache Software License, Version 2.0) Vavr Match (io.vavr:vavr-match:0.10.4 - http://vavr.io)</li>
+<li>(Eclipse Public License 1.0) JUnit (junit:junit:4.13.2 - http://junit.org)</li>
 <li>(Apache License, Version 2.0) Apache Commons Lang (org.apache.commons:commons-lang3:3.12.0 - https://commons.apache.org/proper/commons-lang/)</li>
-<li>(Apache License, Version 2.0) Apache Log4j API (org.apache.logging.log4j:log4j-api:2.17.1 - https://logging.apache.org/log4j/2.x/log4j-api/)</li>
-<li>(Apache License, Version 2.0) Apache Log4j Core (org.apache.logging.log4j:log4j-core:2.17.1 - https://logging.apache.org/log4j/2.x/log4j-core/)</li>
-<li>(Bouncy Castle Licence) Bouncy Castle Provider (org.bouncycastle:bcprov-jdk15on:1.59 - http://www.bouncycastle.org/java.html)</li>
+<li>(Apache License, Version 2.0) Apache Log4j API (org.apache.logging.log4j:log4j-api:2.17.2 - https://logging.apache.org/log4j/2.x/log4j-api/)</li>
+<li>(Apache License, Version 2.0) Apache Log4j Core (org.apache.logging.log4j:log4j-core:2.17.2 - https://logging.apache.org/log4j/2.x/log4j-core/)</li>
+<li>(Bouncy Castle Licence) Bouncy Castle Provider (org.bouncycastle:bcprov-jdk15on:1.60 - http://www.bouncycastle.org/java.html)</li>
 <li>(New BSD License) Hamcrest Core (org.hamcrest:hamcrest-core:1.3 - https://github.com/hamcrest/JavaHamcrest/hamcrest-core)</li>
-<li>(Apache License, Version 2.0) Javacord (org.javacord:javacord:3.3.2 - https://www.javacord.org)</li>
-<li>(Apache License, Version 2.0) Javacord (api) (org.javacord:javacord-api:3.3.2 - https://www.javacord.org)</li>
-<li>(Apache License, Version 2.0) Javacord (core) (org.javacord:javacord-core:3.3.2 - https://www.javacord.org)</li>
+<li>(Apache License, Version 2.0) Javacord (org.javacord:javacord:3.5.0 - https://javacord.org)</li>
+<li>(Apache License, Version 2.0) Javacord (api) (org.javacord:javacord-api:3.5.0 - https://javacord.org)</li>
+<li>(Apache License, Version 2.0) Javacord (core) (org.javacord:javacord-core:3.5.0 - https://javacord.org)</li>
 <li>(The Apache Software License, Version 2.0) IntelliJ IDEA Annotations (org.jetbrains:annotations:13.0 - http://www.jetbrains.org)</li>
 <li>(The Apache License, Version 2.0) org.jetbrains.kotlin:kotlin-stdlib (org.jetbrains.kotlin:kotlin-stdlib:1.4.10 - https://kotlinlang.org/)</li>
 <li>(The Apache License, Version 2.0) org.jetbrains.kotlin:kotlin-stdlib-common (org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 - https://kotlinlang.org/)</li>
+<li>(The Apache License, Version 2.0) org.jetbrains.kotlin:kotlin-stdlib-jdk7 (org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10 - https://kotlinlang.org/)</li>
+<li>(The Apache License, Version 2.0) org.jetbrains.kotlin:kotlin-stdlib-jdk8 (org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10 - https://kotlinlang.org/)</li>
 <li>(MIT License) SLF4J API Module (org.slf4j:slf4j-api:1.7.32 - http://www.slf4j.org)</li>
 </ul>
 
@@ -589,6 +592,10 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2 id="history">更新履歴</h2>
 <dl>
+	<dt>v2.7.0</dt>
+	<dd>スラッシュコマンドからオリジナル表をサジェストするように変更しました。スラッシュコマンドを有効にした場合はデフォルトでサジェストも有効ですが、設定から無効化することも可能です</dd>
+	<dd>スラッシュコマンドから特定のユーザがダイスを振れないように設定する機能を追加しました</dd>
+	<dd>ダイスを複数回振る時の挙動に関する問題を修正しました</dd>
 	<dt>v2.6.5</dt>
 	<dd>シークレットダイスについて挙動がおかしかったので修正しました</dd>
 	<dt>v2.6.4</dt>

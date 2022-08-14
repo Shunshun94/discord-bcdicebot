@@ -10,11 +10,12 @@ public class AdminCommandsMapFactory {
 		adminCommands.put("removeserver", new RemoveServer());
 		adminCommands.put("listserver", new ListServer());
 		adminCommands.put("listoriginaltable", new ListOriginalTable());
-		adminCommands.put("reloadoriginaltable", new ReloadOriginalTable());
+		adminCommands.put("addoriginaltable", new AddOriginalTable());
 		adminCommands.put("removeoriginaltable", new RemoveOriginalTable());
-		adminCommands.put("addoriginaltable", null);
 		adminCommands.put("refreshsecretdice", new RefreshSecretDice());
 		adminCommands.put("updatedicerollprefix", new UpdateDiceRollPreFix());
+		adminCommands.put("suspenduser", new SuspendUser());
+		adminCommands.put("unsuspenduser", new UnsuspendUser());
 		return adminCommands;
 	}
 }
