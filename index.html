@@ -136,6 +136,8 @@
 	<li>名前とアイコンを設定し、Discord Application を作成します</li>
 	<li>名前とアイコンの下にある APPLICATION ID の数字をメモします</li>
 	<li>画面左側のメニューから Bot を選択し、Add Bot と書かれたボタンをクリックし、このダイスボット用のユーザを作成します</li>
+	<li>Bot の画面中にある <code>MESSAGE CONTENT INTENT</code> を ON にします<br/>
+	<span style="display:block;" class="comment"><code>MESSAGE CONTENT INTENT</code>の設定はスラッシュコマンドでしか利用しない予定であれば不要です。<br/>通常のテキストチャットで利用したい場合は必要となります。</span></li>
 	<li>Bot の Username の下に "Token:click to reveal" というのがあるのでクリックし、出てくるランダムな文字列をメモします。<strong>この文字列は他の人に教えないこと</strong>。
 	<br/><span style="display:block;" class="comment">この文字列は <code>NDA0MgAIC0QK18lU0dxMt99F.HuWAIt.Nh9OTLbjxdMp3pcmw3Lsqd4aQlb</code> のような形式の値となります（この値はダミーです）。<br/>
 	General Information 記載の <code>d70963bg6e4df564f3648c87c514f15bef8ce3b38af1156800bcc3395c062f80</code> のような値ではありません。</span></li>
@@ -592,6 +594,8 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2 id="history">更新履歴</h2>
 <dl>
+	<dt>v2.7.1</dt>
+	<dd>Discord の仕様変更に合わせ、導入手順を修正しました。アプリの修正はありません</dd>
 	<dt>v2.7.0</dt>
 	<dd>スラッシュコマンドからオリジナル表をサジェストするように変更しました。スラッシュコマンドを有効にした場合はデフォルトでサジェストも有効ですが、設定から無効化することも可能です</dd>
 	<dd>スラッシュコマンドから特定のユーザがダイスを振れないように設定する機能を追加しました</dd>
