@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 public class DiceClientFactoryTest extends TestCase {
 
 	public void testGetDiceClient() throws IOException {
-		assertTrue(DiceClientFactory.getDiceClient("https://bcdice.herokuapp.com").toString().startsWith("[BCDiceClient]"));
+		assertTrue(DiceClientFactory.getDiceClient("https://bcdice.onlinesession.app").toString().startsWith("[BCDiceClient]"));
 		assertTrue(DiceClientFactory.getDiceClient("test").toString().startsWith("[DiceClientMock]"));
 	}
 
