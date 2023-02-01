@@ -1,1147 +1,3 @@
-:StellarKnights
-4SK
-0SK
-4+2SK
-(4+2)SK
-4/2SK
-5/2SK
-(4+2)/2SK
-5SK3
-3SK6
-0SK6
-3SK,1>6
-6SK4,1>6,2>6
-6SK4,1>6,6>1
-0SK,1>6
-0SK4,1>6
-TT
-STA
-STB
-STB2
-STB21
-STB22
-STB23
-STB24
-STB25
-STB26
-STC
-ALLS
-GAT
-HOT
-DET
-YST
-YSTA
-WIT
-PET
-YSTM
-STM
-YSTL
-YSTR
-STBR
-STCR
-STBS
-STE
-FT
-FT2
-FT3
-FT4
-YSTB
-YSTF
-STAL
-:StellarKnights:Korean
-4SK
-4+2SK
-(4+2)SK
-4/2SK
-5/2SK
-(4+2)/2SK
-5SK3
-3SK6
-3SK,1>6
-6SK4,1>6,2>6
-6SK4,1>6,6>1
-0SK
-0SK6
-TT
-STA
-STB
-STB2
-STB21
-STB22
-STB23
-STB24
-STB25
-STB26
-STC
-ALLS
-GAT
-HOT
-DET
-YST
-YSTA
-WIT
-PET
-YSTM
-STM
-YSTL
-YSTR
-STBR
-STCR
-STBS
-STE
-FT
-FT2
-FT3
-FT4
-YSTB
-YSTF
-STAL
-:StellarLife
-4DA[4,8]
-6DA+2[3,7]
-6DA-1[3,7,9]
-VPFT
-VNFT
-VNRT
-AAFT
-aaft
-AAST
-aast
-RNST
-RET
-TRST
-TRAT
-TRMT
-TROT
-TET
-ENT
-CUT
-NAT
-INT
-:StrangerOfSwordCity
-1SR>=3
-2SR>=7
-3SR>=10
-10SR>=35
-2SR
-2SR3
-3SR+5
-3SR3>=9
-2SR-2>=10
-4SR-3
-D66
-d66
-:StratoShout
-2d6>=4
-2d6>=9
-VOT
-GUT
-BAT
-DRT
-KEYT
-EMO
-SCENE
-MACHI
-GAKKO
-BAND
-TENKAI
-AT
-AT2
-RTT
-RTT2
-RCT
-2D6>=? 目標値?でバグらない
-:StratoShout:Korean
-2d6>=4
-2d6>=9
-VOT
-GUT
-BAT
-DRT
-KEYT
-EMO
-SCENE
-MACHI
-GAKKO
-BAND
-TENKAI
-AT
-AT2
-RTT
-RTT2
-RCT
-2D6>=? 목표치를 달성하지 못했다
-:Strave
-MP6
-MP0
-MP11
-5ST6*10
-6ST5x15
-AFF
-AFV
-IDT
-IDV
-:SwordWorld
-2d6>=7
-2d6>=?
-K20
-K10+5
-k30
-k10+10
-Sk10-1
-k10+5+2
-K20[10]
-K10+5[9]
-k30[10]
-k10[9]+10
-k10-5@9
-K20$+1
-K10$+1
-K10+5$9
-k10-5@9$+2
-k10[9]+10$9
-K25+6@3
-K20+6@4
-K14@9
-K9@3$12
-K9@3+1$10
-K9@3-1$12
-k10+10@(8+5) カッコをつけるとクリティカル値が加算される
-hk10 HKのクリティカル値は13
-k10h
-k10h+1 半減後加算
-k10h+1+1 半減後加算に使えるのは1項のみ。それ以外は加減算値となる
-k10h+(1+1) カッコをつければ半減後加算に繰り込まれる
-hk10h
-hk10[9]+10
-hk10[9]+10 切り上げ
-HK20+6@4
-K20+6@4h
-K(10+10)+6@4h
-2D6>=? 目標値?でバグらない
-:SwordWorld2.0
-K10r10
-K11r10
-K40+24@8$12r10
-K10gf
-K10gfh
-K10hgf
-K40+24@8$12r10gf
-K40+24sf4@8$12r10
-K40+24tf4@8$12r10
-K20+5
-SK20+5
-K20@10+5
-SK20@10+5
-hk10 HKのクリティカル値は13
-k10h
-hk10h
-hk10[9]+10
-hk10[9]+10 切り上げ
-HK20+6@4
-K20+6@4h
-k20sf4 sf通常時
-k20tf4 tf通常時
-k20sf7 sfクリティカル時
-k20tf7 tfクリティカル時
-k20sf1@3 sf自動失敗時
-k20tf1@3 tf自動失敗時
-k20tf3@3 tfクリティカル自動失敗時
-k20@2 クリティカル下限エラー 通常の下限は3
-k20sf2@2 クリティカル下限エラー sfが2以上の時はsf+2
-2D6@10+15>=30
-2D6@10+16>=30
-2D@10+16>=30 超越判定：面数省略
-2D6@10+31>=30
-2D6@10+32>=30
-2D6@10+39>=30
-2D6@10
-2D6@8 クリティカル値が10以外
-2D6@2 クリティカル値が小さすぎる場合
-2d6@10+11>30
-2d6@10+5>30
-2D6 超成功指定なし
-2D6>4 超成功指定なし
-gr
-gr1
-gr3
-ft
-tt
-:SwordWorld2.5
-K10r10
-K11r10
-K40+24@8$12r10
-K10gf
-K40+24@8$12r10gf
-K40+24sf4@8$12r10
-K40+24tf4@8$12r10
-K40+24sf4@8$12r10#1
-K40+24tf4@8$12r10#1
-K20+5
-SK20+5
-K20@10+5
-SK20@10+5
-K20+5#1
-K20+5#-1
-K20+5#+10
-K20+5#10
-K20+5#1$+1
-k10-5@9#2
-hk10 HKのクリティカル値は13
-k10h
-hk10h
-hk10[9]+10
-hk10[9]+10 切り上げ
-HK20+6@4
-K20+6@4h
-k20sf4 sf通常時
-k20tf4 tf通常時
-k20sf7 sfクリティカル時
-k20tf7 tfクリティカル時
-k20sf1@3 sf自動失敗時
-k20tf1@3 tf自動失敗時
-k20tf3@3 tfクリティカル自動失敗時
-k20@2 クリティカル下限エラー 通常の下限は3
-k20sf2@2 クリティカル下限エラー sfが2以上の時はsf+2
-k20sf2#1@2 クリティカル下限エラー sfと#の同時指定時はsf+#+2
-k20sf2#20@2 クリティカル下限エラー 下限の上限は13
-k20sf1@2 クリティカル下限エラー sfが1の時の下限は3
-k20sf1#8@2 クリティカル下限エラー sfが1の時の下限は3
-2D6@10+15>=30
-2D6@10+16>=30
-2D6@10+31>=30
-2D6@10+32>=30
-2D6@10+39>=30
-2D6@10
-2D6@8 クリティカル値が10以外
-2D6@2 クリティカル値が小さすぎる場合
-2d6@10+11>30
-gr
-gr1
-gr3
-ft
-tt
-Dru[4,7,13]+10
-dru[0,3,6]+10+4-5
-Dru[13,16,19]+12+8-10
-ABT
-:TalesFromTheLoop
-TFL3
-1TFL3
-2TFL3
-STFL3
-S2TFL3
-TFL3-1
-TFL3+1
-TFL3-3
-TFL(3+1)-(1)
-TFL(3+1)-(5)
-TFL(3+1)+(1)
-1TFL3-1
-2TFL3-1
-2TFL3+1
-1TFL3-3
-STFL3-1
-STFL3+1
-S2TFL3-1
-S2TFL3+1
-TFL3-1+1
-TFL3+1-1
-TFL3-4+1
-TFL3-(1)+(1+1)
-TFL3-(5)+1
-TFL(3+1)+(1)-1
-1TFL3-1+1
-2TFL3-1+1
-2TFL3+2-1
-1TFL3-3+1
-STFL2-1+1
-STFL4+1-1
-S2TFL2-1+1
-S2TFL4+1-1
-1TFL3+1+1
-S1TFL3+1+1
-1TFL3-1-1
-S1TFL3-1-1
-:StellarKnights
-20TY6 銀剣のステラナイツ ソートあり（sort_barabara_dice? => true）
-20TZ6 銀剣のステラナイツ ソートあり（sort_barabara_dice? => true）
-:DiceBot
-20TY6 大文字
-20ty6 小文字
-5TY6 出現しなかった出目がある場合
-(1+2*3)TY4 個数を計算
-7TY(1+5/2C) 面数を計算
-(1+2*3)TY(1+5/2C) 個数と面数を計算
-2TY21 面数21以上はエラー
-:DiceBot
-20TZ6 大文字
-20tz6 小文字
-5TZ6 出現しなかった出目がある場合
-(1+2*3)TZ4 個数を計算
-7TZ(1+5/2C) 面数を計算
-(1+2*3)TZ(1+5/2C) 個数と面数を計算
-2TZ21 面数21以上はエラー
-:TherapieSein
-TS
-TS4
-TS4-1
-TS2+1@10
-OP
-OP4+3+1
-OP3@10
-OP3@20
-:TokumeiTenkousei
-1D6>=3
-1D6+5>=10
-2D6>=3 ゾロ目で振り足し
-4D6+8>=50
-10D6>=35
-5D6>=18
-3D6>=? 目標値?でバグらない
-:TokyoGhostResearch
-OP
-TB
-1d10>=2
-1d10>=10
-1d10>=5
-:TokyoNova
-1D4>=3
-1D6>=5
-1D8>=7
-1D10>=9
-1D12>=11
-1D20>=19
-(1+2)D10+3>=12
-S1D10>=10
-:Torg
-TG14
-TG12+5
-RT13
-RT6
-RT3
-RT4
-RT11
-RT15
-RT16
-IT16
-IT14
-IT2
-IT17
-IT8
-IT4
-IT19
-IT1
-Test1
-Intimidate1
-IT5
-TT6
-TT1
-TT13
-TT17
-TT5
-TT3
-TT9
-TT15
-MT3
-MT12
-MT4
-MT5
-MT6
-MT14
-MT13
-MT19
-MT20
-ODT13
-ODT7
-ODT11
-ODT19
-ODT2
-ODT14
-ODT18
-ODT6
-ODT9
-DT6
-DT17
-DT1
-DT3
-DT4
-DT10
-DT14
-DT16
-BT53
-BT27
-BT44
-BT58
-BT50
-BT34
-BT48
-BT54
-BT20
-BT71
-BT4+1
-BT21+1
-BT13+1
-BT39+1
-BT56+1
-BT40+1
-BT12+1
-BT44+1
-BT17+1
-BT19
-BT21
-BT25
-BT26
-BT60
-BT61
-BT100
-BT101
-BT24
-BT30
-BT31
-:Torg1.5
-ODT15
-ODT16
-ODT17
-ODT18
-ODT19
-DT15
-DT16
-DT17
-DT18
-MT0
-MT4
-MT5
-IT4
-IT5
-TT4
-TT5
-:TorgEternity
-TG14
-TG12+5
-TG+12+5
-TG
-RT0
-Result4
-Result5
-RT9
-RT10
-Result1-2
-Result-5
-RT9-2+4
-DT2-8
-Damage-5
-Damage7-8
-DT8-8
-Damage4
-Damage5
-Damage9
-DT10
-DT14
-Damage15
-Damage19
-DT20
-DT24
-Damage25
-Damage29
-DT30
-DT34
-Damage35
-Damage39
-DT40
-DT44
-Damage45
-Damage49
-DT50
-BT1
-Bonus62
-Bonus1+2-4
-BT21+2-4
-Total62
-3BD+10
-3BD+2-4
-3BD
-0BD
-TE
-UP
-POS0
-POS8
-POS12
-POS11
-POS6
-POS13
-POS3
-POS5
-POS4
-POS15
-POS2
-POS6+12
-:ToshiakiHolyGrailWar
-F8+5
-F8
-F8+10 ペナルティなし
-F8+11 ダイス面数が1減少
-F8+20 ダイス面数が2減少
-F8+29 ダイス面数が2減少
-F8+30 ダイス面数が3減少
-F8+5-4
-F8+5-5
-F8-5
-F8+11-5
-F8+6+5-3-2 補正が分割されている
-F8+5@3
-F8+11-3@3
-F8+50 ダイスの面数は最低でも2
-F1+1@20 ダイスの面数は最大でも10
-F8+5>=10
-F8+5>=14
-F8-10
-:TrinitySeven
-1DM1+1
-1DM1-1
-1DM1
-1DM
-1DM-1
-2DM1+1
-2DM1
-2DM2
-2DM1-1
-2DM
-2DM+1
-2DM-1
-3DM1-1
-3DM1+1
-3DM1
-3DM2
-3DM3
-4DM2
-4DM4
-3DM
-3DM+1
-3DM-1
-TR-1<=50+20
-TR+1<=50-20
-TR+1<=50
-TR-1<=50
-TR<=50+20
-TR<=50
-TR<=0 目標値に関わらずクリティカル
-TR<=100 目標値に関わらずファンブル
-TR7<=40 クリティカル値変動
-TRNAME
-1D100<=50
-1D100>=? 目標値?でバグらない
-:TunnelsAndTrolls
-2d6>=2
-2d6>=10
-2d6>=7
-2D6>=1Lv
-2D6>=10Lv
-2D6+1>=1Lv
-2D6+10>=10Lv
-2d6>=?
-2d6+1>=?
-2d6+10>=?
-2D6
-5BS
-5BS+5
-10HBS
-10HBS+3
-:TwilightGunsmoke
-2D6>=7
-2D6+1>=5[11,3]
-CT
-OPR
-OPC
-EDR
-EDC
-RWL
-RWB
-RST
-RUP
-DCP
-DBD
-DCR
-DNJ
-DRB
-DBS
-DTR
-DMK
-DHL
-DML
-DZB
-DMT
-DHR
-DKS
-DFD
-:UnsungDuet
-shifter
-UDS
-shifter>=5
-shifter>=8
-shifter+3-2>=8
-binder
-UDB
-binder>=9
-binder>=10
-binder+2>=10
-HIN
-HInjury
-HPH
-HPhysical
-HFE
-HFear
-HFA
-HFantasy
-HMI
-HMind
-HOT
-HOther
-:DiceBot
-4U6[6]
-4U6[6]>=10
-4U6[6]>=7+3
-4U6>=10@6 末尾の@でも指定できる
-4U6[6]+11
-4U6[6]+11>=21
-4U6+11>=21@6
-4U6[6]+1+2+10
-4U6[6]-1+2+10
-2U6+2U4[4]+6 複数種類
-2U6+2U4[4]+6>=8 複数種類
-4U6+2U4+11>=21 条件未指定
-4U6+2U4[1]+14-3>=21 条件指定ミス
-4U6+2U4+11>=21@1 条件指定ミス
-4U6==21 比較演算子の確認
-4U6<>21 比較演算子の確認
-2U6+2U4[4]<>13 否定
-S1U6[3]
-:Utakaze
-6D6
-6UK
-10UK
-UK
-1UK
-5UK@1
-5UK@3
-5UK@5
-5UK@6
-5UK2
-5UK4
-UK@6
-UK6
-3UK
-4UK
-5UK
-UK@1
-UK1
-4UK@5
-6UK@1
-4UK5
-6UK@1>=2
-6UK@1>=3
-:VampireTheMasquerade5th
-3VMF3
-3VMF5
-3VMF3+2
-VMF3
-VMF3+2
-0VMF3
-0VMF3+3
-S3VMF3
-S3VMF5
-S3VMF3+2
-SVMF3
-SVMF3+2
-S0VMF3
-S0VMF3+3
-:Villaciel
-6VBS
-6VBS>=3
-6VF
-6VM
-6VG
-PJ
-PJV
-PJA
-PQ
-PQV
-PQA
-AC
-MMI
-MMA
-MMV
-MMVV
-MMVA
-MMD
-FL
-FR
-FW
-FG
-FB
-FC
-FS
-IP
-IPV
-IPA
-EP
-EPV
-EPA
-EP2
-EPV5
-EPA1
-MP
-EPV4
-IS
-:WaresBlade
-1D4>=3
-1D6>=5
-1D8>=7
-1D10>=9
-1D12>=11
-1D20>=19
-(1+2)D10+3>=12
-S1D10>=10
-1D10+2>=13 完全成功
-1D10+2>=3 絶対失敗
-(1+1)D10+1>=30 複数dice完全成功
-(1+2)D10+2>=3 複数dice絶対失敗
-2D10>=? 目標値?でバグらない
-:Warhammer
-1D100<=10
-1D100<=90
-1D100<=50
-whH10
-whA5
-WHL4
-wh60
-wh43@4W
-WH65@
-WHH1
-WHA2
-WHB3
-WH1@
-WH50
-WH50@
-WH50@W
-WH50@H
-WH50@2H
-WH50@2W
-WH50@4
-WH50@4H
-WH50@4W
-1D100>=? 目標値?でバグらない
-:Warhammer4
-1D100<=10 # 成功ランクの表示確認(各SL毎)...SL判定は十の位の数値同士の比較で行う
-1D100<=10
-1D100<=90
-1D100<=90  # 通常判定でのクリティカル表示抑制確認
-1D100<=10  # 通常判定でのファンブル表示抑制確認
-1D100<=99  # 通常判定での自動失敗処理確認(SL最大値-1)
-1D100<=1  # 通常判定での自動成功処理確認(SL最小値+1)
-1D100<=20
-WH10       # 戦闘用コマンドによるクリティカル・ファンブルの表示テスト
-WH10
-WH90       # クリティカル時に命中部位が表示抑制されているか？
-WH90       # 戦闘用コマンドの成功時に命中部位が表示されるか？
-WH90
-WH60       # 戦闘用コマンドの失敗時に命中部位が表示されるか？
-WHLT       # 命中部位表、各部位の境界値テスト
-WHLT
-WHFT      # やっちまった！表(ファンブル表)境界値テスト
-WHFT
-whCTH     # クリティカル表境界値テスト
-whCTH
-whCTHU    # 頑健ボーナス値以下はダイス-20
-whCTHU    # 頑健ボーナス以下ダメージのダイス目の最低値は1
-whCTA     # 腕部クリティカル表境界値テスト
-whCTA
-whCTB     # 胴体クリティカル表境界値テスト
-whCTB
-whCTL     # 脚部クリティカル表境界値テスト
-whCTL
-1D100>=? 目標値?でバグらない
-:WARPS
-2d6<=2
-2d6<=10
-2d6<=7
-2D6>=? 目標値?でバグらない
-:WitchQuest
-WQ1
-WQ2
-WQ5
-WQ6
-WQ7
-WQ(6+1)
-SET1
-SET48
-SET(40+8)
-:WorldOfDarkness
-1ST テキスト
-1ST
-1ST1
-1ST7
-10ST11
-1ST7+1
-1ST+1
-5ST
-5ST7
-5ST7+1
-5ST+1
-1STS テキスト
-1STS
-1STS1
-1STS7
-10STS11
-1STS7+1
-1STS+1
-5STS
-5STS7
-5STS7+1
-5STS+1
-1STA テキスト
-1STA
-1STA1
-1STA7
-10STA11
-1STA7+1
-1STA+1
-5STA
-5STA7
-5STA7+1
-5STA+1
-:YankeeYogSothoth
-2D6>=7
-FT
-WT
-RTT
-RTT1
-RCT
-KKT
-DBRT
-TKT
-BUDT
-GUDT
-DAIT
-TKKT
-GSST
-GYST
-HPST
-FTNT
-2D6>=? 目標値?でバグらない
-:YearZeroEngine
-YZE3
-YZE3+3
-YZE3+3+3
-YZE3+2+1
-YZE1+2+3
-SYZE3
-SYZE3+3
-SYZE1+2+3
-2YZE3
-2YZE3+3
-2YZE3+3+3
-2YZE3+2+1
-2YZE1+2+3
-S2YZE3
-S2YZE3+3
-S2YZE1+2+3
-MYZ3
-MYZ3+3
-MYZ3+3+3
-MYZ3+2+1
-MYZ1+2+3
-SMYZ3
-SMYZ3+3
-SMYZ1+2+3
-2MYZ3
-2MYZ3+3
-2MYZ3+3+3
-2MYZ3+2+1
-2MYZ1+2+3
-S2MYZ3
-S2MYZ3+3
-S2MYZ1+2+3
-2MYZ3-3+3
-2MYZ3-3
-MYZ3-3+3
-MYZ3-3
-YZE3-3
-:Yggdrasill
-cf1d6
-cf5+1d6-2
-cf2d6
-cf3d6
-cf10d6
-cf10+10d6
-cf5d6+10
-cfl1d6
-cfl5d6
-cfl10+5d6
-cfl5d6+10
-cfg5d6
-cfg10+5d6
-cfg5d6+10
-ra50
-ra70
-ra90
-ra110
-ra150
-so1
-so2
-so3
-so4
-so5
-down
-cont
-risk
-guki
-cond
-cft4+1d6
-cft6+1d6
-cft20+1d6
-cflt6+1d6
-cfgt12+1d6
-treat
-treat0
-treat6
-treat8
-treat12
-treat15
-treat18
-allr
-pafe
-fatal2
-fatal1
-mikuzi
-stag
-x2 cf2d6
-:ZettaiReido
-12-2DR-1>=10
-10-2DR+1>=99
-10-2DR+1>=10
-8-2DR>=6
-8-2DR-1>=4
-30-2DR-10>=19
-8-2DR>=7
-30-2DR-10>=20
-9-2DR>=7
-20-2DR>=7
-6-2DR
-:AceKillerGene
-AK50
-AK96
-AK99
-AK100
-AK500
-AK0
-AK50@11
-AK50@5
-AK100/2
-AK150/2
-AK150/3
-AK179/3
-AK99/2
-AK(99/2)
-dcSL1
-dcSL2
-dcSL5
-dcSL6
-dcBL1
-dcIM1
-dcBR1
-dcRF1
-dcEL1
-AK(20-20)
-AK(20-50)
-:DiceBot
-(2D6+1D4)*2 カッコ有り
-(2D6+(1D4+3)*3)*2 カッコがネストしている
-1D6+3/2U" # 1 + 1.
-1D6+3/2C" # 1 + 1.
-1D6+3/2F" # 1 + 1.
-1D6+3/2R" # 1 + 1.
-1D6+4/3U" # 1 + 1.3
-1D6+4/3C" # 1 + 1.3
-1D6+4/3F" # 1 + 1.3
-1D6+4/3R" # 1 + 1.3
-:AFF2e
-FF8 ▼
-FF10-2 ▼
-FF10-2
-FF1
-FF12
-FR8 ▼
-FR10-2 ▼
-FD8 ▼
-FD[0] ▼
-FD[0,0,0,0,1,1,2] ▼
-FD[0,0,0,0,1,1,2]+0 ▼
-FD[0,0,0,0,1,1,2]+2 ▼
-FD[0,0,0,0,1+1,1+1,2+2]+0 ▼
-FD[0,0,0,0,1+1,1+1,2+2]+2 ▼
-:Ainecadette
-AI
-AI 6がある時だけクリティカル
-1AI
-3AI
-4AI 有利+ブースト
-CA
-1CA
-3CA
-4CA 有利+ブースト
-:Airgetlamh
-AL
-3AL7*5
-10AL10x10
-AA
-6AA3
-6AA4C0
-6AA4c2
-4AA3*5
-4AA3x5
-4AA3X5
-4aa3*5
-4Aa3*5
-5aA4*10
-5AA4x10
-5AA4X10
-5AA4*10
-5aa3*5+10
-5aa3*5+10c0
-:AlchemiaStruggle
-6as
-6as3
-6as6
-6as7
-CElement
-CELE
-CAlchemia
-CALC
-CInformant
-CINF
-CInnocence
-CINN
-CAcquired
-CACQ
-ArticleS
-ARS
-ArticleM
-ARM
-ArticleL
-ARL
-PCInformation
-PCI
-Reason
-REA
-Associate
-ASS
-Contact
-CON
-6UL
-4d 出目ソート
-4b6 出目ソート
-c(4/3) 端数切り上げ
 :Alsetto
 6AL
 6AL4
@@ -1362,6 +218,7 @@ AES44
 6AV3
 6AV4C0
 6AV4c2
+6AV4c3" # クリティカル閾値の上限が 2 である（ 2 以下に丸められる）ことのテス
 4AV3*5
 4AV3x5
 4AV3X5
@@ -1373,6 +230,27 @@ AES44
 5AV4*10
 5av3*5+10
 5av3*5+10c0
+:Ayabito
+4AB
+11AB>=5
+5AB+1
+6AB@5>=3
+6AB+1@5>=3
+6AB$5>=3
+6AB@5$5>=3
+ET
+TST
+BST
+CET
+FT
+LT
+TET
+AST
+UST
+NST
+GST
+KST
+SST
 :BadLife
 BAD
 BAD10
@@ -1825,6 +703,30 @@ BUR
 8A
 SIP
 3D6>=? 目標値?でバグらない
+:BeginningIdol2022
+BI>=4
+BI3>=4
+BI@11>=4
+BI#3>=4
+BI@11+1>=4
+BI#3-1>=4
+BI@11#3>=4
+BI@6#6>=4 スペシャル優先
+PD6
+PD4
+PD6+2
+PD6+3
+PD7
+PD8
+PD7+3
+PD7+1
+PD7+2
+342PD4
+342PD4+1
+312PD4
+312PD4+1
+312PD3
+312PD3+1
 :BladeOfArcana
 1A
 1A12
@@ -2676,6 +1578,47 @@ S10D10>=10
 10D10>10
 10D10>90
 10D10>50
+:CyberpunkRed
+CP+8+4
+CP+7+3
+CP+4+3
+CP+8+2
+CP+6+4
+CP+6+3>=10
+CP+7+2-1>=12
+CP7>=13
+CP9>=7
+CP3>=17
+CP8>=12
+CP11
+CP7+5
+FFD
+HFD
+NCDT
+NCMT
+SCST
+SCSA
+SCSB
+SCSC
+SCSR
+VMCT
+VMCE
+VMCF
+VMCS
+STOREA
+STOREB
+STOREC
+STORE
+:DiceBot
+d66a 小文字対応テスト
+d66s 小文字対応テスト
+d66n 小文字対応テスト
+d66d 小文字対応テスト
+D66 入れ替えはゲーム依存
+D66A 昇順入れ替え
+D66S 昇順入れ替え
+D66D 降順入れ替え
+D66N 入れ替えなし
 :DarkBlaze
 DB33
 DB32#-1
@@ -2717,6 +1660,7 @@ IAG
 IAH
 IAI
 IAJ
+IAX
 2D6>=? 目標値?でバグらない
 :DarkSouls
 DS
@@ -3473,6 +2417,9 @@ AS
 1AS
 3AS
 SHRD
+SHND
+SHAD
+SHKD
 SHFM
 SHBT
 SHPI
@@ -3482,11 +2429,43 @@ SHDS
 SHFT
 SHIN
 SHEM
+SHHE
+SHHF
+SHMP
+SHSB
+SHFR
+SHIS
+SHSE
+SHLM
+SHJS
+SHAR
+SHRM
+SHNT
+SHIM
+SHNO
+SHNE
+SHHD
 EVS
 EVW
 EVN
 EVC
 EVV
+EVE
+EVD
+EVA
+EVT
+EVH
+EVX
+EVG
+EVQ
+EVM
+EVP
+EVO
+EVF
+EVB
+EVL
+EVZ
+EVR
 OBT
 ACT
 EWT
@@ -3501,12 +2480,26 @@ HT
 BT
 GRT
 MIT
+MITE
 JBT66
 JBT10
 FST66
 FST10
 FLT66
 FLT10
+FLTL66
+FLTD66
+FLTRA
+FLTF66
+FLTB66
+FLTH66
+FLTS66
+FLTA66
+FLTW66
+FLTC66
+FLTU66
+FLTO66
+FLTI66
 LDT66
 LDT10
 NCT66
@@ -3650,11 +2643,34 @@ GO(20-50)
 GL
 GK
 GK#6
+:GhostLive
+1D10000+5000" # 初期［視聴回数］の決定，レジェン
+AdditionalTargetTable
+att
+jibakuHauntA
+jha
+jibakuHauntB
+jhb
+shyHauntA
+sha
+shyHauntB
+shb
+guchaHauntA
+gha
+guchaHauntB
+ghb
 :GoblinSlayer
 GS
 GS10
 GS>=5
 GS10>=15
+GS@10
+GS@10>=9
+GS+1@10
+GS#3
+GS1#3
+GS@9#4
+GS#4@9
 GS>5
 GS10>15
 GS+2>5
@@ -3953,6 +2969,20 @@ TK3ET
 MST
 ERT
 2D6>=? 目標値?でバグらない
+:IfIfIf
+ie
+ie"
+im
+id
+hqt
+hqt8
+hqt5
+ldt
+ldt7
+ldt6
+hdt
+hdt9
+hdt2
 :Illusio
 IL1
 3IL1
@@ -4507,6 +3537,19 @@ SAE2
 SAE3
 SAE4
 SAE5
+:Kutulu
+4KU 成功数の変化を確認
+4KU
+4KU ギリギリでの成功を確認
+3KU ダイス個数の変化を確認
+2KU
+1KU
+1KU ダイス数1でのギリギリでの成功を確認
+1KR 対抗判定用ロールのダイス個数変化確認
+2KR
+3KR
+4KR
+4KR 同じ出目が複数あったときの確認
 :LiveraDoll
 ATK1
 3ATK1
@@ -5592,6 +4635,9 @@ char1
 CHAR3
 NAYA5
 STAT2
+ARTS
+ARTS1
+LIKE1
 :NightmareHunterDeep
 1D6>=3
 10D6>=35
@@ -5767,19 +4813,35 @@ S3B6>=4
 2R6[3]
 S2R6[3]
 5D10KH3 大きな出目から3個取った後の和
+5D10KH 最大値を取る（ KH の個数省略）
+5DKH3 大きな出目から3個取った後の和（面数省略）
+5DKH 最大値を取る（面数省略）
 (2+3)D(5+5)KH(5-2) 大きな出目から3個取った後の和
 5D10KL3 小さな出目から3個取った後の和
+5D10KL 最小値を取る（ KL の個数省略）
+5DKL3 小さな出目から3個取った後の和（面数省略）
+5DKL 最小値を取る（（面数省略）
 5D10DH3 大きな出目から3個除いた後の和
+5D10DH 最も大きな出目1個を除いた後の和
+5DDH3 大きな出目から3個除いた後の和（面数省略）
+5DDH 最も大きな出目1個を除いた後の和（面数省略）
 5D10DL3 小さな出目から3個除いた後の和
+5D10DL 最も小さな出目1個を除いた後の和
+5DDL3 小さな出目から3個除いた後の和（面数省略）
+5DDL 最も小さな出目1個を除いた後の和（面数省略）
 5D10KH0 取る数が0の場合でも動く
 5D10KH7 取る数が多すぎても動く
 2D20KH1+1 キープ機能修正値付き
 2D20DH1+1 ドロップ機能修正値付き
-D66 入れ替えはゲーム依存
-D66A 昇順入れ替え
-D66S 昇順入れ替え
-D66D 降順入れ替え
-D66N 入れ替えなし
+3D6MAX 最大値抽出
+3DMAX 最大値抽出、面数省略
+3D6MAX+2 最大値抽出、修正値つき
+3D6MAX>=4 最大値抽出、目標値つき（成功）
+3D6MAX>=5 最大値抽出、目標値つき（成功・同値）
+3D6MAX>=6 最大値抽出、目標値つき（失敗）
+5D10MIN 最小値抽出
+5DMIN 最小値抽出、面数省略
+5D10MIN-3 最小値抽出、修正値つき
 1D3+2D66 加算ダイスのD66
 :NSSQ
 3SQ
@@ -6107,6 +5169,9 @@ RD
 5DD2
 5DD3
 5DD
+:DiceBot
+1D10000
+1D10001
 :RecordOfLodossWar
 LW<=68
 LW
@@ -6407,6 +5472,9 @@ SH(50-20)
 SH(20-20)
 SH(20-50)
 FE(10-50)@3
+:Sengensyou
+SGS
+SGS+4+6
 :SevenFortressMobius
 SFM
 0SFM+5@8#6+3
@@ -6537,6 +5605,18 @@ NTST
 2d6>=5
 2d6>=? 目標値?でファンブル
 2d6>=? 目標値?でクリティカル
+:Shiranui
+∞D66
+∞d66
+ID66
+id66
+5+∞d66
+13+id66
+8+ID66
+17+ID66
+3+ID66
+OMKJ
+omkj
 :ShoujoTenrankai
 SPRING
 SUMMER
@@ -6573,6 +5653,52 @@ GARDEN
 WASTED
 RUIN
 SHORE
+:ShuumatsuKikou
+3B6>=5" # 判定のダイスロール（汎用コマンド
+ResourceLose
+rlose
+ResourceGain
+rgain
+RandomArea
+randomarea
+rarea
+RandomWaste
+randomwaste
+rwaste
+RandomUrban
+rurban
+RandomObs
+robs
+RandomObsTechA
+rota
+RandomObsTechB
+rotb
+RandomObsSurviveA
+rosa
+RandomObsSurviveB
+rosb
+RandomObsCombatA
+roca
+RandomObsCombatB
+rocb
+RandomEmo
+remo
+RandomEmoDailyA
+reda
+RandomEmoDailyB
+redb
+RandomEmoDailyC
+redc
+RandomEmoReminiscenceA
+rera
+RandomEmoReminiscenceB
+rerb
+RandomEmoReminiscenceC
+rerc
+RandomDangerousWaste
+rdw
+RandomDangerousUrban
+rdu
 :Skynauts
 2d6\tSkynauts
 2d6<=7 判定：成功\tSkynauts
@@ -6702,6 +5828,28 @@ JDSRT
 SHRT
 BCRT
 ODRT
+TRS
+SRT
+RAL
+RAC
+RAM
+RAO
+RAI
+RAE
+JDSBT
+SHBT
+BCBT
+ODBT
+ASBT
+PABT
+SCBT
+TOSCBT
+TROF
+TROG
+TROC
+TROT
+TROL
+TROS
 :SteamPunkers
 SP4
 SP4>=0
@@ -6742,3 +5890,1159 @@ ODT
 OST
 OIT
 OFT
+:StellarKnights
+4SK
+0SK
+4+2SK
+(4+2)SK
+4/2SK
+5/2SK
+(4+2)/2SK
+5SK3
+3SK6
+0SK6
+3SK,1>6
+6SK4,1>6,2>6
+6SK4,1>6,6>1
+0SK,1>6
+0SK4,1>6
+TT
+STA
+STB
+STB2
+STB21
+STB22
+STB23
+STB24
+STB25
+STB26
+STC
+ALLS
+GAT
+HOT
+DET
+YST
+YSTA
+WIT
+PET
+YSTM
+STM
+YSTL
+YSTR
+STBR
+STCR
+STBS
+STE
+FT
+FT2
+FT3
+FT4
+YSTB
+YSTF
+STAL
+:StellarKnights:Korean
+4SK
+4+2SK
+(4+2)SK
+4/2SK
+5/2SK
+(4+2)/2SK
+5SK3
+3SK6
+3SK,1>6
+6SK4,1>6,2>6
+6SK4,1>6,6>1
+0SK
+0SK6
+TT
+STA
+STB
+STB2
+STB21
+STB22
+STB23
+STB24
+STB25
+STB26
+STC
+ALLS
+GAT
+HOT
+DET
+YST
+YSTA
+WIT
+PET
+YSTM
+STM
+YSTL
+YSTR
+STBR
+STCR
+STBS
+STE
+FT
+FT2
+FT3
+FT4
+YSTB
+YSTF
+STAL
+:StellarLife
+4DA[4,8]
+6DA+2[3,7]
+6DA-1[3,7,9]
+VPFT
+VNFT
+VNRT
+AAFT
+aaft
+AAST
+aast
+RNST
+RET
+TRST
+TRAT
+TRMT
+TROT
+TET
+ENT
+CUT
+NAT
+INT
+:StrangerOfSwordCity
+1SR>=3
+2SR>=7
+3SR>=10
+10SR>=35
+2SR
+2SR3
+3SR+5
+3SR3>=9
+2SR-2>=10
+4SR-3
+D66
+d66
+:StratoShout
+2d6>=4
+2d6>=9
+VOT
+GUT
+BAT
+DRT
+KEYT
+EMO
+SCENE
+MACHI
+GAKKO
+BAND
+TENKAI
+AT
+AT2
+RTT
+RTT2
+RCT
+2D6>=? 目標値?でバグらない
+:StratoShout:Korean
+2d6>=4
+2d6>=9
+VOT
+GUT
+BAT
+DRT
+KEYT
+EMO
+SCENE
+MACHI
+GAKKO
+BAND
+TENKAI
+AT
+AT2
+RTT
+RTT2
+RCT
+2D6>=? 목표치를 달성하지 못했다
+:Strave
+MP6
+MP0
+MP11
+5ST6*10
+6ST5x15
+AFF
+AFV
+IDT
+IDV
+:SwordWorld
+2d6>=7
+2d6>=?
+K20
+K10+5
+k30
+k10+10
+Sk10-1
+k10+5+2
+K20[10]
+K10+5[9]
+k30[10]
+k10[9]+10
+k10-5@9
+K20$+1
+K10$+1
+K10+5$9
+k10-5@9$+2
+k10[9]+10$9
+K25+6@3
+K20+6@4
+K14@9
+K9@3$12
+K9@3+1$10
+K9@3-1$12
+k10+10@(8+5) カッコをつけるとクリティカル値が加算される
+hk10 HKのクリティカル値は13
+k10h
+k10h+1 半減後加算
+k10h+1+1 半減後加算に使えるのは1項のみ。それ以外は加減算値となる
+k10h+(1+1) カッコをつければ半減後加算に繰り込まれる
+hk10h
+hk10[9]+10
+hk10[9]+10 切り上げ
+HK20+6@4
+K20+6@4h
+K(10+10)+6@4h
+2D6>=? 目標値?でバグらない
+:SwordWorld2.0
+K10r10
+K11r10
+K40+24@8$12r10
+K10gf
+K10gfh
+K10hgf
+K40+24@8$12r10gf
+K40+24sf4@8$12r10
+K40+24tf4@8$12r10
+K20+5
+SK20+5
+K20@10+5
+SK20@10+5
+hk10 HKのクリティカル値は13
+k10h
+hk10h
+hk10[9]+10
+hk10[9]+10 切り上げ
+HK20+6@4
+K20+6@4h
+k20sf4 sf通常時
+k20tf4 tf通常時
+k20sf7 sfクリティカル時
+k20tf7 tfクリティカル時
+k20sf1@3 sf自動失敗時
+k20tf1@3 tf自動失敗時
+k20tf3@3 tfクリティカル自動失敗時
+k20@2 クリティカル下限エラー 通常の下限は3
+k20sf2@2 クリティカル下限エラー sfが2以上の時はsf+2
+2D6@10+15>=30
+2D6@10+16>=30
+2D@10+16>=30 超越判定：面数省略
+2D6@10+31>=30
+2D6@10+32>=30
+2D6@10+39>=30
+2D6@10
+2D6@8 クリティカル値が10以外
+2D6@2 クリティカル値が小さすぎる場合
+2d6@10+11>30
+2d6@10+5>30
+2D6 超成功指定なし
+2D6>4 超成功指定なし
+gr
+gr1
+gr3
+ft
+tt
+:SwordWorld2.5
+K10r10
+K11r10
+K40+24@8$12r10
+K10gf
+K40+24@8$12r10gf
+K40+24sf4@8$12r10
+K40+24tf4@8$12r10
+K40+24sf4@8$12r10#1
+K40+24tf4@8$12r10#1
+K20+5
+SK20+5
+K20@10+5
+SK20@10+5
+K20+5#1
+K20+5#-1
+K20+5#+10
+K20+5#10
+K20+5#1$+1
+k10-5@9#2
+hk10 HKのクリティカル値は13
+k10h
+hk10h
+hk10[9]+10
+hk10[9]+10 切り上げ
+HK20+6@4
+K20+6@4h
+k20sf4 sf通常時
+k20tf4 tf通常時
+k20sf7 sfクリティカル時
+k20tf7 tfクリティカル時
+k20sf1@3 sf自動失敗時
+k20tf1@3 tf自動失敗時
+k20tf3@3 tfクリティカル自動失敗時
+k20@2 クリティカル下限エラー 通常の下限は3
+k20sf2@2 クリティカル下限エラー sfが2以上の時はsf+2
+k20sf2#1@2 クリティカル下限エラー sfと#の同時指定時はsf+#+2
+k20sf2#20@2 クリティカル下限エラー 下限の上限は13
+k20sf1@2 クリティカル下限エラー sfが1の時の下限は3
+k20sf1#8@2 クリティカル下限エラー sfが1の時の下限は3
+2D6@10+15>=30
+2D6@10+16>=30
+2D6@10+31>=30
+2D6@10+32>=30
+2D6@10+39>=30
+2D6@10
+2D6@8 クリティカル値が10以外
+2D6@2 クリティカル値が小さすぎる場合
+2d6@10+11>30
+gr
+gr1
+gr3
+ft
+tt
+Dru[4,7,13]+10
+dru[0,3,6]+10+4-5
+Dru[13,16,19]+12+8-10
+ABT
+:TalesFromTheLoop
+TFL3
+1TFL3
+2TFL3
+STFL3
+S2TFL3
+TFL3-1
+TFL3+1
+TFL3-3
+TFL(3+1)-(1)
+TFL(3+1)-(5)
+TFL(3+1)+(1)
+1TFL3-1
+2TFL3-1
+2TFL3+1
+1TFL3-3
+STFL3-1
+STFL3+1
+S2TFL3-1
+S2TFL3+1
+TFL3-1+1
+TFL3+1-1
+TFL3-4+1
+TFL3-(1)+(1+1)
+TFL3-(5)+1
+TFL(3+1)+(1)-1
+1TFL3-1+1
+2TFL3-1+1
+2TFL3+2-1
+1TFL3-3+1
+STFL2-1+1
+STFL4+1-1
+S2TFL2-1+1
+S2TFL4+1-1
+1TFL3+1+1
+S1TFL3+1+1
+1TFL3-1-1
+S1TFL3-1-1
+:StellarKnights
+20TY6 銀剣のステラナイツ ソートあり（sort_barabara_dice? => true）
+20TZ6 銀剣のステラナイツ ソートあり（sort_barabara_dice? => true）
+:DiceBot
+20TY6 大文字
+20ty6 小文字
+5TY6 出現しなかった出目がある場合
+(1+2*3)TY4 個数を計算
+7TY(1+5/2C) 面数を計算
+(1+2*3)TY(1+5/2C) 個数と面数を計算
+2TY21 面数21以上はエラー
+:DiceBot
+20TZ6 大文字
+20tz6 小文字
+5TZ6 出現しなかった出目がある場合
+(1+2*3)TZ4 個数を計算
+7TZ(1+5/2C) 面数を計算
+(1+2*3)TZ(1+5/2C) 個数と面数を計算
+2TZ21 面数21以上はエラー
+:TherapieSein
+TS
+TS4
+TS4-1
+TS2+1@10
+OP
+OP4+3+1
+OP3@10
+OP3@20
+:TokumeiTenkousei
+1D6>=3
+1D6+5>=10
+2D6>=3 ゾロ目で振り足し
+4D6+8>=50
+10D6>=35
+5D6>=18
+3D6>=? 目標値?でバグらない
+:TokyoGhostResearch
+OP
+TB
+1d10>=2
+1d10>=10
+1d10>=5
+:TokyoNova
+1D4>=3
+1D6>=5
+1D8>=7
+1D10>=9
+1D12>=11
+1D20>=19
+(1+2)D10+3>=12
+S1D10>=10
+:Torg
+TG14
+TG12+5
+RT13
+RT6
+RT3
+RT4
+RT11
+RT15
+RT16
+IT16
+IT14
+IT2
+IT17
+IT8
+IT4
+IT19
+IT1
+Test1
+Intimidate1
+IT5
+TT6
+TT1
+TT13
+TT17
+TT5
+TT3
+TT9
+TT15
+MT3
+MT12
+MT4
+MT5
+MT6
+MT14
+MT13
+MT19
+MT20
+ODT13
+ODT7
+ODT11
+ODT19
+ODT2
+ODT14
+ODT18
+ODT6
+ODT9
+DT6
+DT17
+DT1
+DT3
+DT4
+DT10
+DT14
+DT16
+BT53
+BT27
+BT44
+BT58
+BT50
+BT34
+BT48
+BT54
+BT20
+BT71
+BT4+1
+BT21+1
+BT13+1
+BT39+1
+BT56+1
+BT40+1
+BT12+1
+BT44+1
+BT17+1
+BT19
+BT21
+BT25
+BT26
+BT60
+BT61
+BT100
+BT101
+BT24
+BT30
+BT31
+:Torg1.5
+ODT15
+ODT16
+ODT17
+ODT18
+ODT19
+DT15
+DT16
+DT17
+DT18
+MT0
+MT4
+MT5
+IT4
+IT5
+TT4
+TT5
+:TorgEternity
+TG14
+TG12+5
+TG+12+5
+TG
+RT0
+Result4
+Result5
+RT9
+RT10
+Result1-2
+Result-5
+RT9-2+4
+DT2-8
+Damage-5
+Damage7-8
+DT8-8
+Damage4
+Damage5
+Damage9
+DT10
+DT14
+Damage15
+Damage19
+DT20
+DT24
+Damage25
+Damage29
+DT30
+DT34
+Damage35
+Damage39
+DT40
+DT44
+Damage45
+Damage49
+DT50
+BT1
+Bonus62
+Bonus1+2-4
+BT21+2-4
+Total62
+3BD+10
+3BD+2-4
+3BD
+0BD
+TE
+UP
+POS0
+POS8
+POS12
+POS11
+POS6
+POS13
+POS3
+POS5
+POS4
+POS15
+POS2
+POS6+12
+:ToshiakiHolyGrailWar
+F8+5
+F8
+F8+10 ペナルティなし
+F8+11 ダイス面数が1減少
+F8+20 ダイス面数が2減少
+F8+29 ダイス面数が2減少
+F8+30 ダイス面数が3減少
+F8+5-4
+F8+5-5
+F8-5
+F8+11-5
+F8+6+5-3-2 補正が分割されている
+F8+5@3
+F8+11-3@3
+F8+50 ダイスの面数は最低でも2
+F1+1@20 ダイスの面数は最大でも10
+F8+5>=10
+F8+5>=14
+F8-10
+:TrinitySeven
+1DM1+1
+1DM1-1
+1DM1
+1DM
+1DM-1
+2DM1+1
+2DM1
+2DM2
+2DM1-1
+2DM
+2DM+1
+2DM-1
+3DM1-1
+3DM1+1
+3DM1
+3DM2
+3DM3
+4DM2
+4DM4
+3DM
+3DM+1
+3DM-1
+TR-1<=50+20
+TR+1<=50-20
+TR+1<=50
+TR-1<=50
+TR<=50+20
+TR<=50
+TR<=0 目標値に関わらずクリティカル
+TR<=100 目標値に関わらずファンブル
+TR7<=40 クリティカル値変動
+TRNAME
+1D100<=50
+1D100>=? 目標値?でバグらない
+:TunnelsAndTrolls
+2d6>=2
+2d6>=10
+2d6>=7
+2D6>=1Lv
+2D6>=10Lv
+2D6+1>=1Lv
+2D6+10>=10Lv
+2d6>=?
+2d6+1>=?
+2d6+10>=?
+2D6
+5BS
+5BS+5
+10HBS
+10HBS+3
+:TwilightGunsmoke
+2D6>=7
+2D6+1>=5[11,3]
+CT
+OPR
+OPC
+EDR
+EDC
+RWL
+RWB
+RST
+RUP
+DCP
+DBD
+DCR
+DNJ
+DRB
+DBS
+DTR
+DMK
+DHL
+DML
+DZB
+DMT
+DHR
+DKS
+DFD
+:UnsungDuet
+shifter
+UDS
+shifter>=5
+shifter>=8
+shifter+3-2>=8
+binder
+UDB
+binder>=9
+binder>=10
+binder+2>=10
+HIN
+HInjury
+HPH
+HPhysical
+HFE
+HFear
+HFA
+HFantasy
+HMI
+HMind
+HOT
+HOther
+:DiceBot
+4U6[6]
+4U6[6]>=10
+4U6[6]>=7+3
+4U6>=10@6 末尾の@でも指定できる
+4U6[6]+11
+4U6[6]+11>=21
+4U6+11>=21@6
+4U6[6]+1+2+10
+4U6[6]-1+2+10
+2U6+2U4[4]+6 複数種類
+2U6+2U4[4]+6>=8 複数種類
+4U6+2U4+11>=21 条件未指定
+4U6+2U4[1]+14-3>=21 条件指定ミス
+4U6+2U4+11>=21@1 条件指定ミス
+4U6==21 比較演算子の確認
+4U6<>21 比較演算子の確認
+2U6+2U4[4]<>13 否定
+S1U6[3]
+:Utakaze
+6D6
+6UK
+10UK
+UK
+1UK
+5UK@1
+5UK@3
+5UK@5
+5UK@6
+5UK2
+5UK4
+UK@6
+UK6
+3UK
+4UK
+5UK
+UK@1
+UK1
+4UK@5
+6UK@1
+4UK5
+6UK@1>=2
+6UK@1>=3
+:VampireTheMasquerade5th
+3VMF3
+3VMF5
+3VMF3+2
+VMF3
+VMF3+2
+0VMF3
+0VMF3+3
+S3VMF3
+S3VMF5
+S3VMF3+2
+SVMF3
+SVMF3+2
+S0VMF3
+S0VMF3+3
+:Villaciel
+6VBS
+6VBS>=3
+6VF
+6VM
+6VG
+PJ
+PJV
+PJA
+PQ
+PQV
+PQA
+AC
+MMI
+MMA
+MMV
+MMVV
+MMVA
+MMD
+FL
+FR
+FW
+FG
+FB
+FC
+FS
+IP
+IPV
+IPA
+EP
+EPV
+EPA
+EP2
+EPV5
+EPA1
+MP
+EPV4
+IS
+:VisionConnect
+VC>=8
+VC@11>=8
+VC#4>=8
+VC@11#4>=8
+VC+6>=12
+VC+4>=12
+VC+2
+!VC>=8
+AT
+TT
+:WaresBlade
+1D4>=3
+1D6>=5
+1D8>=7
+1D10>=9
+1D12>=11
+1D20>=19
+(1+2)D10+3>=12
+S1D10>=10
+1D10+2>=13 完全成功
+1D10+2>=3 絶対失敗
+(1+1)D10+1>=30 複数dice完全成功
+(1+2)D10+2>=3 複数dice絶対失敗
+2D10>=? 目標値?でバグらない
+:Warhammer
+1D100<=10
+1D100<=90
+1D100<=50
+whH10
+whA5
+WHL4
+wh60
+wh43@4W
+WH65@
+WHH1
+WHA2
+WHB3
+WH1@
+WH50
+WH50@
+WH50@W
+WH50@H
+WH50@2H
+WH50@2W
+WH50@4
+WH50@4H
+WH50@4W
+1D100>=? 目標値?でバグらない
+:Warhammer4
+1D100<=10 # 成功ランクの表示確認(各SL毎)...SL判定は十の位の数値同士の比較で行う
+1D100<=10
+1D100<=90
+1D100<=90  # 通常判定でのクリティカル表示抑制確認
+1D100<=10  # 通常判定でのファンブル表示抑制確認
+1D100<=99  # 通常判定での自動失敗処理確認(SL最大値-1)
+1D100<=1  # 通常判定での自動成功処理確認(SL最小値+1)
+1D100<=20
+WH10       # 戦闘用コマンドによるクリティカル・ファンブルの表示テスト
+WH10
+WH90       # クリティカル時に命中部位が表示抑制されているか？
+WH90       # 戦闘用コマンドの成功時に命中部位が表示されるか？
+WH90
+WH60       # 戦闘用コマンドの失敗時に命中部位が表示されるか？
+WHLT       # 命中部位表、各部位の境界値テスト
+WHLT
+WHFT      # やっちまった！表(ファンブル表)境界値テスト
+WHFT
+whCTH     # クリティカル表境界値テスト
+whCTH
+whCTHU    # 頑健ボーナス値以下はダイス-20
+whCTHU    # 頑健ボーナス以下ダメージのダイス目の最低値は1
+whCTA     # 腕部クリティカル表境界値テスト
+whCTA
+whCTB     # 胴体クリティカル表境界値テスト
+whCTB
+whCTL     # 脚部クリティカル表境界値テスト
+whCTL
+1D100>=? 目標値?でバグらない
+:WARPS
+2d6<=2
+2d6<=10
+2d6<=7
+2D6>=? 目標値?でバグらない
+:WitchQuest
+WQ1
+WQ2
+WQ5
+WQ6
+WQ7
+WQ(6+1)
+SET1
+SET48
+SET(40+8)
+:WorldOfDarkness
+1ST テキスト
+1ST
+1ST1
+1ST7
+10ST11
+1ST7+1
+1ST+1
+5ST
+5ST7
+5ST7+1
+5ST+1
+1STS テキスト
+1STS
+1STS1
+1STS7
+10STS11
+1STS7+1
+1STS+1
+5STS
+5STS7
+5STS7+1
+5STS+1
+1STA テキスト
+1STA
+1STA1
+1STA7
+10STA11
+1STA7+1
+1STA+1
+5STA
+5STA7
+5STA7+1
+5STA+1
+:YankeeYogSothoth
+2D6>=7
+FT
+WT
+RTT
+RTT1
+RCT
+KKT
+DBRT
+TKT
+BUDT
+GUDT
+DAIT
+TKKT
+GSST
+GYST
+HPST
+FTNT
+2D6>=? 目標値?でバグらない
+:YearZeroEngine
+YZE3
+YZE3+3
+YZE3+3+3
+YZE3+2+1
+YZE1+2+3
+SYZE3
+SYZE3+3
+SYZE1+2+3
+2YZE3
+2YZE3+3
+2YZE3+3+3
+2YZE3+2+1
+2YZE1+2+3
+S2YZE3
+S2YZE3+3
+S2YZE1+2+3
+MYZ3
+MYZ3+3
+MYZ3+3+3
+MYZ3+2+1
+MYZ1+2+3
+SMYZ3
+SMYZ3+3
+SMYZ1+2+3
+2MYZ3
+2MYZ3+3
+2MYZ3+3+3
+2MYZ3+2+1
+2MYZ1+2+3
+S2MYZ3
+S2MYZ3+3
+S2MYZ1+2+3
+2MYZ3-3+3
+2MYZ3-3
+MYZ3-3+3
+MYZ3-3
+YZE3-3
+:Yggdrasill
+cf1d6
+cf5+1d6-2
+cf2d6
+cf3d6
+cf10d6
+cf10+10d6
+cf5d6+10
+cfl1d6
+cfl5d6
+cfl10+5d6
+cfl5d6+10
+cfg5d6
+cfg10+5d6
+cfg5d6+10
+ra50
+ra70
+ra90
+ra110
+ra150
+so1
+so2
+so3
+so4
+so5
+down
+cont
+risk
+guki
+cond
+cft4+1d6
+cft6+1d6
+cft20+1d6
+cflt6+1d6
+cfgt12+1d6
+treat
+treat0
+treat6
+treat8
+treat12
+treat15
+treat18
+allr
+pafe
+fatal2
+fatal1
+mikuzi
+stag
+x2 cf2d6
+:ZettaiReido
+12-2DR-1>=10
+10-2DR+1>=99
+10-2DR+1>=10
+8-2DR>=6
+8-2DR-1>=4
+30-2DR-10>=19
+8-2DR>=7
+30-2DR-10>=20
+9-2DR>=7
+20-2DR>=7
+6-2DR
+:AceKillerGene
+AK50
+AK96
+AK99
+AK100
+AK500
+AK0
+AK50@11
+AK50@5
+AK100/2
+AK150/2
+AK150/3
+AK179/3
+AK99/2
+AK(99/2)
+dcSL1
+dcSL2
+dcSL5
+dcSL6
+dcBL1
+dcIM1
+dcBR1
+dcRF1
+dcEL1
+AK(20-20)
+AK(20-50)
+:DiceBot
+(2D6+1D4)*2 カッコ有り
+(2D6+(1D4+3)*3)*2 カッコがネストしている
+1D6+3/2U" # 1 + 1.
+1D6+3/2C" # 1 + 1.
+1D6+3/2F" # 1 + 1.
+1D6+3/2R" # 1 + 1.
+1D6+4/3U" # 1 + 1.3
+1D6+4/3C" # 1 + 1.3
+1D6+4/3F" # 1 + 1.3
+1D6+4/3R" # 1 + 1.3
+D20+3D4
+:AFF2e
+FF8 ▼
+FF10-2 ▼
+FF10-2
+FF1
+FF12
+FR8 ▼
+FR10-2 ▼
+FD8 ▼
+FD[0] ▼
+FD[0,0,0,0,1,1,2] ▼
+FD[0,0,0,0,1,1,2]+0 ▼
+FD[0,0,0,0,1,1,2]+2 ▼
+FD[0,0,0,0,1+1,1+1,2+2]+0 ▼
+FD[0,0,0,0,1+1,1+1,2+2]+2 ▼
+:Ainecadette
+AI
+AI 6がある時だけクリティカル
+1AI
+3AI
+4AI 有利+ブースト
+CA
+1CA
+3CA
+4CA 有利+ブースト
+:Airgetlamh
+AL
+3AL7*5
+10AL10x10
+AA
+6AA3
+6AA4C0
+6AA4c2
+4AA3*5
+4AA3x5
+4AA3X5
+4aa3*5
+4Aa3*5
+5aA4*10
+5AA4x10
+5AA4X10
+5AA4*10
+5aa3*5+10
+5aa3*5+10c0
+:AlchemiaStruggle
+6as
+6as3
+6as6
+6as7
+CElement
+CELE
+CAlchemia
+CALC
+CInformant
+CINF
+CInnocence
+CINN
+CAcquired
+CACQ
+ArticleS
+ARS
+ArticleM
+ARM
+ArticleL
+ARL
+PCInformation
+PCI
+Reason
+REA
+Associate
+ASS
+Contact
+CON
+6UL
+4d 出目ソート
+4b6 出目ソート
+c(4/3) 端数切り上げ
