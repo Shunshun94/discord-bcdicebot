@@ -18,12 +18,12 @@ rename discord-bcdicebot-jar-with-dependencies.jar discord-bcdicebot.jar
 rename index.html README.html
 copy ..\originalDiceBots originalDiceBots
 
-jar -cvfM discord-bcdicebot_2.zip discord-bcdicebot.jar
-jar -uvf discord-bcdicebot_2.zip validate.bat
-jar -uvf discord-bcdicebot_2.zip start.bat
-jar -uvf discord-bcdicebot_2.zip start.sh
-jar -uvf discord-bcdicebot_2.zip README.html
-jar -uvf discord-bcdicebot_2.zip originalDiceBots
+jar -cvfM discord-bcdicebot.zip discord-bcdicebot.jar
+jar -uvf discord-bcdicebot.zip validate.bat
+jar -uvf discord-bcdicebot.zip start.bat
+jar -uvf discord-bcdicebot.zip start.sh
+jar -uvf discord-bcdicebot.zip README.html
+jar -uvf discord-bcdicebot.zip originalDiceBots
 
 cd ../
 pause
