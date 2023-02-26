@@ -32,7 +32,7 @@ public class AddOriginalTable implements AdminCommand {
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client) {
 		Attachment file = option.getArgumentAttachmentValueByIndex(0).get();
 		URL url = file.getUrl();
-		String name = option.getArgumentStringValueByIndex(0).orElse(file.getFileName().split("\\.")[0]);
+		String name = option.getArgumentStringValueByIndex(1).orElse(file.getFileName().split("\\.")[0]);
 		return exec(url, name);
 	}
 
