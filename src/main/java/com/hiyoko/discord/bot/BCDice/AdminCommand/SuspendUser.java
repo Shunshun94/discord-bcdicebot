@@ -19,8 +19,8 @@ public class SuspendUser implements AdminCommand {
 	
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client) {
-		String id = option.getOptionStringValueByIndex(0).get();
-		String reason = option.getOptionStringValueByIndex(1).get();
+		String id = option.getArgumentStringValueByIndex(0).get();
+		String reason = option.getArgumentStringValueByIndex(1).get();
 		return AdminUtil.getSingleMessage(exec(id, reason == null ? "理由未記入" : reason));
 	}
 
