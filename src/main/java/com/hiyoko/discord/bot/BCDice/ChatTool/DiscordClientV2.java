@@ -67,17 +67,15 @@ public class DiscordClientV2 implements ChatToolClient {
 	private List<String> cleanUpSlashCommands() {
 		List<String> result = new ArrayList<String>();
 		for(SlashCommand sc : api.getGlobalSlashCommands().join()) {
-			sc.deleteGlobal();
+			sc.delete();
 			result.add(String.format("削除成功：%s @ GLOBAL", sc.getName()));
 		}
 		api.getServers().stream().forEach(server->{
-			List<SlashCommand> slachCommandsOnServer;
 			try {
-				slachCommandsOnServer = api.getServerSlashCommands(server).get();
-				for(SlashCommand sc : slachCommandsOnServer) {
+				api.getServerSlashCommands(server).get().forEach(sc -> {
+					sc.delete();
 					result.add(String.format("削除成功：%s @ %s", sc.getName(), server.getIdAsString()));
-					sc.deleteForServer(server);
-				}
+				});
 			} catch (InterruptedException e) {
 				result.add(String.format("削除失敗：サーバ%sの情報", server.getIdAsString()));
 			} catch (ExecutionException e) {

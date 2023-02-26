@@ -61,7 +61,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 		this.bcDice = config.getCli();
 		this.nameIndicator = NameIndicatorFactory.getNameIndicator();
 		this.diceResultFormatter = DiceResultFormatterFactory.getDiceResultFormatter();
-		this.admin = api.getOwner().get();
+		this.admin = api.getOwner().get().get();
 		this.chatToolClient = new DiscordClientV2(api);
 		this.prefix = config.getPrefix();
 		this.shortPrefix = config.getShortPreifx();

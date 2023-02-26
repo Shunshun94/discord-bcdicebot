@@ -19,7 +19,7 @@ public class UnsuspendUser implements AdminCommand {
 
 	@Override
 	public List<String> exec(SlashCommandInteractionOption option, DiceClient client) {
-		String id = option.getOptionStringValueByIndex(0).get();
+		String id = option.getArgumentStringValueByIndex(0).get();
 		return AdminUtil.getSingleMessage(exec(id));
 	}
 
