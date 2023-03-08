@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.entity.intent.Intent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +104,12 @@ public class BCDiceBot {
 		api = new DiscordApiBuilder().setToken(token).login().get();
 
 		if(isStandardChatEnabled()) {
-			api.addMessageCreateListener(new StandardInputMessageCreateListener(api, bcDice));
+			if(api.getIntents().contains(Intent.MESSAGE_CONTENT)) {
+				api.addMessageCreateListener(new StandardInputMessageCreateListener(api, bcDice));
+			} else {
+				logger.info("Privileged Gateway Intents の MESSAGE CONTENT INTENT が ON になっていません。テキストチャットへの入力によるダイスロールを無効にしました。");
+				logger.info(String.format("https://discord.com/developers/applications/%s/bot から設定してください", api.requestApplicationInfo().get().getClientId()));
+			}
 		}
 
 		String slashPrefix = getSlashPrefix();

@@ -1,2 +1,14 @@
 /target
 *.jar
+/.apt_generated/
+/.apt_generated_tests/
+/discord-bcdicebot
+/BCDiceConfiguration
+/TextSystemClientTestDirectory
+src/main/java/com/hiyoko/discord/bot/BCDice/BCDiceBot2.java
+src/main/java/com/hiyoko/discord/bot/BCDice/BCDiceBotClean.java
+/tmp
+.classpath
+.project
+/.settings
+*.pptx

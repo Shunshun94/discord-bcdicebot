@@ -49,6 +49,7 @@ public class StandardInputMessageCreateListener implements MessageCreateListener
 		String name = nameIndicator.getName(user);
 		String userId = user.getIdAsString();
 		String message = event.getMessage().getContent();
+
 		List<MessageAttachment> attachements = event.getMessage().getAttachments();
 		try {
 			logger.debug(String.format("%s posts: https://discordapp.com/channels/%s/%s/%s",
