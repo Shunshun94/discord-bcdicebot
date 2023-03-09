@@ -1,3 +1,80 @@
+:AFF2e
+FF8 ▼
+FF10-2 ▼
+FF10-2
+FF1
+FF12
+FR8 ▼
+FR10-2 ▼
+FD8 ▼
+FD[0] ▼
+FD[0,0,0,0,1,1,2] ▼
+FD[0,0,0,0,1,1,2]+0 ▼
+FD[0,0,0,0,1,1,2]+2 ▼
+FD[0,0,0,0,1+1,1+1,2+2]+0 ▼
+FD[0,0,0,0,1+1,1+1,2+2]+2 ▼
+:Ainecadette
+AI
+AI 6がある時だけクリティカル
+1AI
+3AI
+4AI 有利+ブースト
+CA
+1CA
+3CA
+4CA 有利+ブースト
+:Airgetlamh
+AL
+3AL7*5
+10AL10x10
+AA
+6AA3
+6AA4C0
+6AA4c2
+4AA3*5
+4AA3x5
+4AA3X5
+4aa3*5
+4Aa3*5
+5aA4*10
+5AA4x10
+5AA4X10
+5AA4*10
+5aa3*5+10
+5aa3*5+10c0
+:AlchemiaStruggle
+6as
+6as3
+6as6
+6as7
+CElement
+CELE
+CAlchemia
+CALC
+CInformant
+CINF
+CInnocence
+CINN
+CAcquired
+CACQ
+ArticleS
+ARS
+ArticleM
+ARM
+ArticleL
+ARL
+PCInformation
+PCI
+Reason
+REA
+Associate
+ASS
+Contact
+CON
+6UL
+4d 出目ソート
+4b6 出目ソート
+c(4/3) 端数切り上げ
 :Alsetto
 6AL
 6AL4
@@ -214,6 +291,7 @@ AES44
 56AE44
 66AE44 本来ファンブルは振り直せないが、警告等はださない
 90AE44
+1D100<=39
 :Avandner
 6AV3
 6AV4C0
@@ -825,6 +903,13 @@ SIT
 C(1/2) 切り上げ
 2D6>=? 目標値?でバグらない
 RTT
+:Bloodorium
+4DC
+3DC
+5DC
+4DC+1
+4DC+1+2
+5DC+1
 :DiceBot
 C(1+2)
 C(2-1)
@@ -1032,6 +1117,13 @@ CAT
 CNP
 :Comes
 PT
+:ConvictorDrive
+(3+2)CD@(10-1)>=7
+5CD@8>=6
+4CD>=7
+6CD@6>=7
+SLT
+DCT
 :CrashWorld
 CW0
 CW8
@@ -1584,12 +1676,12 @@ CP+7+3
 CP+4+3
 CP+8+2
 CP+6+4
-CP+6+3>=10
-CP+7+2-1>=12
-CP7>=13
-CP9>=7
-CP3>=17
-CP8>=12
+CP+6+3>10
+CP+7+2-1>12
+CP7>13
+CP9>7
+CP3>17
+CP8>12
 CP11
 CP7+5
 FFD
@@ -1997,6 +2089,49 @@ PP
 1D20>=19
 (1+2)D10+3>=12
 S1D10>=10
+:DungeonsAndDragons5
+AT コマンドのみの表示確認
+AT クリティカル
+AT ファンブル
+AT>=10 失敗の表示確認
+AT>=10 成功(同値)の表示確認
+AT>=10 成功の表示確認
+AT>=10 クリティカルの表示確認
+AT>=10 ファンブルの表示確認
+AT>=18A 有利の表示確認
+AT>=18A
+AT>=16D 不利の表示確認
+AT>=16D
+AT+5>=10 +修正の表示確認
+AT-5>=10 -修正の表示確認
+AT+3>=10 クリティカルの表示確認
+AT-3>=10 クリティカルの表示確認
+AT+3>=10 ファンブルの表示確認
+AT-3>=10 ファンブルの表示確認
+ATA 有利の表示確認
+AT+3>=18A 有利の表示確認
+AT-3>=14A
+ATD 不利の表示確認
+AT+3>=15D 不利の表示確認
+AT-3>=15D
+AR コマンドのみの表示確認
+AR クリティカルが出ないのを確認
+AR ファンブルが出ないのを確認
+AR>=10 失敗の表示確認
+AR>=10 成功(同値)の表示確認
+AR>=10 成功の表示確認
+AR>=18A 有利の表示確認
+AR>=18A
+AR>=16D 不利の表示確認
+AR>=16D
+AR+5>=10 +修正の表示確認
+AR-5>=10 -修正の表示確認
+ARA 有利の表示確認
+AR+3>=18A 有利の表示確認
+AR-3>=14A
+ARD 不利の表示確認
+AR+3>=15D 不利の表示確認
+AR-3>=15D
 :EarthDawn
 38E20
 34E20
@@ -2969,6 +3104,23 @@ TK3ET
 MST
 ERT
 2D6>=? 目標値?でバグらない
+:HunterTheReckoning5th
+3HRF3
+3HRF5
+3HRF3+2
+HRF3
+HRF3+2
+0HRF3
+0HRF3+3
+0HRF3+2
+S3HRF3
+S3HRF5
+S3HRF3+2
+SHRF3
+SHRF3+2
+S0HRF3
+S0HRF3+3
+S0HRF3+2
 :IfIfIf
 ie
 ie"
@@ -4728,6 +4880,26 @@ SB
 :NjslyrBattle
 2D6<=5
 2D6>=? 目標値?でバグらない
+:NobunagasBlackCastle
+0DR12 DRロール 成功失敗の確認
+0DR12
+-3DR12 DRロール 能力値加算の確認
+-2DR12
+-1DR12
+1DR12
+2DR12
++3DR12
+DR12 能力値0の時の省略が有効か？
+3DR12 DRロール クリティカル・ファンブルが出目だけに影響を受けているか確認
+INS イニシアティヴ　敵・PC先行の確認
+INS
+SWT 武器表
+OSWT その他の奇妙な武器表
+ART 鎧表
+ERT 遭遇反応表
+NPCST NPC能力値作成の境界値確認
+NPCST NPC能力値作成
+D66 ソートされていないかの確認
 :DiceBot
 1D6
 2D6
@@ -5324,6 +5496,23 @@ MPL
 MPS
 MPD
 MPH
+:SajinsenkiAGuS
+AG
+1AG
+2AG-1
+AG+3-1-2
+(2-1)AG
+(2-1)AG+3-2
+(1-2)AG
+OM+8
+OM+8 #HRで0を0のままにした方が良い場合
+OM+8 #HRで0を10にした方が良い場合
+OM+8@1
+OM+8-2@1
+NM+8
+NM+8@1
+NM+8-2@1
+CR
 :SamsaraBallad
 1D100<=90 roll 90
 SB roll
@@ -5576,6 +5765,7 @@ GAST
 KYST
 JBST
 FT
+OFT
 ET
 WT
 GWT
@@ -5757,6 +5947,11 @@ AVO@4[縦,横]=([1,13])([2,6])[3,8] 回避運動
 SN/AVO@4[縦,横]=([1,13])([2,6])[3,8] 回避運動
 NV
 FT
+NEN
+NEE
+NEO
+NEH
+NEL
 :SRS
 2D6>=7
 2D6>=13
@@ -6111,6 +6306,44 @@ HK20+6@4
 K20+6@4h
 K(10+10)+6@4h
 2D6>=? 目標値?でバグらない
+:SwordWorld:SimplifiedChinese
+2d6>=7
+2d6>=?
+K20
+K10+5
+k30
+k10+10
+Sk10-1
+k10+5+2
+K20[10]
+K10+5[9]
+k30[10]
+k10[9]+10
+k10-5@9
+K20$+1
+K10$+1
+K10+5$9
+k10-5@9$+2
+k10[9]+10$9
+K25+6@3
+K20+6@4
+K14@9
+K9@3$12
+K9@3+1$10
+K9@3-1$12
+k10+10@(8+5) カッコをつけるとクリティカル値が加算される
+hk10 HKのクリティカル値は13
+k10h
+k10h+1 半減後加算
+k10h+1+1 半減後加算に使えるのは1項のみ。それ以外は加減算値となる
+k10h+(1+1) カッコをつければ半減後加算に繰り込まれる
+hk10h
+hk10[9]+10
+hk10[9]+10 切り上げ
+HK20+6@4
+K20+6@4h
+K(10+10)+6@4h
+2D6>=? 目標値?でバグらない
 :SwordWorld2.0
 K10r10
 K11r10
@@ -6159,7 +6392,113 @@ gr1
 gr3
 ft
 tt
+:SwordWorld2.0:SimplifiedChinese
+K10r10
+K11r10
+K40+24@8$12r10
+K10gf
+K10gfh
+K10hgf
+K40+24@8$12r10gf
+K40+24sf4@8$12r10
+K40+24tf4@8$12r10
+K20+5
+SK20+5
+K20@10+5
+SK20@10+5
+hk10 HKのクリティカル値は13
+k10h
+hk10h
+hk10[9]+10
+hk10[9]+10 切り上げ
+HK20+6@4
+K20+6@4h
+k20sf4 sf通常時
+k20tf4 tf通常時
+k20sf7 sfクリティカル時
+k20tf7 tfクリティカル時
+k20sf1@3 sf自動失敗時
+k20tf1@3 tf自動失敗時
+k20tf3@3 tfクリティカル自動失敗時
+k20@2 クリティカル下限エラー 通常の下限は3
+k20sf2@2 クリティカル下限エラー sfが2以上の時はsf+2
+2D6@10+15>=30
+2D6@10+16>=30
+2D@10+16>=30 超越判定：面数省略
+2D6@10+31>=30
+2D6@10+32>=30
+2D6@10+39>=30
+2D6@10
+2D6@8 クリティカル値が10以外
+2D6@2 クリティカル値が小さすぎる場合
+2d6@10+11>30
+2d6@10+5>30
+2D6 超成功指定なし
+2D6>4 超成功指定なし
+gr
+gr1
+gr3
+ft
+tt
 :SwordWorld2.5
+K10r10
+K11r10
+K40+24@8$12r10
+K10gf
+K40+24@8$12r10gf
+K40+24sf4@8$12r10
+K40+24tf4@8$12r10
+K40+24sf4@8$12r10#1
+K40+24tf4@8$12r10#1
+K20+5
+SK20+5
+K20@10+5
+SK20@10+5
+K20+5#1
+K20+5#-1
+K20+5#+10
+K20+5#10
+K20+5#1$+1
+k10-5@9#2
+hk10 HKのクリティカル値は13
+k10h
+hk10h
+hk10[9]+10
+hk10[9]+10 切り上げ
+HK20+6@4
+K20+6@4h
+k20sf4 sf通常時
+k20tf4 tf通常時
+k20sf7 sfクリティカル時
+k20tf7 tfクリティカル時
+k20sf1@3 sf自動失敗時
+k20tf1@3 tf自動失敗時
+k20tf3@3 tfクリティカル自動失敗時
+k20@2 クリティカル下限エラー 通常の下限は3
+k20sf2@2 クリティカル下限エラー sfが2以上の時はsf+2
+k20sf2#1@2 クリティカル下限エラー sfと#の同時指定時はsf+#+2
+k20sf2#20@2 クリティカル下限エラー 下限の上限は13
+k20sf1@2 クリティカル下限エラー sfが1の時の下限は3
+k20sf1#8@2 クリティカル下限エラー sfが1の時の下限は3
+2D6@10+15>=30
+2D6@10+16>=30
+2D6@10+31>=30
+2D6@10+32>=30
+2D6@10+39>=30
+2D6@10
+2D6@8 クリティカル値が10以外
+2D6@2 クリティカル値が小さすぎる場合
+2d6@10+11>30
+gr
+gr1
+gr3
+ft
+tt
+Dru[4,7,13]+10
+dru[0,3,6]+10+4-5
+Dru[13,16,19]+12+8-10
+ABT
+:SwordWorld2.5:SimplifiedChinese
 K10r10
 K11r10
 K40+24@8$12r10
@@ -6456,6 +6795,8 @@ Total62
 0BD
 TE
 UP
+UP10 #高揚修正付き
+UP3 #高揚修正付き
 POS0
 POS8
 POS12
@@ -6710,339 +7051,3 @@ S1D10>=10
 (1+1)D10+1>=30 複数dice完全成功
 (1+2)D10+2>=3 複数dice絶対失敗
 2D10>=? 目標値?でバグらない
-:Warhammer
-1D100<=10
-1D100<=90
-1D100<=50
-whH10
-whA5
-WHL4
-wh60
-wh43@4W
-WH65@
-WHH1
-WHA2
-WHB3
-WH1@
-WH50
-WH50@
-WH50@W
-WH50@H
-WH50@2H
-WH50@2W
-WH50@4
-WH50@4H
-WH50@4W
-1D100>=? 目標値?でバグらない
-:Warhammer4
-1D100<=10 # 成功ランクの表示確認(各SL毎)...SL判定は十の位の数値同士の比較で行う
-1D100<=10
-1D100<=90
-1D100<=90  # 通常判定でのクリティカル表示抑制確認
-1D100<=10  # 通常判定でのファンブル表示抑制確認
-1D100<=99  # 通常判定での自動失敗処理確認(SL最大値-1)
-1D100<=1  # 通常判定での自動成功処理確認(SL最小値+1)
-1D100<=20
-WH10       # 戦闘用コマンドによるクリティカル・ファンブルの表示テスト
-WH10
-WH90       # クリティカル時に命中部位が表示抑制されているか？
-WH90       # 戦闘用コマンドの成功時に命中部位が表示されるか？
-WH90
-WH60       # 戦闘用コマンドの失敗時に命中部位が表示されるか？
-WHLT       # 命中部位表、各部位の境界値テスト
-WHLT
-WHFT      # やっちまった！表(ファンブル表)境界値テスト
-WHFT
-whCTH     # クリティカル表境界値テスト
-whCTH
-whCTHU    # 頑健ボーナス値以下はダイス-20
-whCTHU    # 頑健ボーナス以下ダメージのダイス目の最低値は1
-whCTA     # 腕部クリティカル表境界値テスト
-whCTA
-whCTB     # 胴体クリティカル表境界値テスト
-whCTB
-whCTL     # 脚部クリティカル表境界値テスト
-whCTL
-1D100>=? 目標値?でバグらない
-:WARPS
-2d6<=2
-2d6<=10
-2d6<=7
-2D6>=? 目標値?でバグらない
-:WitchQuest
-WQ1
-WQ2
-WQ5
-WQ6
-WQ7
-WQ(6+1)
-SET1
-SET48
-SET(40+8)
-:WorldOfDarkness
-1ST テキスト
-1ST
-1ST1
-1ST7
-10ST11
-1ST7+1
-1ST+1
-5ST
-5ST7
-5ST7+1
-5ST+1
-1STS テキスト
-1STS
-1STS1
-1STS7
-10STS11
-1STS7+1
-1STS+1
-5STS
-5STS7
-5STS7+1
-5STS+1
-1STA テキスト
-1STA
-1STA1
-1STA7
-10STA11
-1STA7+1
-1STA+1
-5STA
-5STA7
-5STA7+1
-5STA+1
-:YankeeYogSothoth
-2D6>=7
-FT
-WT
-RTT
-RTT1
-RCT
-KKT
-DBRT
-TKT
-BUDT
-GUDT
-DAIT
-TKKT
-GSST
-GYST
-HPST
-FTNT
-2D6>=? 目標値?でバグらない
-:YearZeroEngine
-YZE3
-YZE3+3
-YZE3+3+3
-YZE3+2+1
-YZE1+2+3
-SYZE3
-SYZE3+3
-SYZE1+2+3
-2YZE3
-2YZE3+3
-2YZE3+3+3
-2YZE3+2+1
-2YZE1+2+3
-S2YZE3
-S2YZE3+3
-S2YZE1+2+3
-MYZ3
-MYZ3+3
-MYZ3+3+3
-MYZ3+2+1
-MYZ1+2+3
-SMYZ3
-SMYZ3+3
-SMYZ1+2+3
-2MYZ3
-2MYZ3+3
-2MYZ3+3+3
-2MYZ3+2+1
-2MYZ1+2+3
-S2MYZ3
-S2MYZ3+3
-S2MYZ1+2+3
-2MYZ3-3+3
-2MYZ3-3
-MYZ3-3+3
-MYZ3-3
-YZE3-3
-:Yggdrasill
-cf1d6
-cf5+1d6-2
-cf2d6
-cf3d6
-cf10d6
-cf10+10d6
-cf5d6+10
-cfl1d6
-cfl5d6
-cfl10+5d6
-cfl5d6+10
-cfg5d6
-cfg10+5d6
-cfg5d6+10
-ra50
-ra70
-ra90
-ra110
-ra150
-so1
-so2
-so3
-so4
-so5
-down
-cont
-risk
-guki
-cond
-cft4+1d6
-cft6+1d6
-cft20+1d6
-cflt6+1d6
-cfgt12+1d6
-treat
-treat0
-treat6
-treat8
-treat12
-treat15
-treat18
-allr
-pafe
-fatal2
-fatal1
-mikuzi
-stag
-x2 cf2d6
-:ZettaiReido
-12-2DR-1>=10
-10-2DR+1>=99
-10-2DR+1>=10
-8-2DR>=6
-8-2DR-1>=4
-30-2DR-10>=19
-8-2DR>=7
-30-2DR-10>=20
-9-2DR>=7
-20-2DR>=7
-6-2DR
-:AceKillerGene
-AK50
-AK96
-AK99
-AK100
-AK500
-AK0
-AK50@11
-AK50@5
-AK100/2
-AK150/2
-AK150/3
-AK179/3
-AK99/2
-AK(99/2)
-dcSL1
-dcSL2
-dcSL5
-dcSL6
-dcBL1
-dcIM1
-dcBR1
-dcRF1
-dcEL1
-AK(20-20)
-AK(20-50)
-:DiceBot
-(2D6+1D4)*2 カッコ有り
-(2D6+(1D4+3)*3)*2 カッコがネストしている
-1D6+3/2U" # 1 + 1.
-1D6+3/2C" # 1 + 1.
-1D6+3/2F" # 1 + 1.
-1D6+3/2R" # 1 + 1.
-1D6+4/3U" # 1 + 1.3
-1D6+4/3C" # 1 + 1.3
-1D6+4/3F" # 1 + 1.3
-1D6+4/3R" # 1 + 1.3
-D20+3D4
-:AFF2e
-FF8 ▼
-FF10-2 ▼
-FF10-2
-FF1
-FF12
-FR8 ▼
-FR10-2 ▼
-FD8 ▼
-FD[0] ▼
-FD[0,0,0,0,1,1,2] ▼
-FD[0,0,0,0,1,1,2]+0 ▼
-FD[0,0,0,0,1,1,2]+2 ▼
-FD[0,0,0,0,1+1,1+1,2+2]+0 ▼
-FD[0,0,0,0,1+1,1+1,2+2]+2 ▼
-:Ainecadette
-AI
-AI 6がある時だけクリティカル
-1AI
-3AI
-4AI 有利+ブースト
-CA
-1CA
-3CA
-4CA 有利+ブースト
-:Airgetlamh
-AL
-3AL7*5
-10AL10x10
-AA
-6AA3
-6AA4C0
-6AA4c2
-4AA3*5
-4AA3x5
-4AA3X5
-4aa3*5
-4Aa3*5
-5aA4*10
-5AA4x10
-5AA4X10
-5AA4*10
-5aa3*5+10
-5aa3*5+10c0
-:AlchemiaStruggle
-6as
-6as3
-6as6
-6as7
-CElement
-CELE
-CAlchemia
-CALC
-CInformant
-CINF
-CInnocence
-CINN
-CAcquired
-CACQ
-ArticleS
-ARS
-ArticleM
-ARM
-ArticleL
-ARL
-PCInformation
-PCI
-Reason
-REA
-Associate
-ASS
-Contact
-CON
-6UL
-4d 出目ソート
-4b6 出目ソート
-c(4/3) 端数切り上げ
