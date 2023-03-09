@@ -104,12 +104,13 @@ public class BCDiceBot {
 		api = new DiscordApiBuilder().setToken(token).login().get();
 
 		if(isStandardChatEnabled()) {
-			if(api.getIntents().contains(Intent.MESSAGE_CONTENT)) {
+			//TODO 重大な問題を含むためコメントアウト。この方法では intent の情報とれてないやんけ
+			//if(api.getIntents().contains(Intent.MESSAGE_CONTENT)) {
 				api.addMessageCreateListener(new StandardInputMessageCreateListener(api, bcDice));
-			} else {
-				logger.info("Privileged Gateway Intents の MESSAGE CONTENT INTENT が ON になっていません。テキストチャットへの入力によるダイスロールを無効にしました。");
-				logger.info(String.format("https://discord.com/developers/applications/%s/bot から設定してください", api.requestApplicationInfo().get().getClientId()));
-			}
+			//} else {
+			//	logger.info("Privileged Gateway Intents の MESSAGE CONTENT INTENT が ON になっていません。テキストチャットへの入力によるダイスロールを無効にしました。");
+			//	logger.info(String.format("https://discord.com/developers/applications/%s/bot から設定してください", api.requestApplicationInfo().get().getClientId()));
+			//}
 		}
 
 		String slashPrefix = getSlashPrefix();
