@@ -1,0 +1,43 @@
+name: release
+run-name: Release
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+env:
+  GITHUB_TOKEN: ${{ secrets.TOKEN_FOR_RELEASE_GITHUB_CLI }}
+  TAG: ${{ github.ref }}
+  JAR_FILE: 'discord-bcdicebot.jar'
+  ZIP_FILE: 'discord-bcdicebot.zip'
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: maven
+      - name: build with maven
+        run: mvn clean compile package
+      - name: rename jar
+        run: mv target/discord-bcdicebot-jar-with-dependencies.jar $JAR_FILE
+      - name: create zip file
+        run: jar -cvfM $ZIP_FILE $JAR_FILE
+      - name: rename index.html to README.html
+        run: mv index.html README.html
+      - name: append README.md to zip file
+        run: jar -uvf $ZIP_FILE README.html
+      - name: append validate.bat to zip file
+        run: jar -uvf $ZIP_FILE validate.bat
+      - name: append start.bat to zip file
+        run: jar -uvf $ZIP_FILE start.bat
+      - name: append start.sh to zip file
+        run: jar -uvf $ZIP_FILE start.sh
+      - name: append default original tables to zip file
+        run: jar -uvf $ZIP_FILE originalDiceBots
+      - name: release zip
+        run: gh release create ${TAG##*/} $ZIP_FILE
