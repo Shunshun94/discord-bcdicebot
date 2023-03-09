@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'src/**'
+      - '.github/workflows/pre-merge-build.yml'
 jobs:
   execute-test-in-java17:
     runs-on: ubuntu-latest
