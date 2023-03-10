@@ -91,6 +91,17 @@ public class BCDiceBot {
 		}
 	}
 
+	private DiscordApi getApi(String token) throws InterruptedException, ExecutionException {
+		if(isStandardChatEnabled()) {
+			try {
+				return new DiscordApiBuilder().setToken(token).addIntents(Intent.MESSAGE_CONTENT).login().get();
+			} catch (ExecutionException e) {
+				logger.info("Privileged Gateway Intents の MESSAGE CONTENT INTENT が ON になっていません。テキストチャットへの入力によるダイスロールはできません");
+			}
+		}
+		return new DiscordApiBuilder().setToken(token).login().get();
+	}
+
 	/**
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
@@ -101,16 +112,10 @@ public class BCDiceBot {
 	 */
 	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive, String password) throws IOException, InterruptedException, ExecutionException {
 		bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive, password);
-		api = new DiscordApiBuilder().setToken(token).login().get();
+		api = getApi(token);
 
-		if(isStandardChatEnabled()) {
-			//TODO 重大な問題を含むためコメントアウト。この方法では intent の情報とれてないやんけ
-			//if(api.getIntents().contains(Intent.MESSAGE_CONTENT)) {
-				api.addMessageCreateListener(new StandardInputMessageCreateListener(api, bcDice));
-			//} else {
-			//	logger.info("Privileged Gateway Intents の MESSAGE CONTENT INTENT が ON になっていません。テキストチャットへの入力によるダイスロールを無効にしました。");
-			//	logger.info(String.format("https://discord.com/developers/applications/%s/bot から設定してください", api.requestApplicationInfo().get().getClientId()));
-			//}
+		if(isStandardChatEnabled() && api.getIntents().contains(Intent.MESSAGE_CONTENT) ) {
+			api.addMessageCreateListener(new StandardInputMessageCreateListener(api, bcDice));
 		}
 
 		String slashPrefix = getSlashPrefix();
