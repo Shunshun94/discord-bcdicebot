@@ -29,6 +29,23 @@ echo .
 echo .
 echo .
 
+echo ===Ensuring MESSAGE_INTENT is set / MESSAGE_INTENT が有効か確認===
+java -jar discord-bcdicebot.jar --check-intent %DISCORD_BOT_TOKEN%
+if %errorlevel% neq 0 (
+	if not defined BCDICE_STANDARD_INPUT_DISABLED (
+		echo INTENT_MESSAGE is not set. Set from Developer Portal. / INTENT_MESSAGE が設定されていません。Developer Portal から設定してください
+		pause
+		exit /b	
+	) else (
+		echo 不要
+	)
+) else (
+	echo OK
+)
+echo .
+echo .
+echo .
+
 echo ===BCDice-API server is valid / BCDice-API サーバの妥当性確認===
 curl %BCDICE_API_URL% --fail -s > tmp
 if %errorlevel% neq 0 (
