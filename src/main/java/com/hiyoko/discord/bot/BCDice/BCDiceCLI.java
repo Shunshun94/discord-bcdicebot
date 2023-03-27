@@ -176,26 +176,31 @@ public class BCDiceCLI {
 		return serachOriginalDicebot(rawInput.replaceFirst(rollCommand, "").trim());
 	}
 	
-	private List<DicerollResult> rollOriginalDiceBotMultiple(OriginalDiceBotTable dbt, int times) throws IOException {
+	private List<DicerollResult> rollOriginalDiceBotMultiple(OriginalDiceBotTable dbt, int times, String rawText) throws IOException {
 		logger.debug(String.format("ダイスボット表 [%s] を%s回 実行します", dbt.getName(), times));
 		try {
-			DicerollResult tmp = client.rollDice(String.format("x%s %s", times, dbt.getCommand()));
-			return dbt.getResultsAsInvalidTable(tmp.getText()).stream().map(t->{
-				return new DicerollResult(t, "DiceBot", false, true, false);
-			}).collect(Collectors.toList());
+			String command = dbt.getCommand();
+			if(command.startsWith("http")) {
+				return null; //TODO つくれ。
+			} else {
+				DicerollResult tmp = client.rollDice(String.format("x%s %s", times, command));
+				return dbt.getResultsAsInvalidTable(tmp.getText()).stream().map(t->{
+					return new DicerollResult(t, "DiceBot", false, true, false);
+				}).collect(Collectors.toList());				
+			}
 		} catch(IOException e) {
 			throw new IOException(String.format("[ERROR] %s", e.getMessage()));
 		}
 	}
 
-	private DicerollResult rollOriginalDiceBot(String name) throws IOException {
+	private DicerollResult rollOriginalDiceBot(String name, String rawInput) throws IOException {
 		OriginalDiceBotTable diceBot = null;
 		try {
 			diceBot = originalDiceBotClient.getDiceBot(name);
 		} catch (IOException e) {
 			throw new IOException(String.format("ダイスボット表 [%s] が取得できませんでした", name), e);
 		}
-		return rollOriginalDiceBotMultiple(diceBot, 1).get(0);
+		return rollOriginalDiceBotMultiple(diceBot, 1, rawInput).get(0);
 	}
 
 	public List<DicerollResult> rolls(String rawInput, String channel) throws IOException {
@@ -218,7 +223,7 @@ public class BCDiceCLI {
 					throw new IOException(String.format("ダイスボット表 [%s] が取得できませんでした", originalDiceBot), e);
 				}
 				int times = Integer.parseInt(isOfficialMultiRollMatcher.group(2));
-				return rollOriginalDiceBotMultiple(diceBot, times);
+				return rollOriginalDiceBotMultiple(diceBot, times, withoutRepeat);
 			}
 		}
 
@@ -235,7 +240,7 @@ public class BCDiceCLI {
 					throw new IOException(String.format("ダイスボット表 [%s] が取得できませんでした", originalDiceBot), e);
 				}
 				int times = Integer.parseInt(rawCount);
-				return rollOriginalDiceBotMultiple(diceBot, times);
+				return rollOriginalDiceBotMultiple(diceBot, times, withoutRepeat);
 			} else {
 				rawInput = String.format("%s repeat%s %s", rollCommand, rawCount, withoutRepeat).trim();
 			}
@@ -244,7 +249,8 @@ public class BCDiceCLI {
 		if(isTextMatcher.find()) {
 			String rawTargetList = isTextMatcher.group(1);
 			String[] targetList = rawTargetList.split(",");
-			String requiredCommand = String.format("%s%s" , rollCommand, input.replaceFirst(MULTIROLL_TEXT_PREFIX_STR, "").trim());
+			String withoutRepeat = input.replaceFirst(MULTIROLL_TEXT_PREFIX_STR, "").trim();
+			String requiredCommand = String.format("%s%s" , rollCommand, withoutRepeat);
 			if(targetList.length > 20) {
 				String system = client.getSystem(channel);
 				if( isOriginalDicebot(requiredCommand).isEmpty() && (! isShouldRoll(requiredCommand, system)) ) {
@@ -279,13 +285,13 @@ public class BCDiceCLI {
 	 * @throws IOException When command failed
 	 */
 	public DicerollResult roll(String rawInput, String channel) throws IOException {
+		String input = rawInput.replaceFirst(rollCommand, "").trim();
 		String originalDiceBot = isOriginalDicebot(rawInput);
 		if(! originalDiceBot.isEmpty()) {
-			return rollOriginalDiceBot(originalDiceBot);
+			return rollOriginalDiceBot(originalDiceBot, input);
 		}
 		String system = client.getSystem(channel);
 		if(isShouldRoll(rawInput, system)) {
-			String input = rawInput.replaceFirst(rollCommand, "").trim();
 			logger.debug(String.format("bot send command to server: %s", input));
 			return client.rollDiceWithChannel(normalizeDiceCommand(input), channel);
 		} else {
