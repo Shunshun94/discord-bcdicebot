@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
  */
 public class BCDiceV2Client implements DiceClient {
 	private int urlCursor = 0;
+	private final int DEFAULT_RETRY = 5;
 	private List<String> urls = new ArrayList<String>();
 	private final OkHttpClient client;
 	private final Map<String, String> system;
@@ -101,10 +102,11 @@ public class BCDiceV2Client implements DiceClient {
 			if (rtl == 0) {
 				throw new IOException(e.getMessage() + "(" + targetUrl + ")", e);
 			} else {
+				long waitLength = Double.valueOf(500 * Math.pow(2, DEFAULT_RETRY - rtl)).longValue();
 				System.err.println(
-						String.format("Failed to request to %s, %s, app will try %s", targetUrl, e.getMessage(), rtl));
+						String.format("Failed to request to %s, %s, app will retry after %s msec (%s / %s)", targetUrl, e.getMessage(), waitLength, rtl, DEFAULT_RETRY));
 				try {
-					Thread.sleep(500);
+					Thread.sleep(waitLength);
 				} catch (InterruptedException e1) {
 					e.addSuppressed(e1);
 					throw new IOException("Waiting in retry is interrupted", e);
@@ -120,8 +122,49 @@ public class BCDiceV2Client implements DiceClient {
 		}
 	}
 
+	private String getStaticUrl(String url, int rtl) throws IOException {
+		Request request = new Request.Builder().url(url).build();
+		try (Response response = client.newCall(request).execute();) {
+			ResponseBody result = response.body();
+			int responseCode = response.code(); 
+			if (!(responseCode == DiceClientConsts.OK || responseCode == DiceClientConsts.BAD_REQUEST)) {
+				response.close();
+				if (errorSensitive) {
+					String msg = String.format("[%s] %s", responseCode, url);
+					if (msg.startsWith("[5") && (urls.size() != 1) && (rtl > 0)) { // 5XX Error であれば かつ 予備 URL があれば
+						urlCursor++;
+						if (urls.size() <= urlCursor) {
+							urlCursor = 0;
+						}
+						System.err.println(String.format("Failed to request to %s, %s, app will try %s with dice server %s",
+								url, responseCode, rtl, urls.get(urlCursor)));
+						return getStaticUrl(url, rtl - 1);
+					}
+					throw new IOException(msg);
+				} else {
+					return "{\"ok\":false,\"reason\":\"error handling dummy data\"}";
+				}
+			}
+			return result.string();
+		} catch (Exception e) {
+			if (rtl == 0) {
+				throw new IOException(e.getMessage() + "(" + url + ")", e);
+			} else {
+				long waitLength = Double.valueOf(500 * Math.pow(2, DEFAULT_RETRY - rtl)).longValue();
+				System.err.println(
+						String.format("Failed to request to %s, %s, app will retry after %s msec (%s / %s)", url, e.getMessage(), waitLength, rtl, DEFAULT_RETRY));
+				try {
+					Thread.sleep(waitLength);
+				} catch (InterruptedException e1) {
+					e.addSuppressed(e1);
+					throw new IOException("Waiting in retry is interrupted", e);
+				}
+				return getStaticUrl(url, rtl - 1);
+			}
+		}	
+	}
+
 	private String getUrl(String path, int rtl) throws IOException {
-		
 		String targetUrl = urls.get(urlCursor) + path;
 		Request request = new Request.Builder().url(targetUrl).build();
 		try (Response response = client.newCall(request).execute();) {
@@ -150,10 +193,11 @@ public class BCDiceV2Client implements DiceClient {
 			if (rtl == 0) {
 				throw new IOException(e.getMessage() + "(" + targetUrl + ")", e);
 			} else {
+				long waitLength = Double.valueOf(500 * Math.pow(2, DEFAULT_RETRY - rtl)).longValue();
 				System.err.println(
-						String.format("Failed to request to %s, %s, app will try %s", targetUrl, e.getMessage(), rtl));
+						String.format("Failed to request to %s, %s, app will retry after %s msec (%s / %s)", targetUrl, e.getMessage(), waitLength, rtl, DEFAULT_RETRY));
 				try {
-					Thread.sleep(500);
+					Thread.sleep(waitLength);
 				} catch (InterruptedException e1) {
 					e.addSuppressed(e1);
 					throw new IOException("Waiting in retry is interrupted", e);
@@ -176,7 +220,7 @@ public class BCDiceV2Client implements DiceClient {
 	 * @throws IOException When access is failed
 	 */
 	private String getUrl(String path) throws IOException {
-		return getUrl(path, 5);
+		return getUrl(path, DEFAULT_RETRY);
 	}
 
 	public VersionInfo getVersion() throws IOException {
@@ -202,7 +246,13 @@ public class BCDiceV2Client implements DiceClient {
 	public DicerollResult rollOriginalDiceBotTable(OriginalDiceBotTable diceBot) throws IOException {
 		String result = postUrl(
 				"v2/original_table?table=" + URLEncoder.encode(diceBot.toString(), "UTF-8").replaceAll("%2520", "%20"),
-				5);
+				DEFAULT_RETRY);
+		return new DicerollResult(result);
+	}
+
+	@Override
+	public DicerollResult rollOriginalDiceBotURL(String url, int repeat, String params) throws IOException {
+		String result = getStaticUrl(String.format("%s?repeat=%s&params=%s", url), DEFAULT_RETRY);
 		return new DicerollResult(result);
 	}
 
