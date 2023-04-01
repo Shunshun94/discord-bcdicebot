@@ -164,7 +164,7 @@ public class BCDiceCLI {
 	public String serachOriginalDicebot(String input) {
 		List<String> list = originalDiceBotClient.getDiceBotList();
 		for(String name : list) {
-			if(input.startsWith(name)) {return name;}
+			if(input.startsWith(name.toLowerCase())) {return name;}
 		}
 		return "";
 	}
@@ -173,7 +173,7 @@ public class BCDiceCLI {
 		if(! (rollCommand.isEmpty() || rawInput.startsWith(rollCommand))) {
 			return "";
 		}
-		return serachOriginalDicebot(rawInput.replaceFirst(rollCommand, "").trim());
+		return serachOriginalDicebot(rawInput.replaceFirst(rollCommand, "").trim().toLowerCase());
 	}
 	
 	private List<DicerollResult> rollOriginalDiceBotMultiple(OriginalDiceBotTable dbt, int times, String rawText) throws IOException {
@@ -181,7 +181,10 @@ public class BCDiceCLI {
 		try {
 			String command = dbt.getCommand();
 			if(command.startsWith("http")) {
-				return null; //TODO つくれ。
+				String params = Pattern.compile(dbt.getName(),Pattern.CASE_INSENSITIVE).matcher(rawText).replaceAll("").trim();
+				List<DicerollResult> result = new ArrayList<DicerollResult>();
+				result.add(client.rollOriginalDiceBotURL(command, times, params));
+				return result;
 			} else {
 				DicerollResult tmp = client.rollDice(String.format("x%s %s", times, command));
 				return dbt.getResultsAsInvalidTable(tmp.getText()).stream().map(t->{

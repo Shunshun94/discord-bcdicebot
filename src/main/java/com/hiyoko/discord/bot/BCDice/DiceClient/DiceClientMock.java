@@ -227,7 +227,10 @@ public class DiceClientMock implements DiceClient {
 
 	@Override
 	public DicerollResult rollOriginalDiceBotURL(String url, int repeat, String params) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return new DicerollResult(
+			String.format("%s / %s", repeat, params),
+			"架空のシステム",
+			false, true
+		);
 	}
 }

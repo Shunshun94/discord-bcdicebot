@@ -252,7 +252,7 @@ public class BCDiceV2Client implements DiceClient {
 
 	@Override
 	public DicerollResult rollOriginalDiceBotURL(String url, int repeat, String params) throws IOException {
-		String result = getStaticUrl(String.format("%s?repeat=%s&params=%s", url), DEFAULT_RETRY);
+		String result = getStaticUrl(String.format("%s?repeat=%s&params=%s", url, repeat, params), DEFAULT_RETRY);
 		return new DicerollResult(result);
 	}
 

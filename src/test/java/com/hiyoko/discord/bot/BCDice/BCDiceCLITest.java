@@ -179,6 +179,19 @@ public class BCDiceCLITest extends TestCase {
 
 	public void testOriginalDiceBot() throws IOException {
 		assertTrue(cli.roll("サンプルダイスボット-夜食表", "no_channel").isRolled());
+
+		assertEquals("1 / ", cli.rolls("originalTableUrl", "no_channel").get(0).getText());
+		assertEquals("4 / ", cli.rolls("x4 originalTableUrl", "no_channel").get(0).getText());
+		assertEquals("1 / aaaaaa", cli.rolls("originalTableUrl aaaaaa", "no_channel").get(0).getText());
+		assertEquals("4 / aaaaaa", cli.rolls("repeat4 originalTableUrl aaaaaa", "no_channel").get(0).getText());
+
+		String PREFIX = "/hiyoko";
+		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll " + PREFIX, "", "channel").get(0).contains("で始まるコマンドのみサーバに送信します "));
+		assertEquals("1 / ", cli.rolls(PREFIX + " originalTableUrl", "no_channel").get(0).getText());
+		assertEquals("4 / ", cli.rolls(PREFIX + " x4 originalTableUrl", "no_channel").get(0).getText());
+		assertEquals("1 / aaaaaa", cli.rolls(PREFIX + " originalTableUrl aaaaaa", "no_channel").get(0).getText());
+		assertEquals("4 / aaaaaa", cli.rolls(PREFIX + " repeat4 originalTableUrl aaaaaa", "no_channel").get(0).getText());
+
 	}
 
 	public void testMultiroll() throws Exception {
