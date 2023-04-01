@@ -26,6 +26,7 @@ public class OriginalDiceBotTable {
 		this.name = name;
 		Matcher isDiceCommandMatcher = DICE_COMMAND_PATTERN.matcher(fileContents.get(0).trim());
 		boolean isFirstLineCommand = isDiceCommandMatcher.find();
+		boolean isFirstLineUrl = fileContents.get(0).trim().startsWith("http");
 		boolean tmpIsValid = confirmIsValid(fileContents, isFirstLineCommand);
 		if(tmpIsValid) {
 			if(isFirstLineCommand) {
@@ -50,7 +51,7 @@ public class OriginalDiceBotTable {
 			this.isValid = false;
 		}
 		this.invalidTableMap = getInvalidTableMap(fileContents);
-		this.command = isFirstLineCommand ? fileContents.get(0) : fileContents.get(1);
+		this.command = (isFirstLineCommand || isFirstLineUrl) ? fileContents.get(0) : fileContents.get(1);
 	}
 
 	private Map<String, String> getInvalidTableMap(List<String> fileContents) {

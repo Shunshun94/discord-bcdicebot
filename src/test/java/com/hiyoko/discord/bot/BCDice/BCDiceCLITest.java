@@ -179,6 +179,19 @@ public class BCDiceCLITest extends TestCase {
 
 	public void testOriginalDiceBot() throws IOException {
 		assertTrue(cli.roll("サンプルダイスボット-夜食表", "no_channel").isRolled());
+
+		assertEquals("1 / ", cli.rolls("originalTableUrl", "no_channel").get(0).getText());
+		assertEquals("4 / ", cli.rolls("x4 originalTableUrl", "no_channel").get(0).getText());
+		assertEquals("1 / aaaaaa", cli.rolls("originalTableUrl aaaaaa", "no_channel").get(0).getText());
+		assertEquals("4 / aaaaaa", cli.rolls("repeat4 originalTableUrl aaaaaa", "no_channel").get(0).getText());
+
+		String PREFIX = "/hiyoko";
+		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll " + PREFIX, "", "channel").get(0).contains("で始まるコマンドのみサーバに送信します "));
+		assertEquals("1 / ", cli.rolls(PREFIX + " originalTableUrl", "no_channel").get(0).getText());
+		assertEquals("4 / ", cli.rolls(PREFIX + " x4 originalTableUrl", "no_channel").get(0).getText());
+		assertEquals("1 / aaaaaa", cli.rolls(PREFIX + " originalTableUrl aaaaaa", "no_channel").get(0).getText());
+		assertEquals("4 / aaaaaa", cli.rolls(PREFIX + " repeat4 originalTableUrl aaaaaa", "no_channel").get(0).getText());
+
 	}
 
 	public void testMultiroll() throws Exception {
@@ -190,6 +203,15 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(3, cli.rolls("rep3 サンプルダイスボット-夜食表", "no_channel").size());
 		assertEquals(3, cli.rolls("repeat3 サンプルダイスボット-夜食表", "no_channel").size());
 		assertEquals(3, cli.rolls("x3 サンプルダイスボット-夜食表", "no_channel").size());
+
+		assertEquals(1, cli.rolls("2d6 aaaa", "no_channel").size());
+		assertEquals(1, cli.rolls("repeat3 2d6 aaaa", "no_channel").size());
+		assertEquals(1, cli.rolls("3 2d6 aaaa", "no_channel").size());
+		assertEquals(3, cli.rolls("[パンダ,うさぎ,コアラ] 2d6 aaaa", "no_channel").size());
+		assertEquals(3, cli.rolls("3 サンプルダイスボット-夜食表 aaaa", "no_channel").size());
+		assertEquals(3, cli.rolls("rep3 サンプルダイスボット-夜食表 aaaa", "no_channel").size());
+		assertEquals(3, cli.rolls("repeat3 サンプルダイスボット-夜食表 aaaa", "no_channel").size());
+		assertEquals(3, cli.rolls("x3 サンプルダイスボット-夜食表 aaaa", "no_channel").size());
 
 		String PREFIX = "/hiyoko";
 		assertTrue(cli.inputs("bcdice admin " + PASSWORD + " suppressroll " + PREFIX, "", "channel").get(0).contains("で始まるコマンドのみサーバに送信します "));
@@ -222,5 +244,15 @@ public class BCDiceCLITest extends TestCase {
 		assertEquals(cli.rolls(PREFIX + "　rep3　サンプルダイスボット-夜食表", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + "　repeat3　サンプルダイスボット-夜食表", "no_channel").size(), 3);
 		assertEquals(cli.rolls(PREFIX + "　20　サンプルダイスボット-夜食表", "no_channel").size(), 20);
+
+		assertEquals(cli.rolls(PREFIX + "　2d6 aaa", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + "　3　2d6 aaa", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + "　サンプルダイスボット-夜食表 aaa", "no_channel").size(), 1);
+		assertEquals(cli.rolls(PREFIX + "　[パンダ,うさぎ,コアラ]　2d6 aaa", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　3　サンプルダイスボット-夜食表 aaa", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　x3　サンプルダイスボット-夜食表 aaa", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　rep3　サンプルダイスボット-夜食表 aaa", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　repeat3　サンプルダイスボット-夜食表 aaa", "no_channel").size(), 3);
+		assertEquals(cli.rolls(PREFIX + "　20　サンプルダイスボット-夜食表 aaa", "no_channel").size(), 20);
 	}
 }

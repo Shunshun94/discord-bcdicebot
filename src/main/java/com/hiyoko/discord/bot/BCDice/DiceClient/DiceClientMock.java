@@ -224,4 +224,13 @@ public class DiceClientMock implements DiceClient {
 	public List<String> updateDiceBotsPrefixes() {
 		return new ArrayList<String>();
 	}
+
+	@Override
+	public DicerollResult rollOriginalDiceBotURL(String url, int repeat, String params) throws IOException {
+		return new DicerollResult(
+			String.format("%s / %s", repeat, params),
+			"架空のシステム",
+			false, true
+		);
+	}
 }
