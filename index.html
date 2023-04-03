@@ -359,17 +359,17 @@ general:DiceBot
 	</tr>
 	<tr>
 		<td><code>bcdice admin [パスワード] listDiceBot</code></td>
-		<td>後述するオリジナルダイスボット表を一覧します</td>
+		<td>後述するオリジナル表を一覧します</td>
 		<td><code>bcdice admin myPassw0rd listDiceBot</code></td>
 	</tr>
 	<tr>
-		<td><code>bcdice admin [パスワード] addDiceBot [追加するオリジナルダイスボット表の名前]</code></td>
-		<td>オリジナルダイスボット表を追加します。詳細は後述します</td>
+		<td><code>bcdice admin [パスワード] addDiceBot [追加するオリジナル表の名前]</code></td>
+		<td>オリジナル表を追加します。詳細は後述します</td>
 		<td><code>bcdice admin myPassw0rd addDiceBot 言語表</code></td>
 	</tr>
 	<tr>
-		<td><code>bcdice admin [パスワード] removeDiceBot [削除するオリジナルダイスボット表の名前]</code></td>
-		<td>オリジナルダイスボット表を削除します</td>
+		<td><code>bcdice admin [パスワード] removeDiceBot [削除するオリジナル表の名前]</code></td>
+		<td>オリジナル表を削除します</td>
 		<td><code>bcdice admin myPassw0rd removeDiceBot 言語表</code></td>
 	</tr>
 	<tr>
@@ -408,20 +408,36 @@ import コマンドを実行すると<code>start.bat</code>ないし<code>start.
 ただし、<code>export</code>、<code>import</code>、<code>suppressroll</code> はスラッシュコマンドからは利用できません。<br/>
 詳細はスラッシュコマンドの説明をご確認ください。</p>
 
-<h4 id="howToUse-admin-originalTable">オリジナルダイスボット表の管理</h4>
-<p>管理者はオリジナルダイスボット表を追加することもできます。</p>
-<p>オリジナルダイスボット表を追加する場合は Discord にオリジナルダイスボット表の情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/>
-<code>bcdice admin [パスワード] addDiceBot [オリジナルダイスボット表名]</code><br/>
-追加した後オリジナルダイスボット表の名前がチャット上で発言されるとオリジナルダイスボット表が振られます。
-この際にアップロードするオリジナルダイスボット表のサンプルは
-<a href="https://docs.bcdice.org/original_table.html">オリジナル表 · BCDiceコマンドガイド</a>
+<h4 id="howToUse-admin-originalTable">オリジナル表の管理</h4>
+<p>管理者はオリジナル表を追加することもできます。</p>
+<p>オリジナル表を追加する場合は Discord にオリジナル表の情報をアップロードし、アップロード時のコメントに次のように記載してください。<br/>
+<code>bcdice admin [パスワード] addDiceBot [オリジナル表名]</code><br/>
+追加した後オリジナル表の名前がチャット上で発言されるとオリジナル表が振られます。</p>
+
+<p>オリジナル表を削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [オリジナル表名]</code><br/>
+オリジナル表の一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code></p>
+
+<h5>BCDice コマンド形式の表</h5>
+<p>他のツールと互換性のあるオリジナル表をアップロードすることでそのオリジナル表を利用できます。
+記法は<a href="https://docs.bcdice.org/original_table.html">オリジナル表 · BCDiceコマンドガイド</a>
 ないしは<a href="https://github.com/Shunshun94/discord-bcdicebot/blob/master/originalDiceBots/サンプルダイスボット-夜食表">discord-bcdicebot/originalDiceBots/サンプルダイスボット-夜食表</a>を参照してください。<br/>
 両者でフォーマットが異なりますが、どちらも利用できます。<br/>
 また、追加するダイスボット表は UTF-8 で作成されている必要があります。
-Windows 付属のメモ帳であれば名前を付けて保存する際に保存ボタンの左に「文字コード」を選択できる箇所があります。ここで <code>UTF-8</code> を選択した上で保存してください。
-<br/><br/>
-オリジナルダイスボット表を削除する際は以下のようにしてください。<br/><code>bcdice admin [パスワード] removeDiceBot [オリジナルダイスボット表名]</code><br/>
-オリジナルダイスボット表の一覧は次のようにすると確認できます。<br/><code>bcdice admin [パスワード] listDiceBot</code></p>
+Windows 付属のメモ帳であれば名前を付けて保存する際に保存ボタンの左に「文字コード」を選択できる箇所があります。ここで <code>UTF-8</code> を選択した上で保存してください。</p>
+
+<h5>アクセスポイント URL 形式の表</h5>
+<p>アクセスすることで BCDice API のダイス結果互換の値を返すアクセスポイントを与えることでもオリジナル表を作成できます。<br/>
+返り値には最低限 <code>ok</code> <code>text</code> <code>secret</code> の情報が含まれている必要があります。<br/>
+アップロードするオリジナル表のファイルは1行目にアクセスポイントの URL のみ記載してください。</p>
+
+<p>アクセスポイントにアクセスする際、次の URL に対して GET メソッドでアクセスを実施します。<br/>
+<code>${与えた URL}?repeat=${回数}&amp;params=${引数}</code></p>
+<p>例えば <code>https://original_table.example.com/access_point</code> がアクセスポイントで、<br/>
+テキストチャットから次のような入力を実施して該当のオリジナル表を振るとします。<br/>
+<code>x3 URLのオリジナル表 ぱんだ うさぎ こあら</code><br/>
+この場合、次のようにアクセスを実施します。<br/>
+<code>https://original_table.example.com/access_point?repeat=3&amp;params=ぱんだ%20うさぎ%20こあら</code></p>
+
 
 <h3 id="howToUse-slashCommands">スラッシュコマンドについて</h3>
 <p><code>BCDICE_SLASH_PREFIX</code> が有効な場合、Discord のスラッシュコマンド機能を用いてダイスを振ったり設定を実施したりできるようになります。</p>
@@ -551,7 +567,7 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 <h3 id="faq06">Version 2? Version 1 との差異として気を付けるべき点は何？</h3>
 <p>以下について変更が入っています。</p>
 <ul>
-	<li>古いオリジナルダイスボット表で利用できた help のフォーマットが利用できなくなります。help の際は表の内容を全部出力します</li>
+	<li>古いオリジナル表で利用できた help のフォーマットが利用できなくなります。help の際は表の内容を全部出力します</li>
 	<li>BCDice-API v2 の API が有効でないサーバでは利用できません</li>
 </ul>
 <h3 id="faq07">Version 1 を使いたいのだけれども</h3>
@@ -594,12 +610,15 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2 id="history">更新履歴</h2>
 <dl id="historyList">
+	<dt>v2.8.0</dt>
+	<dd>MESSAGE CONTENT INTENT の状態を validate.bat で確認するように変更しました</dd>
+	<dd>オリジナル表をファイル形式だけでなく URL 形式で設定できるようにしました。詳細は<a href="#howToUse-admin-originalTable">オリジナル表の管理</a>をご確認ください</dd>
 	<dt>v2.7.5</dt>
 	<dd>一部ライブラリを最新版に差し替えました</dd>
 	<dt>v2.7.4</dt>
-	<dd>ダイスボットの配布方法を変更しました。</dd>
+	<dd>ダイスボットの配布方法を変更しました</dd>
 	<dt>v2.7.3</dt>
-	<dd>ソースコードの一部をメンテナンスしました。</dd>
+	<dd>ソースコードの一部をメンテナンスしました</dd>
 	<dt>v2.7.2</dt>
 	<dd>Heroku に関する記述を修正しました。アプリの修正はありません</dd>
 	<dt>v2.7.1</dt>
@@ -648,7 +667,7 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 	<dd><code>2 NotDiceRoll</code>のようなフォーマットの発言を行った際に警告メッセージが暴発する問題に対処しました</dd>
 	<dt>v2.2.3</dt>
 	<dd>一部のダイスを振った結果の表示が崩れる問題に対処しました</dd>
-	<dd>オリジナルダイスボット表に関する一部挙動を修正しました（<a href="https://github.com/Shunshun94/discord-bcdicebot/issues/91">詳細</a>）。連絡くださった<a href="https://twitter.com/Twit_Hiyori">水篠 日和さん</a>、ありがとうございます！</dd>
+	<dd>オリジナル表に関する一部挙動を修正しました（<a href="https://github.com/Shunshun94/discord-bcdicebot/issues/91">詳細</a>）。連絡くださった<a href="https://twitter.com/Twit_Hiyori">水篠 日和さん</a>、ありがとうございます！</dd>
 	<dd>管理用の部屋一覧を取得するコマンドの挙動を一部修正しました</dd>
 	<dt>v2.2.2</dt>
 	<dd>自動テストに関連する不備に対処しました（<a href="https://github.com/Shunshun94/discord-bcdicebot/issues/96">詳細</a>）。連絡くださった<a href="https://twitter.com/ochaochaocha3">おちゃさん</a>、ありがとうございます！</dd>
@@ -657,15 +676,15 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 	<dt>v2.2.0</dt>
 	<dd>Heroku 上で動かすための設定ファイル Procfile を追加しました。ファイルを共有してくださった yoshi さん、ありがとうございます！（<a href="https://github.com/Shunshun94/discord-bcdicebot/pull/83">詳細</a>）</dd>
 	<dd>Bot が登録されているサーバの情報を取得できるようにしました</dd>
-	<dd>オリジナルダイスボット表に関する問題をいくらか修正しました</dd>
+	<dd>オリジナル表に関する問題をいくらか修正しました</dd>
 	<dt>v2.1.0</dt>
 	<dd>環境変数 <code>BCDICE_MENTION_MODE</code> に何らかの値が入っている場合、ダイスを振った際に振った人にメンションを付けて結果を表示するように変更</dd>
 	<dt>v2.0.2</dt>
 	<dd>bcdice help SYSTEM_NAME がうまく動かない問題を報告いただき、修正しました。h-mikisato さん、ありがとうございます！（<a href="https://github.com/Shunshun94/discord-bcdicebot/issues/79">詳細</a>）</dd>
 	<dd>システム設定のインポート・エクスポートの出力を修正しました</dd>
-	<dd>オリジナルダイスボット表の繰り返しコマンドについて出力を修正しました</dd>
+	<dd>オリジナル表の繰り返しコマンドについて出力を修正しました</dd>
 	<dt>v2.0.1</dt>
-	<dd>オリジナルダイスボット表に関する問題を修正しました</dd>
+	<dd>オリジナル表に関する問題を修正しました</dd>
 	<dt>v2.0.0</dt>
 	<dd>BCDice-API 2.0 に対応しました</dd>
 	<dd>コマンド中に全角スペースが含まれている場合、半角スペースとして扱うようにしました</dd>
