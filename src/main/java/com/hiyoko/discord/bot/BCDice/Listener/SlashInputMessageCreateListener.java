@@ -80,7 +80,9 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 			result.add(SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, LIST_ORIGINAL_TABLE, String.format("オリジナル表を一覧します（現在%s件が登録されています）", size)));
 		} else {
 			for(String originalTableName : originalTableList) {
-				result.add(SlashCommandOption.create(SlashCommandOptionType.SUB_COMMAND, originalTableName, String.format("オリジナル表 %s を振ります", originalTableName)));
+				result.add(SlashCommandOption.createWithOptions(SlashCommandOptionType.SUB_COMMAND, originalTableName, String.format("オリジナル表 %s を振ります", originalTableName), Arrays.asList(
+						SlashCommandOption.create(SlashCommandOptionType.STRING, "params", "オリジナル表を振る際に与えるパラメータです。必要な表と不要な表があります", false)
+				)));
 			}
 		}
 		return result;
@@ -263,6 +265,9 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 			responseMessage = handleRoll(diceCommand, channel, user);
 		} else if(slashCommandName.equals(shortTablePrefix)) {
 			String diceCommand = firstOption.getName();
+			if(firstOption.getOptions().size() > 0) {
+				diceCommand = String.format("%s %s", diceCommand, firstOption.getOptionByIndex(0).get().getStringValue().orElse(""));
+			}
 			logger.info("[" + diceCommand + "]");
 			if(diceCommand.equals(LIST_ORIGINAL_TABLE)) {
 				responseMessage = handleAdmin(firstOption, channel, user);

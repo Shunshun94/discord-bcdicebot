@@ -87,6 +87,16 @@ public interface DiceClient {
 	public DicerollResult rollOriginalDiceBotTable(OriginalDiceBotTable diceBot) throws IOException;
 
 	/**
+	 * 
+	 * @param url
+	 * @param repeat
+	 * @param params
+	 * @return
+	 * @throws IOException
+	 */
+	public DicerollResult rollOriginalDiceBotURL(String url, int repeat, String params) throws IOException;
+
+	/**
 	 * change current system.
 	 * @param newSystem
 	 * @return new current system.

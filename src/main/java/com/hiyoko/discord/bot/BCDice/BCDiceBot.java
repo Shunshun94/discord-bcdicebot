@@ -91,6 +91,17 @@ public class BCDiceBot {
 		}
 	}
 
+	private DiscordApi getApi(String token) throws InterruptedException, ExecutionException {
+		if(isStandardChatEnabled()) {
+			try {
+				return new DiscordApiBuilder().setToken(token).addIntents(Intent.MESSAGE_CONTENT).login().get();
+			} catch (ExecutionException e) {
+				logger.info("Privileged Gateway Intents の MESSAGE CONTENT INTENT が ON になっていません。テキストチャットへの入力によるダイスロールはできません");
+			}
+		}
+		return new DiscordApiBuilder().setToken(token).login().get();
+	}
+
 	/**
 	 * @param token Discord bot token
 	 * @param bcDiceUrl BCDice-API URL
@@ -101,16 +112,10 @@ public class BCDiceBot {
 	 */
 	public BCDiceBot(String token, String bcDiceUrl, boolean errorSensitive, String password) throws IOException, InterruptedException, ExecutionException {
 		bcDice = new BCDiceCLI(getUrlList(bcDiceUrl), getDefaultSystem(), errorSensitive, password);
-		api = new DiscordApiBuilder().setToken(token).login().get();
+		api = getApi(token);
 
-		if(isStandardChatEnabled()) {
-			//TODO 重大な問題を含むためコメントアウト。この方法では intent の情報とれてないやんけ
-			//if(api.getIntents().contains(Intent.MESSAGE_CONTENT)) {
-				api.addMessageCreateListener(new StandardInputMessageCreateListener(api, bcDice));
-			//} else {
-			//	logger.info("Privileged Gateway Intents の MESSAGE CONTENT INTENT が ON になっていません。テキストチャットへの入力によるダイスロールを無効にしました。");
-			//	logger.info(String.format("https://discord.com/developers/applications/%s/bot から設定してください", api.requestApplicationInfo().get().getClientId()));
-			//}
+		if(isStandardChatEnabled() && api.getIntents().contains(Intent.MESSAGE_CONTENT) ) {
+			api.addMessageCreateListener(new StandardInputMessageCreateListener(api, bcDice));
 		}
 
 		String slashPrefix = getSlashPrefix();
@@ -135,6 +140,28 @@ public class BCDiceBot {
 		}
 	}
 
+	private static void showHelp() {
+		System.out.println(String.format("Discord-BCDicebot Version %s", getVersion()));
+		System.out.println("This application requires two params");
+		System.out.println("  1. Discord Bot Token");
+		System.out.println("  2. BCDice-api server URL");
+		System.out.println("  3. (Optional) Error Handling Flag, When BCDice-API returns Error, If an error message should be sent, it's 0. If not, it's 1.");
+		System.out.println("------------------------------------");
+		System.out.println("2つコマンドライン引数が必要です");
+		System.out.println("  1. Discord の bot token");
+		System.out.println("  2. BCDice-api の URL");
+		System.out.println("  3. (必要ならば) エラーハンドルフラグ。BCDice-API でエラー発生時にエラーメッセージを出力するなら0 しないなら1");
+	}
+
+	private static int isIntentOK(String token) throws InterruptedException {
+		try {
+			new DiscordApiBuilder().setToken(token).addIntents(Intent.MESSAGE_CONTENT).login().get();
+			return 0;
+		} catch (ExecutionException e) {
+			return 1;
+		}
+	}
+
 	/**
 	 * First called method.
 	 * @param args command line parameters. 1st should be Discord bot token. 2nd should be the URL of BCDice-API.
@@ -145,22 +172,15 @@ public class BCDiceBot {
 	public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
 		if( args.length < 2 || args[0].equals("help") ||
 			args[0].equals("--help") || args[0].equals("--h") || args[0].equals("-h")) {
-			System.out.println(String.format("Discord-BCDicebot Version %s", getVersion()));
-			System.out.println("This application requires two params");
-			System.out.println("  1. Discord Bot Token");
-			System.out.println("  2. BCDice-api server URL");
-			System.out.println("  3. (Optional) Error Handling Flag, When BCDice-API returns Error, If an error message should be sent, it's 0. If not, it's 1.");
-			System.out.println("------------------------------------");
-			System.out.println("2つコマンドライン引数が必要です");
-			System.out.println("  1. Discord の bot token");
-			System.out.println("  2. BCDice-api の URL");
-			System.out.println("  3. (必要ならば) エラーハンドルフラグ。BCDice-API でエラー発生時にエラーメッセージを出力するなら0 しないなら1");
-
+			showHelp();
 			return;
 		}
+		if( args[0].equals("--check-intent") ) {
+			System.exit(isIntentOK(args[1].trim()));
+		}
+
 
 		String password = AdminPasswordGenerator.getPassword();
-
 		if(args.length == 2) {
 			new BCDiceBot(args[0].trim(), args[1].trim(), true, password);
 		} else {
