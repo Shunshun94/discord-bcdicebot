@@ -426,9 +426,9 @@ import コマンドを実行すると<code>start.bat</code>ないし<code>start.
 Windows 付属のメモ帳であれば名前を付けて保存する際に保存ボタンの左に「文字コード」を選択できる箇所があります。ここで <code>UTF-8</code> を選択した上で保存してください。</p>
 
 <h5>アクセスポイント URL 形式の表</h5>
-<p>アクセスすることで BCDice API のダイス結果互換の値を返すアクセスポイントを与えることでもオリジナル表を作成できます。<br/>
+<p>アクセスすることで BCDice API のダイス結果互換の値を返すアクセスポイント（例：<a href="https://shunshun94.github.io/discord-bcdicebot/tools/original_table_sample_result.json" target="_blank">original_table_sample_result.json</a>）を与えることでもオリジナル表を作成できます。<br/>
 返り値には最低限 <code>ok</code> <code>text</code> <code>secret</code> の情報が含まれている必要があります。<br/>
-アップロードするオリジナル表のファイルは1行目にアクセスポイントの URL のみ記載してください。</p>
+アップロードするオリジナル表のファイルは1行目にアクセスポイントの URL のみ記載してください（例：<a href="https://shunshun94.github.io/discord-bcdicebot/tools/original_table_sample_file" target="_blank">original_table_sample_file</a>）。</p>
 
 <p>アクセスポイントにアクセスする際、次の URL に対して GET メソッドでアクセスを実施します。<br/>
 <code>${与えた URL}?repeat=${回数}&amp;params=${引数}</code></p>
@@ -610,6 +610,8 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2 id="history">更新履歴</h2>
 <dl id="historyList">
+	<dt>v2.8.1</dt>
+	<dd>URL 形式で設定するオリジナル表のサンプルを追加しました。詳細は<a href="#howToUse-admin-originalTable">オリジナル表の管理</a>をご確認ください</dd>
 	<dt>v2.8.0</dt>
 	<dd>MESSAGE CONTENT INTENT の状態を validate.bat で確認するように変更しました</dd>
 	<dd>オリジナル表をファイル形式だけでなく URL 形式で設定できるようにしました。詳細は<a href="#howToUse-admin-originalTable">オリジナル表の管理</a>をご確認ください</dd>
