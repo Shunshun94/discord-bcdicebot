@@ -426,7 +426,7 @@ import コマンドを実行すると<code>start.bat</code>ないし<code>start.
 Windows 付属のメモ帳であれば名前を付けて保存する際に保存ボタンの左に「文字コード」を選択できる箇所があります。ここで <code>UTF-8</code> を選択した上で保存してください。</p>
 
 <h5>アクセスポイント URL 形式の表</h5>
-<p>アクセスすることで BCDice API のダイス結果互換の値を返すアクセスポイント（例：<a href="https://shunshun94.github.io/discord-bcdicebot/tools/original_table_sample_result.json" target="_blank">original_table_sample_result.json</a>）を与えることでもオリジナル表を作成できます。<br/>
+<p>アクセスすることで BCDice API のダイス結果互換の値を返すアクセスポイント（例：<a href="https://shunshun94.github.io/discord-bcdicebot/tools/original_table_sample_result.json" target="_blank">original_table_sample_result.json</a>）を与えることでオリジナル表を作成できます。<br/>
 返り値には最低限 <code>ok</code> <code>text</code> <code>secret</code> の情報が含まれている必要があります。<br/>
 アップロードするオリジナル表のファイルは1行目にアクセスポイントの URL のみ記載してください（例：<a href="https://shunshun94.github.io/discord-bcdicebot/tools/original_table_sample_file" target="_blank">original_table_sample_file</a>）。</p>
 
@@ -438,6 +438,10 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 この場合、次のようにアクセスを実施します。<br/>
 <code>https://original_table.example.com/access_point?repeat=3&amp;params=ぱんだ%20うさぎ%20こあら</code></p>
 
+<h5>エイリアス形式の表</h5>
+<p>特定のシステムの特定のコマンドを送信するコマンドを作成することができます。システムを切り替えずとも特定のシステムの頻繁に参照する表がある場合などに便利です。<br/>記法は次のとおりです。<br/>
+<code>alias ${システム名}　${コマンド}</code></p>
+<p>例えば、次のようにすればステラナイツの性格表を振ることができます。<br/><code>alias StellarKnights PET</code>（ファイルでの例：<a href="https://shunshun94.github.io/discord-bcdicebot/tools/SK-PET" target="_blank">SK-PET</a>）</p>
 
 <h3 id="howToUse-slashCommands">スラッシュコマンドについて</h3>
 <p><code>BCDICE_SLASH_PREFIX</code> が有効な場合、Discord のスラッシュコマンド機能を用いてダイスを振ったり設定を実施したりできるようになります。</p>
@@ -610,6 +614,8 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2 id="history">更新履歴</h2>
 <dl id="historyList">
+	<dt>v2.9.0</dt>
+	<dd>オリジナル表でエイリアスを使えるようにしました。</dd>
 	<dt>v2.8.1</dt>
 	<dd>URL 形式で設定するオリジナル表のサンプルを追加しました。詳細は<a href="#howToUse-admin-originalTable">オリジナル表の管理</a>をご確認ください</dd>
 	<dt>v2.8.0</dt>

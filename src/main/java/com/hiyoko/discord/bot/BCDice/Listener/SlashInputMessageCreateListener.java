@@ -164,7 +164,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) {
 		List<DicerollResult> rollResults;
 		try {
-			rollResults = bcDice.rolls(bcDice.getRollCommand() + " " + diceCommand, channel.getIdAsString());	
+			rollResults = bcDice.rolls(bcDice.getRollCommand() + " " + diceCommand, channel.getIdAsString());
 		} catch(IOException ioe) {
 			logger.warn(String.format("USERID: %s MESSAGE: %s", user.getIdAsString() , diceCommand));
 			logger.warn("Failed to reply to user request", ioe);
@@ -183,7 +183,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 					sb.add(diceResultFormatter.getText(rollResult));
 				}
 			}
-			List<String> resultMessage = bcDice.separateStringWithLengthLimitation(
+		  	List<String> resultMessage = bcDice.separateStringWithLengthLimitation(
 				String.format("＞%s\n> %s\n%s", nameIndicator.getName(user), diceCommand, sb.stream().collect(Collectors.joining("\n\n"))), 1000);
 			DicerollResult firstOne = rollResults.get(0);
 			if( firstOne.isSecret() ) {
