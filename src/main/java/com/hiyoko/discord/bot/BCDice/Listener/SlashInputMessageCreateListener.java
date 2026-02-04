@@ -183,7 +183,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 					sb.add(diceResultFormatter.getText(rollResult));
 				}
 			}
-		  	List<String> resultMessage = bcDice.separateStringWithLengthLimitation(
+			List<String> resultMessage = bcDice.separateStringWithLengthLimitation(
 				String.format("＞%s\n> %s\n%s", nameIndicator.getName(user), diceCommand, sb.stream().collect(Collectors.joining("\n\n"))), 1000);
 			DicerollResult firstOne = rollResults.get(0);
 			if( firstOne.isSecret() ) {
