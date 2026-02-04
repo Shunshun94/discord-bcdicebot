@@ -185,6 +185,14 @@ public class BCDiceCLI {
 				List<DicerollResult> result = new ArrayList<DicerollResult>();
 				result.add(client.rollOriginalDiceBotURL(command, times, params));
 				return result;
+			} else if(command.startsWith("alias")) {
+				String system = command.split(" ")[1];
+				String prefix = times == 1 ? "" : String.format("x%s ", times);
+				String sendCommand = prefix + command.replaceFirst("alias " + system, "");
+				DicerollResult dr = client.rollDice(sendCommand, system);
+				List<DicerollResult> result = new ArrayList<DicerollResult>();
+				result.add(dr);
+				return result;
 			} else {
 				DicerollResult tmp = client.rollDice(String.format("x%s %s", times, command));
 				return dbt.getResultsAsInvalidTable(tmp.getText()).stream().map(t->{

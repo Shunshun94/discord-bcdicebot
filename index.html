@@ -426,7 +426,7 @@ import コマンドを実行すると<code>start.bat</code>ないし<code>start.
 Windows 付属のメモ帳であれば名前を付けて保存する際に保存ボタンの左に「文字コード」を選択できる箇所があります。ここで <code>UTF-8</code> を選択した上で保存してください。</p>
 
 <h5>アクセスポイント URL 形式の表</h5>
-<p>アクセスすることで BCDice API のダイス結果互換の値を返すアクセスポイント（例：<a href="https://shunshun94.github.io/discord-bcdicebot/tools/original_table_sample_result.json" target="_blank">original_table_sample_result.json</a>）を与えることでもオリジナル表を作成できます。<br/>
+<p>アクセスすることで BCDice API のダイス結果互換の値を返すアクセスポイント（例：<a href="https://shunshun94.github.io/discord-bcdicebot/tools/original_table_sample_result.json" target="_blank">original_table_sample_result.json</a>）を与えることでオリジナル表を作成できます。<br/>
 返り値には最低限 <code>ok</code> <code>text</code> <code>secret</code> の情報が含まれている必要があります。<br/>
 アップロードするオリジナル表のファイルは1行目にアクセスポイントの URL のみ記載してください（例：<a href="https://shunshun94.github.io/discord-bcdicebot/tools/original_table_sample_file" target="_blank">original_table_sample_file</a>）。</p>
 
@@ -438,6 +438,10 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 この場合、次のようにアクセスを実施します。<br/>
 <code>https://original_table.example.com/access_point?repeat=3&amp;params=ぱんだ%20うさぎ%20こあら</code></p>
 
+<h5>エイリアス形式の表</h5>
+<p>特定のシステムの特定のコマンドを送信するコマンドを作成することができます。システムを切り替えずとも特定のシステムの頻繁に参照する表がある場合などに便利です。<br/>記法は次のとおりです。<br/>
+<code>alias ${システム名}　${コマンド}</code></p>
+<p>例えば、次のようにすればステラナイツの性格表を振ることができます。<br/><code>alias StellarKnights PET</code>（ファイルでの例：<a href="https://shunshun94.github.io/discord-bcdicebot/tools/SK-PET" target="_blank">SK-PET</a>）</p>
 
 <h3 id="howToUse-slashCommands">スラッシュコマンドについて</h3>
 <p><code>BCDICE_SLASH_PREFIX</code> が有効な場合、Discord のスラッシュコマンド機能を用いてダイスを振ったり設定を実施したりできるようになります。</p>
@@ -508,17 +512,18 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 
 <h3 id="licenses-libs">使用しているライブラリ</h3>
 <ul>
-	<li>(Eclipse Public License - v 1.0) (GNU Lesser General Public License) Logback Classic Module (ch.qos.logback:logback-classic:1.2.11 - http://logback.qos.ch/logback-classic)</li>
-	<li>(Eclipse Public License - v 1.0) (GNU Lesser General Public License) Logback Core Module (ch.qos.logback:logback-core:1.2.11 - http://logback.qos.ch/logback-core)</li>
+	<li>(Eclipse Public License - v 1.0) (GNU Lesser General Public License) Logback Classic Module (ch.qos.logback:logback-classic:1.3.15 - http://logback.qos.ch/logback-classic)</li>
+	<li>(Eclipse Public License - v 1.0) (GNU Lesser General Public License) Logback Core Module (ch.qos.logback:logback-core:1.3.15 - http://logback.qos.ch/logback-core)</li>
 	<li>(Apache License, Version 2.0) xsalsa20poly1305 (com.codahale:xsalsa20poly1305:0.11.0 - https://github.com/codahale/xsalsa20poly1305)</li>
 	<li>(MIT License) minimal-json (com.eclipsesource.minimal-json:minimal-json:0.9.5 - https://github.com/ralfstx/minimal-json)</li>
-	<li>(The Apache Software License, Version 2.0) Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.12.6 - http://github.com/FasterXML/jackson)</li>
-	<li>(The Apache Software License, Version 2.0) Jackson-core (com.fasterxml.jackson.core:jackson-core:2.12.6 - https://github.com/FasterXML/jackson-core)</li>
-	<li>(The Apache Software License, Version 2.0) jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.12.6 - http://github.com/FasterXML/jackson)</li>
+	<li>(The Apache Software License, Version 2.0) Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.12.7 - http://github.com/FasterXML/jackson)</li>
+	<li>(The Apache Software License, Version 2.0) Jackson-core (com.fasterxml.jackson.core:jackson-core:2.12.7 - https://github.com/FasterXML/jackson-core)</li>
+	<li>(The Apache Software License, Version 2.0) jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.12.7.1 - http://github.com/FasterXML/jackson)</li>
 	<li>(The Apache Software License, Version 2.0) com.neovisionaries:nv-websocket-client (com.neovisionaries:nv-websocket-client:2.14 - https://github.com/TakahikoKawasaki/nv-websocket-client)</li>
 	<li>(The Apache Software License, Version 2.0) okhttp-logging-interceptor (com.squareup.okhttp3:logging-interceptor:4.9.3 - https://square.github.io/okhttp/)</li>
-	<li>(The Apache Software License, Version 2.0) okhttp (com.squareup.okhttp3:okhttp:4.9.1 - https://square.github.io/okhttp/)</li>
-	<li>(The Apache Software License, Version 2.0) Okio (com.squareup.okio:okio:2.8.0 - https://github.com/square/okio/)</li>
+	<li>(The Apache Software License, Version 2.0) okhttp (com.squareup.okhttp3:okhttp:4.12.0 - https://square.github.io/okhttp/)</li>
+	<li>(The Apache Software License, Version 2.0) okio (com.squareup.okio:okio:3.6.0 - https://github.com/square/okio/)</li>
+	<li>(The Apache Software License, Version 2.0) okio (com.squareup.okio:okio-jvm:3.6.0 - https://github.com/square/okio/)</li>
 	<li>(The Apache Software License, Version 2.0) Vavr (io.vavr:vavr:0.10.4 - http://vavr.io)</li>
 	<li>(The Apache Software License, Version 2.0) Vavr Match (io.vavr:vavr-match:0.10.4 - http://vavr.io)</li>
 	<li>(Eclipse Public License 1.0) JUnit (junit:junit:4.13.2 - http://junit.org)</li>
@@ -527,15 +532,15 @@ Windows 付属のメモ帳であれば名前を付けて保存する際に保存
 	<li>(Apache License, Version 2.0) Apache Log4j Core (org.apache.logging.log4j:log4j-core:2.17.2 - https://logging.apache.org/log4j/2.x/log4j-core/)</li>
 	<li>(Bouncy Castle Licence) Bouncy Castle Provider (org.bouncycastle:bcprov-jdk15on:1.60 - http://www.bouncycastle.org/java.html)</li>
 	<li>(New BSD License) Hamcrest Core (org.hamcrest:hamcrest-core:1.3 - https://github.com/hamcrest/JavaHamcrest/hamcrest-core)</li>
-	<li>(Apache License, Version 2.0) Javacord (org.javacord:javacord:3.7.0 - https://javacord.org)</li>
-	<li>(Apache License, Version 2.0) Javacord (api) (org.javacord:javacord-api:3.7.0 - https://javacord.org)</li>
-	<li>(Apache License, Version 2.0) Javacord (core) (org.javacord:javacord-core:3.7.0 - https://javacord.org)</li>
+	<li>(Apache License, Version 2.0) Javacord (org.javacord:javacord:3.8.0 - https://javacord.org)</li>
+	<li>(Apache License, Version 2.0) Javacord (api) (org.javacord:javacord-api:3.8.0 - https://javacord.org)</li>
+	<li>(Apache License, Version 2.0) Javacord (core) (org.javacord:javacord-core:3.8.0 - https://javacord.org)</li>
 	<li>(The Apache Software License, Version 2.0) IntelliJ IDEA Annotations (org.jetbrains:annotations:13.0 - http://www.jetbrains.org)</li>
-	<li>(The Apache License, Version 2.0) org.jetbrains.kotlin:kotlin-stdlib (org.jetbrains.kotlin:kotlin-stdlib:1.4.10 - https://kotlinlang.org/)</li>
-	<li>(The Apache License, Version 2.0) org.jetbrains.kotlin:kotlin-stdlib-common (org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 - https://kotlinlang.org/)</li>
-	<li>(The Apache License, Version 2.0) org.jetbrains.kotlin:kotlin-stdlib-jdk7 (org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10 - https://kotlinlang.org/)</li>
-	<li>(The Apache License, Version 2.0) org.jetbrains.kotlin:kotlin-stdlib-jdk8 (org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10 - https://kotlinlang.org/)</li>
-	<li>(MIT License) SLF4J API Module (org.slf4j:slf4j-api:1.7.32 - http://www.slf4j.org)</li>
+	<li>(The Apache License, Version 2.0) Kotlin Stdlib (org.jetbrains.kotlin:kotlin-stdlib:1.8.21 - https://kotlinlang.org/)</li>
+	<li>(The Apache License, Version 2.0) Kotlin Stdlib Common (org.jetbrains.kotlin:kotlin-stdlib-common:1.9.10 - https://kotlinlang.org/)</li>
+	<li>(The Apache License, Version 2.0) Kotlin Stdlib Jdk7 (org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.21 - https://kotlinlang.org/)</li>
+	<li>(The Apache License, Version 2.0) Kotlin Stdlib Jdk8 (org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.21 - https://kotlinlang.org/)</li>
+	<li>(MIT License) SLF4J API Module (org.slf4j:slf4j-api:2.0.7 - http://www.slf4j.org)</li>
 </ul>
 
 
@@ -610,6 +615,8 @@ BCDice-API が無ければ本アプリの実装は気が遠くなるものだっ
 
 <h2 id="history">更新履歴</h2>
 <dl id="historyList">
+	<dt>v2.9.0</dt>
+	<dd>オリジナル表でエイリアスを使えるようにしました。詳細は<a href="#howToUse-admin-originalTable">オリジナル表の管理</a>をご確認ください</dd>
 	<dt>v2.8.1</dt>
 	<dd>URL 形式で設定するオリジナル表のサンプルを追加しました。詳細は<a href="#howToUse-admin-originalTable">オリジナル表の管理</a>をご確認ください</dd>
 	<dt>v2.8.0</dt>

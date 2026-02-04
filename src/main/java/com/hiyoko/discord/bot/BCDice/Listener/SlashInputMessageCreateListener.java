@@ -164,7 +164,7 @@ public class SlashInputMessageCreateListener implements SlashCommandCreateListen
 	private List<String> handleRoll(String diceCommand, TextChannel channel, User user) {
 		List<DicerollResult> rollResults;
 		try {
-			rollResults = bcDice.rolls(bcDice.getRollCommand() + " " + diceCommand, channel.getIdAsString());	
+			rollResults = bcDice.rolls(bcDice.getRollCommand() + " " + diceCommand, channel.getIdAsString());
 		} catch(IOException ioe) {
 			logger.warn(String.format("USERID: %s MESSAGE: %s", user.getIdAsString() , diceCommand));
 			logger.warn("Failed to reply to user request", ioe);
